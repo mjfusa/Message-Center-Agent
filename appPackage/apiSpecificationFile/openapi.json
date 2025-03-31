@@ -1,0 +1,123 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Microsoft Graph API",
+    "version": "v1.0",
+    "description": "API to obtain message center messages including OAuth authentication"
+  },
+  "servers": [
+    {
+      "url": "https://graph.microsoft.com/v1.0"
+    }
+  ],
+  "paths": {
+    "/admin/serviceAnnouncement/messages": {
+      "get": {
+        "summary": "Get message center messages",
+        "description": "Retrieve the message center messages",
+        "operationId": "getMessages",
+        "parameters": [
+          {
+            "name": "$top",
+            "in": "query",
+            "description": "Number of records to return",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            }
+          },
+          {
+            "name": "$skip",
+            "in": "query",
+            "description": "Number of records to skip",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          {
+            "name": "$filter",
+            "in": "query",
+            "description": "Filter the results based on specific conditions. Use `contains(title,'search term')` to search within the title property for a specific term. For create time, use the 'startDateTime' property with a date format. For example, `startDateTime ge 2025-03-01T00:00:00Z` to filter messages created after March 1, 2025. For major change messages, use `isMajorChange eq true`. To combine filters, use `and` operator. For example, `contains(title,'Copilot') and startDateTime ge 2025-03-01T00:00:00Z`.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "example": "contains(title,'Microsoft 365')"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "value": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "title": {
+                            "type": "string"
+                          },
+                          "body": {
+                            "type": "string"
+                          },
+                          "category": {
+                            "type": "string"
+                          },
+                          "severity": {
+                            "type": "string"
+                          },
+                          "startDateTime": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "lastModifiedDateTime": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "isMajorChange": {
+                              "type": "boolean"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "OAuth2": []
+          }
+        ]
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "OAuth2": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://login.microsoftonline.com/d3d6872a-0e81-480f-88e4-8e625ee447ba/oauth2/v2.0/authorize",
+            "tokenUrl": "https://login.microsoftonline.com/d3d6872a-0e81-480f-88e4-8e625ee447ba/oauth2/v2.0/token",
+            "scopes": {
+              "https://graph.microsoft.com": "Access Microsoft Graph API"
+            }
+          }
+        }
+      }
+    }
+  }
+}

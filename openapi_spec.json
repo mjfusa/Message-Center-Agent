@@ -1,0 +1,91 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Microsoft Graph API",
+        "version": "v1.0",
+        "description": "API to obtain message center messages including OAuth authentication"
+    },
+    "servers": [
+        {
+            "url": "https://graph.microsoft.com/v1.0"
+        }
+    ],
+    "paths": {
+        "/admin/serviceAnnouncement/messages": {
+            "get": {
+                "summary": "Get message center messages",
+                "description": "Retrieve the message center messages",
+                "operationId": "getMessages",
+                "responses": {
+                    "200": {
+                        "description": "Successful response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "value": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "object",
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "string"
+                                                    },
+                                                    "title": {
+                                                        "type": "string"
+                                                    },
+                                                    "body": {
+                                                        "type": "string"
+                                                    },
+                                                    "category": {
+                                                        "type": "string"
+                                                    },
+                                                    "severity": {
+                                                        "type": "string"
+                                                    },
+                                                    "startDateTime": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "lastModifiedDateTime": {
+                                                        "type": "string",
+                                                        "format": "date-time"
+                                                    },
+                                                    "isMajorChange": {
+                                                        "type": "boolean"
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "OAuth2": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "OAuth2": {
+                "type": "oauth2",
+                "flows": {
+                    "authorizationCode": {
+                        "authorizationUrl": "https://login.microsoftonline.com/d3d6872a-0e81-480f-88e4-8e625ee447ba/oauth2/authorize",
+                        "tokenUrl": "https://login.microsoftonline.com/d3d6872a-0e81-480f-88e4-8e625ee447ba/oauth2/token",
+                        "scopes": {
+                            "https://graph.microsoft.com/.default": "Access Microsoft Graph API"
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

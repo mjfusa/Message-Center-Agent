@@ -1,0 +1,39 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/copilot/declarative-agent/v1.2/schema.json",
+  "version": "v1.2",
+  "name": "Message Center Agent",
+  "description": "Declarative agent created with Teams Toolkit can assist user in calling APIs and retrieving responses",
+  "instructions": "$[file('instruction.txt')]",
+  "actions": [
+    {
+      "id": "action_1",
+      "file": "ai-plugin.json"
+    }
+  ],
+  "conversation_starters": [
+    {
+      "title": "Search for Microsoft 365 Copilot Updates",
+      "text": "Find all message center updates related to Microsoft 365 Copilot."
+    },
+    {
+      "title": "Filter by Title",
+      "text": "Show me all messages with 'security update' in the title."
+    },
+    {
+      "title": "Paginated Results",
+      "text": "Retrieve the next 10 messages after skipping the first 20."
+    },
+    {
+      "title": "Major Change Messages",
+      "text": "Find all Major Change messages."
+    },
+    {
+      "title": "Search by Date",
+      "text": "Show me all messages created after March 1, 2025."
+    },
+    {
+      "title": "Filter by Title and Date",
+      "text": "Find all messages with 'Copilot' in the title that were created after March 1, 2025."
+    }
+  ]
+}
