@@ -18,6 +18,16 @@
         "operationId": "getMessages",
         "parameters": [
           {
+            "name": "$count",
+            "in": "query",
+            "description": "Total number of records returned",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          {
             "name": "$top",
             "in": "query",
             "description": "Number of records to return",
@@ -85,7 +95,7 @@
                             "format": "date-time"
                           },
                           "isMajorChange": {
-                              "type": "boolean"
+                            "type": "boolean"
                           }
                         }
                       }
