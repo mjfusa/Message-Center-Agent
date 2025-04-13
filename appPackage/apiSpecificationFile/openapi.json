@@ -106,7 +106,30 @@
             }
           },
           "403": {
-            "description": "Access denied. You need the Message Center Reader or Global Admin role to access this agent.",
+            "description": "Insufficient permissions. You need the Message Center Reader or the Global Admin role to access this agent.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized. Please check your authentication credentials.",
             "content": {
               "application/json": {
                 "schema": {
