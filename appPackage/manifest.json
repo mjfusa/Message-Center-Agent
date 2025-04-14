@@ -15,11 +15,11 @@
     },
     "name": {
         "short": "Message Center Agent${{APP_NAME_SUFFIX}}",
-        "full": "Full name for Message Center Agent"
+        "full": "Message Center Agent${{APP_NAME_SUFFIX}}"
     },
     "description": {
-        "short": "Short description for Message Center Agent",
-        "full": "Full description for Message Center Agent"
+        "short": "Read messages from Microsoft Admin Center Message center.",
+        "full": "Read messages from Microsoft Admin Center Message center. This agent can read messages from Microsoft Admin Center Message center and provide information to users in Microsoft 365 Copilot. Use this M365 Copilot agent to help you summarize messages, prepare internal communications, obtain insights, find alternatives for deprecated features, receive recommended actions, and other generative AI use cases."
     },
     "accentColor": "#FFFFFF",
     "copilotAgents": {

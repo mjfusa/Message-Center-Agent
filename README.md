@@ -1,12 +1,12 @@
 Draft a README file for this project including the following sections:  Overview, Purpose, Prerequistives: TTK, App Registration, Teams Developer Portal resistration for oauth2.0, requried roles, Architecure, How to run, conculsion
 
-# Admin Center Message Agent - Declarative Agent 
+# Microsoft 365 Copilot Center Message Agent
 
 ## Overview
- The Admin Center Message Agent allows you to search Microsoft 365 Admin Center messages with Copilot chat using natural language prompts.
+ The M365 Copilot Message Center Agent allows you to search the **Microsoft 365 Admin Center** messages with Copilot chat using natural language prompts.
 
-## Admin Center Message Agent Use Cases
-Not only can you search for messages, but you can also use the power of AI to summarize them and draft internal communications. Here are some examples of what you can do with the Admin Center Message Agent:
+## M365 Message Center Agent Use Cases
+Not only can you search for messages, but you can also use the power of generative AI to summarize them and draft internal communications. Here are some examples of what you can do:
 - **Search for messages**: Find specific messages in the Microsoft 365 Admin Center message center.
 - **Summarize messages**: Get a summary of the latest messages in the message center.
 - **Draft internal communications**: Generate draft emails or messages to share information about updates with your team.
@@ -14,35 +14,43 @@ Not only can you search for messages, but you can also use the power of AI to su
 - **Get alternatives** Get suggested alternatives for deprecated features.
 - **Get suggested actions**: Get suggested actions for updates that require your attention.
 
-## Starter Prompts
-Here are some starter prompts to get you started with the Admin Center Message Agent:
-```C#
-Find all message center updates related to Microsoft 365 Copilot created in the last 30 days.
-
-Show me all messages with 'security update' in the title. 
-
-Find all messages with 'Copilot' in the title that were created after March 1, 2025 that are Major Change messages.
-
-Find all messages regarding Microsoft Teams that are 'stay informed' messages published in the last two weeks.
-
-Draft an email about Microsoft Teams updates that are 'Plan for Change' messages published in the last two weeks.
-```
-
-
 ## Architecture
 ### Zero Code
-The declarative agent is built using the Microsoft Teams Toolkit for Visual Studio Code. It leverages the Microsoft Graph API to interact with the Microsoft 365 Admin Center and retrieve messages. Authentication is handled using OAuth2.0, and the agent is designed to work seamlessly with Microsoft 365 Copilot. 
+The declarative agent is built using the Microsoft Teams Toolkit for Visual Studio Code. It leverages the Microsoft Graph API to interact with the Microsoft 365 Admin Center and retrieve messages. Authentication is handled using OAuth2.0, and the agent is designed to work seamlessly with Microsoft 365 Copilot. The declarative agent is a zero-code solution, meaning you don't need to write any code to set it up or use it. The agent is designed to be easy to setup and requires no coding experience.
 
 ## Authentication and Graph API Permissions
 
 The implementation of the authentication leverages the M365 Teams app authentication infrastructure that takes care of the OAuth2.0 flow and token management for you. See here:
-[Configure authentication for API plugins in agents](https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/api-plugin-authentication)
+[Configure authentication for API plugins in agents](https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/api-plugin-authentication). Additionally, the Team Toolkit for Visual Studio Code is used to provision the app registration and deploy the app to Microsoft Teams. This eliminates the need for direct Microsoft 365 registration  using the [Teams Developer portal](https://dev.teams.microsoft.com/) and allows you to focus on building your app inside Visual Studio Code.
 
-### App Registration
+To support OAuth2.0 authentication, requires the following step:
+1. Microsoft Entra App Registration
+3. Update the openapi.json file with the security scheme.
+4. Provision the app using the Teams Toolkit. 
 
-+++++++++++++++++++++++++++++++
-1. Create a new app registration in the Azure portal.
-2. Update openapi.json with securitySchemes.
+Details of these steps are provided below.
+
+### Microsoft Entra App Registration
+To use the declarative agent, you need to register your app in the Entra portal and configure the necessary permissions. This app registration will be registered on the Teams Developer Portal. The app registration is required to authenticate users and authorize access to the Microsoft Graph API and Microsoft 365 Admin Center. The Teams developer portal provides a secure environment for managing your app's authentication settings and permissions.
+
+Here are the steps to register your app:
+
+1. Go to the [Microsoft Entra portal](https://entra.microsoft.com/) and sign in with your Microsoft account.
+2. Click on Applications | "App registrations" and then "New registration".
+3. Enter a name for your app registration and select the appropriate account type.
+4. Set the redirect URI to the 'Web" platform and the URL to https://teams.microsoft.com/api/platform/v1.0/oAuthRedirect.
+This is the URL that Microsoft Teams and M365 Copilot will redirect to after authentication.
+5. Click "Register" to create the app.
+6. Note the Application (client) ID and Directory (tenant) ID for later use.
+7. Under "Certificates & secrets", create a new client secret and note it down.
+8. Under "API permissions", add the following delegated permissions:
+  - Microsoft Graph API: **User.Read**
+  - Microsoft 365 Admin Center: **MessageCenter.Read.All**
+9. Grant admin consent for the permissions.
+
+### Update the openapi.json file with the security scheme
+Updating the openapi.json file with the security scheme is a crucial step in configuring the declarative agent for OAuth2.0 authentication. The openapi.json file defines the API endpoints and their security requirements, allowing the agent to authenticate users and authorize access to the Microsoft Graph API and Microsoft 365 Admin Center.
+1. Update openapi.json with **securitySchemes** as follows:
 
 ```json
 "components": {
@@ -62,68 +70,44 @@ The implementation of the authentication leverages the M365 Teams app authentica
     }
 }
 ```
-   
 
-1.  Update authorizationUrl and tokenUrl with the authorization and token endpoints from the app registration. Update the scopes with https://graph.microsoft.com/.
+2. Update **authorizationUrl** and **tokenUrl** settings with the authorization and token endpoints from the app registration in the above step. Update the **scopes** setting with https://graph.microsoft.com/ and "Access Microsoft Graph API".
 
-2. Provision the app using the Teams Toolkit. Note that the Teams Toolkit will register the app in the Teams Developer Portal and update the OAUTH2_REGISTRATION_ID variable in your .env file with the value received from the Teams Developer Portal.
-3. Navigate to the Teams Developer Portal, click on  Tools | 'OAuth Client Registration' to view the OAuth2.0 client registration.
-++++++++++++++++++++++++++++++++
+### Provision the app using the Teams Toolkit
+The Teams Toolkit for Visual Studio Code streamlines app registration and deployment to Microsoft Teams. It automates OAuth2.0 setup, securely manages client credentials, and eliminates the need to handle infrastructure, letting you focus on app development.
 
+1. Using the Teams Toolkit, in the LIFECYCLE section, select 'Provision'. Note that the Teams Toolkit will register the app in the Teams Developer Portal and update the OAUTH2_REGISTRATION_ID variable in your .env file with the value received from the Teams Developer Portal.
 
+2. Navigate to the Teams Developer Portal, click on  Tools | 'OAuth Client Registration' to view the OAuth2.0 client registration.
+Note that the Teams Toolkit updated the OAUTH2_REGISTRATION_ID variable in your .env file with the registration id received from here via the Teams Toolkit 'Provision' step above.
 
+## Use the Message Center Agent in Copilot
 
-To use the declarative agent, you need to register your app in the Azure portal and configure the necessary permissions. This app registration will be registered on the Teams Developer Portal. The app registration is required to authenticate users and authorize access to the Microsoft Graph API and Microsoft 365 Admin Center. The Teams developer portal provides a secure environment for managing your app's authentication settings and permissions.
+Now that you have registered your app and configured the necessary permissions, you can use the Message Center Agent in Microsoft 365 Copilot.
 
-Here are the steps to register your app:
-1. Go to the [Microsoft Entra portal](https://entra.microsoft.com/) and sign in with your Microsoft account.
-2. Click on Applications | "App registrations" and then "New registration".
-3. Enter a name for your app and select the appropriate account type.
-4. Set the redirect URI to the 'Web" platform and the URL to `https://teams.microsoft.com/api/platform/v1.0/oAuthRedirect`.  
-   - This is the URL that Microsoft Teams will redirect to after authentication.
-5. Click "Register" to create the app.
-6. Note the Application (client) ID and Directory (tenant) ID for later use.
-7. Under "Certificates & secrets", create a new client secret and note it down.
-8. Under "API permissions", add the following delegated permissions:
-   - Microsoft Graph API: `User.Read`
-   - Microsoft 365 Admin Center: `MessageCenter.Read.All`
-9. Grant admin consent for the permissions.
-    
-### Teams Developer Portal Registration
-To set up the OAuth2.0 authentication for your app, you need to register your app in the Teams Developer Portal. This registration will allow you to configure the OAuth2.0 settings and permissions for your app.
-Here are the steps to register your app in the Teams Developer Portal:
-1. Go to the [Teams Developer Portal](https://developer.microsoft.com/en-us/microsoft-365/dev-program) and sign in with your Microsoft account.
-2. Click on 'OAuth client registration' and then 'New OAuth client registration'.
-3. Provide a name for the registration.
-4. For the base URL, enter `https://graph.microsoft.com/v1.0`.
-5. Restrict usage by app: 'Existing Teams app'. Provide the 'id' from the `manifest.json` file.
-6. OAuth settings
-   1. Client ID: Enter the Application (client) ID from the Azure portal.
-   2. Client secret: Enter the client secret you created in the Azure portal.
-   3. Authorization Endpoint: from the App Registration. See Overview | Endpoints.
-   4. Token Endpoint: from the App Registration. See Overview | Endpoints.
-   5. Refresh Endpoint: from the App Registration. Same as Token Endpoint.
-   6. Scope: https://graph.microsoft.com/ServiceHealth.Read.All
-   7. Enable Proof Key for Code Exchange (PKCE): This is a security feature that adds an extra layer of protection to the OAuth2.0 flow. It is recommended to enable this option for your app. Leave as off.
-7. Click "Save" to create the OAuth2.0 client registration.
-8. Copy the OAuth client registration ID and assign it to the `OAUTH2_REGISTRATION_ID=` environment variable in the `.env` file.
+### Starter Prompts
+Here are some prompts to get you started with the Message Center Agent:
+```C#
+Find all message center updates related to Microsoft 365 Copilot created in the last 30 days.
 
+Show me all messages with 'security update' in the title. 
 
+Find all messages with 'Copilot' in the title that were created after March 1, 2025 that are Major Change messages.
 
+Find all messages regarding Microsoft Teams that are 'stay informed' messages published in the last two weeks.
 
-
-
-
-
-
-- openapi.json: This file contains the OpenAPI specification for the Graph API 'https://graph.microsoft.com/v1.0/admin/messageCenter/messages' that the declarative agent will use to interact with the Microsoft 365 Admin Center. 
->Generate this file using the following prompt in GitHub Copilot using model GPT 4.5:
+Draft an email about Microsoft Teams updates that are 'Plan for Change' messages published in the last two weeks.
 ```
+### Key Files 
+The following files are key to the implementation of the declarative agent:
+
+- **openapi.json**: This file contains the OpenAPI specification for the Graph API ['https://graph.microsoft.com/v1.0/admin/serviceAnnouncement/messages'](https://learn.microsoft.com/en-us/graph/api/serviceannouncement-list-messages?view=graph-rest-1.0&tabs=http) that the declarative agent will use to search and retrieve messages from the Microsoft 365 Admin Center. 
+
+> NOTE: This file was generated using the following prompt in GitHub Copilot using model GPT 4.5:
 Extract the openapi definition for the graph API /admin/messageCenter/messages from https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/refs/heads/master/openapi/v1.0/openapi.yaml. Covert YAML output to JSON.
-```
 
-- declarativeCopilot.json: This file contains the declarative agent configuration that defines the behavior and capabilities of the agent.
-- manifest.json: This file contains the Teams application manifest that defines metadata for the declarative agent.This is what is displayed in the Teams app store.
+- **declarativeCopilot.json**: This file contains the declarative agent configuration that defines the behavior and capabilities of the agent. No capabilities have been defined for this agent.
+- **manifest.json**: This file contains the Teams application manifest that defines metadata for the declarative agent.This is what is displayed in the Teams app store.
 - teamsapp.yml: This file contains the Teams Toolkit project configuration, including the OAuth2 registration and other settings.
 - .env: This file contains environment variables for the project, including the client ID and secret for OAuth2 authentication.
 - Teams Developer Portal: This is where you register your app and configure the OAuth2 authentication settings.
