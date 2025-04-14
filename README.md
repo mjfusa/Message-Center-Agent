@@ -1,4 +1,4 @@
-# Microsoft 365 Copilot: Message Center Message Agent
+# Microsoft 365 Copilot: Message Center Agent
 
 ## Overview
  The M365 Copilot Message Center Agent allows you to search the **Microsoft 365 Admin Center** messages with Copilot chat using natural language prompts.
