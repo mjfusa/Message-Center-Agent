@@ -1,5 +1,3 @@
-Draft a README file for this project including the following sections:  Overview, Purpose, Prerequistives: TTK, App Registration, Teams Developer Portal resistration for oauth2.0, requried roles, Architecure, How to run, conculsion
-
 # Microsoft 365 Copilot Center Message Agent
 
 ## Overview
@@ -14,6 +12,19 @@ Not only can you search for messages, but you can also use the power of generati
 - **Get alternatives** Get suggested alternatives for deprecated features.
 - **Get suggested actions**: Get suggested actions for updates that require your attention.
 
+## Prerequisites
+### Teams Toolkit (TTK)
+- Install the [Teams Toolkit](https://marketplace.visualstudio.com/items?itemName=TeamsDevApp.ms-teams-toolkit) extension for Visual Studio Code.
+### Microsoft 365 Tenant
+- **Microsoft 365 Tenant with a M365 Copilot license and admin access**. See ['Required roles'](#required-roles) below. You can use a test tenant available in your organization, if available. Alternatively, you can  use a Microsoft 365 sandbox subscription with a Copilot license. See [here](https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/prerequisites#copilot-development-environment) for information on obtaining a Microsoft 365 developer sandbox subscription with a Copilot license.
+### Enable Custom App Uploading
+- **Custom app uploading** must be enabled in your Microsoft 365 tenant via the Teams Admin Center. This is required for the Teams Toolkit to sideload the agent to M365 Copilot. See [here](https://learn.microsoft.com/en-us/microsoftteams/teams-custom-app-policies-and-settings#allow-users-to-upload-custom-apps) for more information on enabling custom app uploading.
+
+## Running the Agent
+1. Review the [Required Roles](#required-roles) section below to ensure the developer and the agent user have the necessary permissions.
+1. Complete the Entra app registration and Teams Developer Portal registration for OAuth2.0, following the steps below.
+2. Once you complete the 'Provision' step, the Agent will be available to you in the Microsoft 365 Copilot chat interface.
+3. Start with one of the starter prompts below to get familiar with the agent's capabilities.
 ## Architecture
 ### Zero Code
 The declarative agent is built using the Microsoft Teams Toolkit for Visual Studio Code. It leverages the Microsoft Graph API to interact with the Microsoft 365 Admin Center and retrieve messages. Authentication is handled using OAuth2.0, and the agent is designed to work seamlessly with Microsoft 365 Copilot. The declarative agent is a zero-code solution, meaning you don't need to write any code to set it up or use it. The agent is designed to be easy to setup and requires no coding experience.
@@ -33,7 +44,7 @@ Details of these steps are provided below.
 ### Microsoft Entra App Registration
 To use the declarative agent, you need to register your app in the Entra portal and configure the necessary permissions. This app registration will be registered on the Teams Developer Portal. The app registration is required to authenticate users and authorize access to the Microsoft Graph API and Microsoft 365 Admin Center. The Teams developer portal provides a secure environment for managing your app's authentication settings and permissions.
 
-Here are the steps to register your app:
+Here are the steps to register your app (agent):
 
 1. Go to the [Microsoft Entra portal](https://entra.microsoft.com/) and sign in with your Microsoft account.
 2. Click on Applications | "App registrations" and then "New registration".
@@ -76,14 +87,16 @@ Updating the openapi.json file with the security scheme is a crucial step in con
 ### Provision the app using the Teams Toolkit
 The Teams Toolkit for Visual Studio Code streamlines app registration and deployment to Microsoft Teams. It automates OAuth2.0 setup, securely manages client credentials, and eliminates the need to handle infrastructure, letting you focus on app development.
 
-1. Using the Teams Toolkit, in the LIFECYCLE section, select 'Provision'. Note that the Teams Toolkit will register the app in the Teams Developer Portal and update the OAUTH2_REGISTRATION_ID variable in your .env file with the value received from the Teams Developer Portal.
+1. Using the Teams Toolkit, in the LIFECYCLE section, select 'Provision'. When prompted, provide the client id, and client secret obtained during the Entra app registration. Note that the Teams Toolkit will register the app in the Teams Developer Portal and update the OAUTH2_REGISTRATION_ID variable in your .env file with the value received from the Teams Developer Portal.
 
 2. Navigate to the Teams Developer Portal, click on  Tools | 'OAuth Client Registration' to view the OAuth2.0 client registration.
+3. Update the 'Scope' field with the following value:
+   - https://graph.microsoft.com/MessageCenter.Read.All
 Note that the Teams Toolkit updated the OAUTH2_REGISTRATION_ID variable in your .env file with the registration id received from here via the Teams Toolkit 'Provision' step above.
 
 ## Use the Message Center Agent in Copilot
 
-Now that you have registered your app and configured the necessary permissions, you can use the Message Center Agent in Microsoft 365 Copilot.
+The 'Provision' step deploys the agent privately to you for testing purposes. Start Copilot chat and select 'Message Center Agent'.
 
 ### Starter Prompts
 Here are some prompts to get you started with the Message Center Agent:
@@ -108,38 +121,11 @@ Extract the openapi definition for the graph API /admin/messageCenter/messages f
 
 - **declarativeCopilot.json**: This file contains the declarative agent configuration that defines the behavior and capabilities of the agent. No capabilities have been defined for this agent.
 - **manifest.json**: This file contains the Teams application manifest that defines metadata for the declarative agent.This is what is displayed in the Teams app store.
-- teamsapp.yml: This file contains the Teams Toolkit project configuration, including the OAuth2 registration and other settings.
-- .env: This file contains environment variables for the project, including the client ID and secret for OAuth2 authentication.
-- Teams Developer Portal: This is where you register your app and configure the OAuth2 authentication settings.
-- Entra Application Registration: This is where you register your app and configure the API permissions for the Microsoft Graph API and Microsoft 365 Admin Center.
-- 
+- **teamsapp.yml**: This file contains the Teams Toolkit project configuration, including the OAuth2 registration and other settings.
+- **.env.prod**: This file contains environment variables for the project for production release, including the client ID and secret for OAuth2 authentication.
+- **.env.dev**: This file contains environment variables for the project used during development, including the client ID and secret for OAuth2 authentication.
 
-## Authentication and Permissions
-MENTION TEASMS APP AUTHENTICATION INFRASTRUCTURE
-The declarative agent uses OAuth2.0 for authentication and requires the following permissions to access the Microsoft 365 Admin Center messages:
-- Microsoft Graph API: `User.Read`
-- Microsoft 365 Admin Center: `MessageCenter.Read.All`
-
-
-## Prerequisites
-### Teams Toolkit (TTK)
-- Install the [Teams Toolkit](https://marketplace.visualstudio.com/items?itemName=TeamsDevApp.ms-teams-toolkit) extension for Visual Studio Code.
-### App Registration
-- Register your app in the [Azure portal](https://portal.azure.com/).
-
-Here are the steps to register your app:
-1. Go to the [Microsoft Entra portal](https://entra.microsoft.com/) and sign in with your Microsoft account.
-3. Click on Applications | "App registrations" and then "New registration".
-4. Enter a name for your app and select the appropriate account type.
-5. Set the redirect URI to the 'Web" platform and the URL to `https://teams.microsoft.com/api/platform/v1.0/oAuthRedirect`.
-6. Click "Register" to create the app.
-7. Note the Application (client) ID and Directory (tenant) ID for later use.
-8. Under "Certificates & secrets", create a new client secret and note it down.
-9. Under "API permissions", add the following delegated permissions:
-   - Microsoft Graph API: `User.Read`
-   - Microsoft 365 Admin Center: `MessageCenter.Read.All`
-10. Grant admin consent for the permissions.
-
+## [Required Roles](#required-roles)
 ## Required Roles - App Registration
 To create an app registration in Microsoft Entra (Azure AD), you must have one of the following roles:
 
@@ -160,9 +146,9 @@ The roles required to manage the Teams app (Agent) in Microsoft 365 and deploy i
 The recommended least-privileged role specifically for managing and deploying Teams apps is **Teams Administrator**.
 
 ## Required Roles - Teams Developer Portal
-To register your app in the Teams Developer Portal, you must have one of the following roles:
-* Teams Administrator: Required to manage and deploy Teams apps within the organization via the Teams Admin Center.
-* Global Administrator: Can also manage and deploy Teams apps, but has broader permissions beyond Teams management.
+Note that this step is done via the Teams Toolkit's 'Provision' feature. To register your app in the Teams Developer Portal, you must have one of the following roles:
+* **Teams Administrator**: Required to manage and deploy Teams apps within the organization via the Teams Admin Center.
+* **Global Administrator**: Can also manage and deploy Teams apps, but has broader permissions beyond Teams management.
 
 The recommended least-privileged role specifically for managing and deploying Teams apps is **Teams Administrator**.
 Note: This role is required when using the Teams Toolkit to provision the app registration and deploy the app.
@@ -170,9 +156,9 @@ Note: This role is required when using the Teams Toolkit to provision the app re
 ## Required Roles - Agent Usage
 To read Microsoft 365 Message Center messages, and therefor use this agent, a user must have one of the following Microsoft 365 admin roles:
 
-* Global Administrator
-* Message Center Reader
-* Service Support Administrator
-* Service Administrator
+* **Global Administrator**
+* **Message Center Reader**
+* **Service Support Administrator**
+* **Service Administrator**
 
 The recommended least-privileged role specifically for reading Message Center messages is **Message Center Reader**.
