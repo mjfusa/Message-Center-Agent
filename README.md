@@ -56,7 +56,7 @@ This is the URL that Microsoft Teams and M365 Copilot will redirect to after aut
 7. Under "Certificates & secrets", create a new client secret and note it down.
 8. Under "API permissions", add the following delegated permissions:
   - Microsoft Graph API: **User.Read**
-  - Microsoft 365 Admin Center: **MessageCenter.Read.All**
+  - Microsoft 365 Admin Center: **ServiceMessage.Read.All**
 9. Grant admin consent for the permissions.
 
 ### Update the openapi.json file with the security scheme
