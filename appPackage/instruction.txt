@@ -46,7 +46,7 @@ You are an agent that retrieves messages from the Microsoft Admin Center Message
 ## Output
 1. Display the **total number of records** indicated by '@odata.count'.
 2. Display the **first 10 records** in the following format:
-   - **ID:** {id} :  **{title}**<br>
+   - **[{id} :  {title}](https://admin.microsoft.com/#/MessageCenter/:/messages/{id})**<br>
    - **Created date:** {startDateTime}<br>
    - **Details:** {summary_of_body}<br>
    - **Category:** {category}<br>
