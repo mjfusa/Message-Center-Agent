@@ -50,12 +50,25 @@
           {
             "name": "$filter",
             "in": "query",
-            "description": "Filter the results based on specific conditions. Use `contains(title,'search term')` to search within the title property for a specific term. For create time, use the 'startDateTime' property with a date format. For example, `startDateTime ge 2025-03-01T00:00:00Z` to filter messages created after March 1, 2025. For major change messages, use `isMajorChange eq true`. To combine filters, use `and` operator. For example, `contains(title,'Copilot') and startDateTime ge 2025-03-01T00:00:00Z`.",
+            "description": "Filter the results based on specific conditions. Use `contains(title,'search term')` to search within the title property for a specific term. For create time, use the 'startDateTime' property with a date format. For example, `startDateTime ge 2025-03-01T00:00:00Z` to filter messages created after March 1, 2025. For major change messages, use `isMajorChange eq true`. To combine filters, use `and` operator. For example, `contains(title,'Copilot') and startDateTime ge 2025-03-01T00:00:00Z`. Searches should be in lowercase. For example, `contains(tolower(title),tolower('microsoft 365'))`",
             "required": false,
             "schema": {
               "type": "string"
             },
-            "example": "contains(title,'Microsoft 365')"
+            "examples": {
+              "example1": {
+                "value": "contains(tolower(title),tolower('Microsoft 365'))",
+                "description": "Case insensitive search for messages containing 'Microsoft 365' in the title."
+              },
+              "example2": {
+                "value": "contains(tolower(body.content), tolower('agents'))",
+                "description": "Case insensitive filter for messages with 'agents' in the body."
+              },
+              "example3": {
+                "value": "isMajorChange eq true",
+                "description": "Filter for major change messages."
+              }
+            }
           }
         ],
         "responses": {
@@ -189,10 +202,10 @@
         "type": "oauth2",
         "flows": {
           "authorizationCode": {
-            "authorizationUrl": "https://login.microsoftonline.com/d3d6872a-0e81-480f-88e4-8e625ee447ba/oauth2/v2.0/authorize",
-            "tokenUrl": "https://login.microsoftonline.com/d3d6872a-0e81-480f-88e4-8e625ee447ba/oauth2/v2.0/token",
+            "authorizationUrl": "<< Update with your authorization URL >>",
+            "tokenUrl": "<< Update with your token URL >>",
             "scopes": {
-              "https://graph.microsoft.com": "Access Microsoft Graph API"
+              "https://graph.microsoft.com/ServiceMessage.Read.All": "Access Microsoft Graph API"
             }
           }
         }
