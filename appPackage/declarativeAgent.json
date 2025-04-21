@@ -16,8 +16,8 @@
       "text": "Find all message center updates related to Microsoft 365 Copilot."
     },
     {
-      "title": "Filter by Title",
-      "text": "Show me all messages with 'security update' in the title."
+      "title": "Search by Message body",
+      "text": "Show me all messages with 'security update' in the message body."
     },
     {
       "title": "Paginated Results",
@@ -25,14 +25,14 @@
     },
     {
       "title": "Major Change Messages",
-      "text": "Find all Major Change messages."
+      "text": "Find all Major Change messages published in the last 72 hours."
     },
     {
       "title": "Search by Date",
       "text": "Show me all messages created after March 1, 2025."
     },
     {
-      "title": "Filter by Title and Date",
+      "title": "Search by Title and Date",
       "text": "Find all messages with 'Copilot' in the title that were created after March 1, 2025."
     }
   ]

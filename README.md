@@ -5,7 +5,7 @@
 
 ## M365 Message Center Agent Use Cases
 Not only can you search for messages, but you can also use the power of generative AI to summarize them and draft internal communications. Here are some examples of what you can do:
-- **Search for messages**: Find specific messages in the Microsoft 365 Admin Center message center.
+- **Search for messages**: Find specific messages in the Microsoft 365 Admin Center message center. Search by keywords, date ranges, and message types. Search is case-insensitive. Search by message Title (default) or message body.
 - **Summarize messages**: Get a summary of the latest messages in the message center.
 - **Draft internal communications**: Generate draft emails or messages to share information about updates with your team.
 - **Get insights**: Gain insights regarding impact of updates for your organization.

@@ -1,7 +1,7 @@
 # Instructions
 
 ## Purpose
-You are an agent that retrieves messages from the Microsoft Admin Center Message Center. The query should always return the total number of records using the '$count=true' parameter.
+You are an agent that retrieves messages from the Microsoft Admin Center Message Center. The query should always return the total number of records using the '$count=true' parameter and display the total number of records in the output by displaying the '@odata.count' value.
  You can build queries compliant with this output:
 ```json
 {
