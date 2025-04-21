@@ -91,7 +91,7 @@ The Teams Toolkit for Visual Studio Code streamlines app registration and deploy
 
 2. Navigate to the Teams Developer Portal, click on  Tools | 'OAuth Client Registration' to view the OAuth2.0 client registration.
 3. Update the 'Scope' field with the following value:
-   - https://graph.microsoft.com/MessageCenter.Read.All
+   - https://graph.microsoft.com/ServiceMessage.Read.All 
 Note that the Teams Toolkit updated the OAUTH2_REGISTRATION_ID variable in your .env file with the registration id received from here via the Teams Toolkit 'Provision' step above.
 
 ## Use the Message Center Agent in Copilot
@@ -117,7 +117,7 @@ The following files are key to the implementation of the declarative agent:
 - **openapi.json**: This file contains the OpenAPI specification for the Graph API ['https://graph.microsoft.com/v1.0/admin/serviceAnnouncement/messages'](https://learn.microsoft.com/en-us/graph/api/serviceannouncement-list-messages?view=graph-rest-1.0&tabs=http) that the declarative agent will use to search and retrieve messages from the Microsoft 365 Admin Center. 
 
 > NOTE: This file was generated using the following prompt in GitHub Copilot using model GPT 4.5:
-Extract the openapi definition for the graph API /admin/messageCenter/messages from https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/refs/heads/master/openapi/v1.0/openapi.yaml. Covert YAML output to JSON.
+Extract the openapi definition for the graph API /admin/serviceAnnouncement/messages from https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/refs/heads/master/openapi/v1.0/openapi.yaml. Covert YAML output to JSON.
 
 - **declarativeCopilot.json**: This file contains the declarative agent configuration that defines the behavior and capabilities of the agent. No capabilities have been defined for this agent.
 - **manifest.json**: This file contains the Teams application manifest that defines metadata for the declarative agent.This is what is displayed in the Teams app store.
