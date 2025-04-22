@@ -60,7 +60,10 @@ This is the URL that Microsoft Teams and M365 Copilot will redirect to after aut
 9. Grant admin consent for the permissions.
 
 ### Update the openapi.json file with the security scheme
-Updating the openapi.json file with the security scheme is a crucial step in configuring the declarative agent for OAuth2.0 authentication. The openapi.json file defines the API endpoints and their security requirements, allowing the agent to authenticate users and authorize access to the Microsoft Graph API and Microsoft 365 Admin Center.
+Updating the openapi.json file with the security scheme is a crucial step in configuring the declarative agent for OAuth2.0 authentication. The openapi.json file defines the API endpoints and their security requirements, allowing the agent to authenticate users and authorize access to the Microsoft Graph API and Microsoft 365 Admin Center. This step ensures that the agent can securely access the necessary resources and perform actions on behalf of the user. 
+
+>NOTE: If you see an error message `Unable to make API call to Developer Portal API failed, request failed with the status 500 API name create-oauth`. This is likely due to the openapi.json file not being updated with the security scheme. Ensure that you have updated the openapi.json file with the security scheme as described below.
+
 1. Update openapi.json with **securitySchemes** as follows:
 
 ```json
@@ -70,16 +73,16 @@ Updating the openapi.json file with the security scheme is a crucial step in con
         "type": "oauth2",
         "flows": {
           "authorizationCode": {
-            "authorizationUrl": "",
-            "tokenUrl": "",
+            "authorizationUrl": "<< Update with your authorization URL >>",
+            "tokenUrl": "<< Update with your token URL >>",
             "scopes": {
-              "https://graph.microsoft.com": "Access Microsoft Graph API"
+              "https://graph.microsoft.com/ServiceMessage.Read.All": "Access Microsoft Graph API"
             }
           }
         }
       }
     }
-}
+  }
 ```
 
 2. Update **authorizationUrl** and **tokenUrl** settings with the authorization and token endpoints from the app registration in the above step. Update the **scopes** setting with https://graph.microsoft.com/ and "Access Microsoft Graph API".
