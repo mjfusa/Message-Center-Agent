@@ -79,6 +79,14 @@
                 "schema": {
                   "type": "object",
                   "properties": {
+                    "@odata.context": {
+                      "type": "string",
+                      "description": "Context URL for the response data"
+                    },
+                    "@odata.count": {
+                      "type": "integer",
+                      "description": "Total number of records returned"
+                    },
                     "value": {
                       "type": "array",
                       "items": {
@@ -202,8 +210,8 @@
         "type": "oauth2",
         "flows": {
           "authorizationCode": {
-            "authorizationUrl": "<< Update with your authorization URL >>",
-            "tokenUrl": "<< Update with your token URL >>",
+            "authorizationUrl": "https://login.microsoftonline.com/d3d6872a-0e81-480f-88e4-8e625ee447ba/oauth2/v2.0/authorize",
+            "tokenUrl": "https://login.microsoftonline.com/d3d6872a-0e81-480f-88e4-8e625ee447ba/oauth2/v2.0/token",
             "scopes": {
               "https://graph.microsoft.com/ServiceMessage.Read.All": "Access Microsoft Graph API"
             }
