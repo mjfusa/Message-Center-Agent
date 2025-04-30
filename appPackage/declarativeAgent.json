@@ -13,15 +13,15 @@
   "conversation_starters": [
     {
       "title": "Search for Microsoft 365 Copilot Updates",
-      "text": "Find all message center updates related to Microsoft 365 Copilot."
+      "text": "Find one message center updates related to Microsoft 365 Copilot."
     },
     {
       "title": "Search by Message body",
       "text": "Show me all messages with 'security update' in the message body."
     },
     {
-      "title": "Paginated Results",
-      "text": "Retrieve the next 10 messages after skipping the first 20."
+      "title": "Inform the team regarding upcoming changes in Microsoft 365 Copilot",
+      "text": "Draft an email to the team regarding upcoming the upcoming major changes in Microsoft 365 Copilot. Look for the messages published in the last two weeks."
     },
     {
       "title": "Major Change Messages",
