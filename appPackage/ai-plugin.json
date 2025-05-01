@@ -10,10 +10,10 @@
             "description": "Retrieve the message center messages",
             "capabilities": {
                 "response_semantics": {
-                    "data_path": "$.value",
+                    "data_path": "$",
                     "properties": {
-                        "title": "$.title",
-                        "subtitle": "$.id"
+                        "title": "$.value.title",
+                        "subtitle": "$.@odata.count"
                     },
                     "static_template": {
                         "file": "adaptiveCards/getMessages.json"
