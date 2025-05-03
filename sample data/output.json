@@ -1,0 +1,79 @@
+{
+    "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#admin/serviceAnnouncement/messages",
+    "@odata.count": 63,
+    "value": [
+        {
+            "startDateTime": "2025-02-12T23:30:04Z",
+            "endDateTime": "2025-05-30T07:00:00Z",
+            "lastModifiedDateTime": "2025-03-04T16:02:51.4Z",
+            "title": "Microsoft Viva Glint: Use Feature Access Management in Viva for Microsoft 365 Copilot in Glint",
+            "id": "MC1004409",
+            "category": "stayInformed",
+            "severity": "normal",
+            "tags": [
+                "Updated message",
+                "New feature",
+                "User impact",
+                "Admin impact"
+            ],
+            "isMajorChange": false,
+            "actionRequiredByDateTime": null,
+            "services": [
+                "Microsoft Viva",
+                "Microsoft Copilot (Microsoft 365)"
+            ],
+            "hasAttachments": false,
+            "viewPoint": null,
+            "details": [
+                {
+                    "name": "RoadmapIds",
+                    "value": "478655"
+                },
+                {
+                    "name": "Summary",
+                    "value": "Microsoft Viva Glint will add Microsoft 365 Copilot to Feature Access Management, allowing global and AI admins to control its rollout and availability. By default, Copilot is enabled in Viva but disabled in Viva Glint. Admins can create policies to manage access. Rollout starts late February 2025 and completes by late March 2025."
+                },
+                {
+                    "name": "Platforms",
+                    "value": "Web"
+                }
+            ],
+            "body": {
+                "contentType": "html",
+                "content": "<p>Updated March 3, 2025: We have updated the content. Thank you for your patience.</p><p>We are excited to announce that we will add the Microsoft 365 Copilot in Viva Glint feature to Feature Access"
+            }
+        },
+        {
+            "startDateTime": "2025-02-15T04:28:43Z",
+            "endDateTime": "2025-05-30T07:00:00Z",
+            "lastModifiedDateTime": "2025-02-15T04:29:14.143Z",
+            "title": "Microsoft 365 Copilot Chat in Microsoft Edge Mobile will support page summarization",
+            "id": "MC1006605",
+            "category": "stayInformed",
+            "severity": "normal",
+            "tags": [
+                "New feature",
+                "User impact",
+                "Admin impact"
+            ],
+            "isMajorChange": false,
+            "actionRequiredByDateTime": null,
+            "services": [
+                "Microsoft 365 apps",
+                "Microsoft Copilot (Microsoft 365)"
+            ],
+            "hasAttachments": false,
+            "viewPoint": null,
+            "details": [
+                {
+                    "name": "Summary",
+                    "value": "Microsoft 365 Copilot Chat in Edge Mobile for Android and iOS will re-enable page summarization features in two phases from mid-February to late March 2025. The Copilot Chat icon will be displayed by default to all Microsoft Entra ID users. No admin action is required before the rollout."
+                }
+            ],
+            "body": {
+                "contentType": "html",
+                "content": "<p>If your organization does not support mobile devices, you can safely ignore this message.\n</p><p>Microsoft 365 Copilot Chat in Edge Mobile for Android and iOS will soon re-enable page summarization features, allowing users to summarize open webpages or PDFs."
+            }
+        }
+    ]
+}

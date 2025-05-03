@@ -1,13 +1,40 @@
 {
-     "@odata.count": 10,
-        
-            "id": "example string",
-            "title": "example string",
-            "body": {
-                "content": "example string"
-            },
-            "category": "example string",
-            "severity": "example string",
-            "startDateTime": "2024-11-01T05:25:43.593Z",
-            "lastModifiedDateTime": "2024-11-01T05:25:43.593Z"
+    "@odata.count": 10,
+    "id": "example string",
+    "title": "example string",
+    "body": {
+        "content": "example string"
+    },
+    "category": "example string",
+    "severity": "example string",
+    "startDateTime": "2024-11-01T05:25:43.593Z",
+    "endDateTime": "2024-11-01T05:25:43.593Z",
+    "actionRequiredByDateTime": null,
+    "lastModifiedDateTime": "2024-11-01T05:25:43.593Z",
+    "tags": [
+        "Updated message",
+        "New feature",
+        "User impact",
+        "Admin impact"
+    ],
+    "isMajorChange": true,
+    "hasAttachments": true,
+    "details": [
+        {
+            "name": "RoadmapIds",
+            "value": "411302"
+        },
+        {
+            "name": "Summary",
+            "value": "example summary"
+        },
+        {
+            "name": "Platforms",
+            "value": "Android, Web"
+        }
+    ],
+    "services": [
+        "example service",
+        "example service2"
+    ]
 }
