@@ -52,5 +52,13 @@
         }
       ]
     }
+  ],
+  "actions": [
+    {
+      "type": "Action.OpenUrl",
+      "title": "Roadmap Details",
+      "url": "${if(details[0].name=='RoadmapIds', 'https://www.microsoft.com/en-us/microsoft-365/roadmap?searchterms=' + details[0].value, '')}",
+      "isEnabled": true
+    }
   ]
 }

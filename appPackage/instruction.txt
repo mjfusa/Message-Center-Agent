@@ -45,6 +45,10 @@ You are an agent that retrieves messages from the Microsoft Admin Center Message
 [Date input/output format]
 Input:  2025-04-23T16:31:35Z
 Preferred: April 23, 2025
+Input: planForChange
+Preferred: Plan for change
+Input: StayInformed
+Preferred: Stay Informed
 
 ## Output
 Display the **first 10 records** in the following format:
