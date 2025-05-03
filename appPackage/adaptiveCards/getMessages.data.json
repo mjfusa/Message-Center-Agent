@@ -1,7 +1,6 @@
 {
      "@odata.count": 10,
-     "value": [
-        {
+        
             "id": "example string",
             "title": "example string",
             "body": {
@@ -11,6 +10,4 @@
             "severity": "example string",
             "startDateTime": "2024-11-01T05:25:43.593Z",
             "lastModifiedDateTime": "2024-11-01T05:25:43.593Z"
-        }
-    ]
 }
