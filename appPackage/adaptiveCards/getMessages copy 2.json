@@ -26,7 +26,7 @@
                       "items": [
                         {
                           "type": "TextBlock",
-                          "text": "**Start Date Time:**",
+                          "text": "**Id:**",
                           "wrap": true
                         }
                       ],
@@ -37,61 +37,7 @@
                       "items": [
                         {
                           "type": "TextBlock",
-                          "text": "${startDateTime}",
-                          "wrap": true
-                        }
-                      ],
-                      "width": "stretch"
-                    }
-                  ]
-                },
-                {
-                  "type": "ColumnSet",
-                  "columns": [
-                    {
-                      "type": "Column",
-                      "items": [
-                        {
-                          "type": "TextBlock",
-                          "text": "**End Date Time:**",
-                          "wrap": true
-                        }
-                      ],
-                      "width": "auto"
-                    },
-                    {
-                      "type": "Column",
-                      "items": [
-                        {
-                          "type": "TextBlock",
-                          "text": "${endDateTime}",
-                          "wrap": true
-                        }
-                      ],
-                      "width": "stretch"
-                    }
-                  ]
-                },
-                {
-                  "type": "ColumnSet",
-                  "columns": [
-                    {
-                      "type": "Column",
-                      "items": [
-                        {
-                          "type": "TextBlock",
-                          "text": "**Last Modified Date Time:**",
-                          "wrap": true
-                        }
-                      ],
-                      "width": "auto"
-                    },
-                    {
-                      "type": "Column",
-                      "items": [
-                        {
-                          "type": "TextBlock",
-                          "text": "${lastModifiedDateTime}",
+                          "text": "${id}",
                           "wrap": true
                         }
                       ],
@@ -134,7 +80,7 @@
                       "items": [
                         {
                           "type": "TextBlock",
-                          "text": "**Id:**",
+                          "text": "**Message Body:**",
                           "wrap": true
                         }
                       ],
@@ -145,7 +91,7 @@
                       "items": [
                         {
                           "type": "TextBlock",
-                          "text": "${id}",
+                          "text": "${body.content}",
                           "wrap": true
                         }
                       ],
@@ -215,7 +161,7 @@
                       "items": [
                         {
                           "type": "TextBlock",
-                          "text": "**Tags:**",
+                          "text": "**Created Date:**",
                           "wrap": true
                         }
                       ],
@@ -226,7 +172,7 @@
                       "items": [
                         {
                           "type": "TextBlock",
-                          "text": "${tags}",
+                          "text": "${startDateTime}",
                           "wrap": true
                         }
                       ],
@@ -242,7 +188,7 @@
                       "items": [
                         {
                           "type": "TextBlock",
-                          "text": "**Is Major Change:**",
+                          "text": "**Created Date:**",
                           "wrap": true
                         }
                       ],
@@ -253,7 +199,7 @@
                       "items": [
                         {
                           "type": "TextBlock",
-                          "text": "${isMajorChange}",
+                          "text": "${startDateTime}",
                           "wrap": true
                         }
                       ],
@@ -269,7 +215,7 @@
                       "items": [
                         {
                           "type": "TextBlock",
-                          "text": "**Action Required By Date Time:**",
+                          "text": "**Created Date:**",
                           "wrap": true
                         }
                       ],
@@ -280,7 +226,7 @@
                       "items": [
                         {
                           "type": "TextBlock",
-                          "text": "${actionRequiredByDateTime}",
+                          "text": "${startDateTime}",
                           "wrap": true
                         }
                       ],
@@ -296,7 +242,7 @@
                       "items": [
                         {
                           "type": "TextBlock",
-                          "text": "**Services:**",
+                          "text": "**Created Date:**",
                           "wrap": true
                         }
                       ],
@@ -307,7 +253,7 @@
                       "items": [
                         {
                           "type": "TextBlock",
-                          "text": "${services}",
+                          "text": "${startDateTime}",
                           "wrap": true
                         }
                       ],
@@ -323,7 +269,7 @@
                       "items": [
                         {
                           "type": "TextBlock",
-                          "text": "**Has Attachments:**",
+                          "text": "**Created Date:**",
                           "wrap": true
                         }
                       ],
@@ -334,7 +280,7 @@
                       "items": [
                         {
                           "type": "TextBlock",
-                          "text": "${hasAttachments}",
+                          "text": "${startDateTime}",
                           "wrap": true
                         }
                       ],
@@ -350,7 +296,7 @@
                       "items": [
                         {
                           "type": "TextBlock",
-                          "text": "**View Point:**",
+                          "text": "**Created Date:**",
                           "wrap": true
                         }
                       ],
@@ -361,88 +307,7 @@
                       "items": [
                         {
                           "type": "TextBlock",
-                          "text": "${viewPoint}",
-                          "wrap": true
-                        }
-                      ],
-                      "width": "stretch"
-                    }
-                  ]
-                },
-                {
-                  "type": "ColumnSet",
-                  "columns": [
-                    {
-                      "type": "Column",
-                      "items": [
-                        {
-                          "type": "TextBlock",
-                          "text": "**Details:**",
-                          "wrap": true
-                        }
-                      ],
-                      "width": "auto"
-                    },
-                    {
-                      "type": "Column",
-                      "items": [
-                        {
-                          "type": "TextBlock",
-                          "text": "${details}",
-                          "wrap": true
-                        }
-                      ],
-                      "width": "stretch"
-                    }
-                  ]
-                },
-                {
-                  "type": "ColumnSet",
-                  "columns": [
-                    {
-                      "type": "Column",
-                      "items": [
-                        {
-                          "type": "TextBlock",
-                          "text": "**Name:**",
-                          "wrap": true
-                        }
-                      ],
-                      "width": "auto"
-                    },
-                    {
-                      "type": "Column",
-                      "items": [
-                        {
-                          "type": "TextBlock",
-                          "text": "${name}",
-                          "wrap": true
-                        }
-                      ],
-                      "width": "stretch"
-                    }
-                  ]
-                },
-                {
-                  "type": "ColumnSet",
-                  "columns": [
-                    {
-                      "type": "Column",
-                      "items": [
-                        {
-                          "type": "TextBlock",
-                          "text": "**Content Type:**",
-                          "wrap": true
-                        }
-                      ],
-                      "width": "auto"
-                    },
-                    {
-                      "type": "Column",
-                      "items": [
-                        {
-                          "type": "TextBlock",
-                          "text": "${contentType}",
+                          "text": "${startDateTime}",
                           "wrap": true
                         }
                       ],
