@@ -6,7 +6,7 @@
         "content": "example string"
     },
     "category": "example string",
-    "severity": "example string",
+    "severity": "normal",
     "startDateTime": "2024-11-01T05:25:43.593Z",
     "endDateTime": "2024-11-01T05:25:43.593Z",
     "actionRequiredByDateTime": null,
