@@ -4,12 +4,16 @@
   "version": "1.4",
   "body": [
     {
+      "type": "TextBlock",
+      "text": "${id} : ${title}",
+      "size": "large",
+      "weight": "bolder",
+      "wrap": true,
+      "color": "${if(severity=='critical', 'attention',if(severity=='high', 'warning','accent'))}"
+    },
+    {
       "type": "FactSet",
       "facts": [
-        {
-          "title": "Title:",
-          "value": "${title}"
-        },
         {
           "title": "Category:",
           "value": "${category}"
@@ -20,19 +24,19 @@
         },
         {
           "title": "Start Date:",
-          "value": "${startDateTime}"
+          "value": "${formatDateTime(startDateTime,'MMMM dd, yyyy')}"
         },
         {
           "title": "End Date:",
-          "value": "${endDateTime}"
+          "value": "${formatDateTime(endDateTime,'MMMM dd, yyyy')}"
         },
         {
           "title": "Action Required By:",
-          "value": "${if(actionRequiredByDateTime,  actionRequiredByDateTime, 'No action required')}"
+          "value": "${if(actionRequiredByDateTime,  formatDateTime(actionRequiredByDateTime,'MMMM dd, yyyy'), 'No action required')}"
         },
         {
           "title": "Last Modified:",
-          "value": "${lastModifiedDateTime}"
+          "value": "${formatDateTime(lastModifiedDateTime,'MMMM dd, yyyy')}"
         },
         {
           "title": "Major Change:",
@@ -43,7 +47,7 @@
           "value": "${if(hasAttachments, 'Yes', 'No')}"
         },
         {
-          "title": "Roadmap IDs:",
+          "title": "Roadmap ID:",
           "value": "${if(details[0].name=='RoadmapIds',  details[0].value,'')}"
         },
         {
@@ -58,7 +62,8 @@
       "type": "Action.OpenUrl",
       "title": "Roadmap Details",
       "url": "${if(details[0].name=='RoadmapIds', 'https://www.microsoft.com/en-us/microsoft-365/roadmap?searchterms=' + details[0].value, '')}",
-      "isEnabled": true
+      "isEnabled": "${if(equals(details[0].name, 'RoadmapIds'), true, false)}"
+
     }
   ]
 }

@@ -102,10 +102,20 @@
                             "type": "string"
                           },
                           "category": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                              "stayInformed",
+                              "planForChange",
+                              "preventOrFixIssue"
+                            ]
                           },
                           "severity": {
-                            "type": "string"
+                            "type": "string",
+                            "enum": [
+                              "normal",
+                              "high",
+                              "critical"
+                            ]
                           },
                           "startDateTime": {
                             "type": "string",
