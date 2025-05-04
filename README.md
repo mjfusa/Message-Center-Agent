@@ -114,17 +114,17 @@ The 'Provision' step deploys the agent privately to you for testing purposes. St
 
 ### Starter Prompts
 Here are some prompts to get you started with the Message Center Agent:
-```C#
-Find all message center updates related to Microsoft 365 Copilot created in the last 30 days.
 
-Show me all messages with 'security update' in the title. 
+`Find all message center updates related to Microsoft 365 Copilot created in the last 30 days.`
 
-Find all messages with 'Copilot' in the title that were created after March 1, 2025 that are Major Change messages.
+`Show me all messages with 'security update' in the message body.`
 
-Find all messages regarding Microsoft Teams that are 'stay informed' messages published in the last two weeks.
+`Find all messages with 'Copilot' in the title that were created after March 1, 2025 that are Major Change messages.`
 
-Draft an email about Microsoft Teams updates that are 'Plan for Change' messages published in the last two weeks.
-```
+`Find all messages regarding Microsoft Teams that are 'stay informed' messages published in the last two weeks.`
+
+`Draft an email about Microsoft Teams updates that are 'Plan for Change' messages published in the last two weeks.`
+
 ### Key Files 
 The following files are key to the implementation of the declarative agent:
 
