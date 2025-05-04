@@ -3,6 +3,8 @@
 ## Overview
  The M365 Copilot Message Center Agent allows you to search the **Microsoft 365 Admin Center** messages with Copilot chat using natural language prompts.
 
+ ![Message Center Agent Starter Prompts](./Images/starterprompts.png)
+
 ## M365 Message Center Agent Use Cases
 Not only can you search for messages, but you can also use the power of generative AI to summarize them and draft internal communications. Here are some examples of what you can do:
 - **Search for messages**: Find specific messages in the Microsoft 365 Admin Center message center. Search by keywords, date ranges, and message types. Search is case-insensitive. Search by message Title (default) or message body.
@@ -28,6 +30,15 @@ Not only can you search for messages, but you can also use the power of generati
 ## Architecture
 ### Zero Code
 The declarative agent is built using the Microsoft Teams Toolkit for Visual Studio Code. It leverages the Microsoft Graph API to interact with the Microsoft 365 Admin Center and retrieve messages. Authentication is handled using OAuth2.0, and the agent is designed to work seamlessly with Microsoft 365 Copilot. The declarative agent is a zero-code solution, meaning you don't need to write any code to set it up or use it. The agent is designed to be easy to setup and requires no coding experience.
+
+## Example Output
+
+![Message displayed with adaptive card](./Images/MessageWithAdaptiveCard.png)
+If the results include one message - the adaptive card is displayed.
+
+![Draft an email informing team of major changed coming to M365 Copilot](./Images/Citation%20with%20Adaptive%20Card.png)
+Here we are drafting an email to inform the team about major changes coming to M365 Copilot. Note that citations are included, and their content will be displayed when hovered over.
+
 
 ## Authentication and Graph API Permissions
 
