@@ -29,10 +29,10 @@
     },
     {
       "title": "Get Critical Updates",
-      "text": "Show Critical messages."
+      "text": "Show critical messages."
     },
     {
-      "title": "Search by Title and Date",
+      "title": "Search by Date",
       "text": "Find all related to 'Copilot' that were created after March 1, 2025."
     }
   ]
