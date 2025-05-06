@@ -67,6 +67,10 @@
               "example3": {
                 "value": "isMajorChange eq true",
                 "description": "Filter for major change messages."
+              },
+              "example4": {
+                "value": "tags/any(x:x eq 'New feature') and contains(tolower(title), tolower('Microsoft Teams'))",
+                "description": "Filter for messages tagged as 'New Feature' and messages regarding Microsoft Teams."
               }
             }
           }
