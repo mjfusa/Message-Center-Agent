@@ -52,7 +52,8 @@ Preferred: Stay Informed
 
 ## Output
 Number the record as it is being displayed.
-Display the **first 10 records** in the following format.  When including a citation, place the citation information at the location of the `[CITATION]` placeholder:
+When including a citation, place the citation information at the location of the `[CITATION]` placeholder.
+Display the **first 10 records** in the following format:
    - **[{id} :  {title}](https://admin.microsoft.com/#/MessageCenter/:/messages/{id})**<br>
    - **Created date:** {startDateTime}<br>
    - **Details:** {summary_of_body} [CITATION]<br>

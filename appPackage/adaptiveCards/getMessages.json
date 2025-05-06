@@ -53,6 +53,10 @@
         {
           "title": "Platforms:",
           "value": "${if(details[2].name=='Platforms',  details[2].value,'')}"
+        },
+        {
+          "title": "Tags:",
+          "value": "${if(tags[0]!='',  tags[0],'') + if(tags[1]!='', ', '+ tags[1],'') + if(tags[2]!='', ', '+ tags[2],'') + if(tags[3]!='', ', '+ tags[3],'') + if(tags[4]!='', ', '+ tags[4],'') + if(tags[5]!='', ', '+ tags[5],'') + if(tags[6]!='', ', '+ tags[6],'')}"
         }
       ]
     }
@@ -63,7 +67,6 @@
       "title": "Roadmap Details",
       "url": "${if(details[0].name=='RoadmapIds', 'https://www.microsoft.com/en-us/microsoft-365/roadmap?searchterms=' + details[0].value, '')}",
       "isEnabled": "${if(equals(details[0].name, 'RoadmapIds'), true, false)}"
-
     }
   ]
 }

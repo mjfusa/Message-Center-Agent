@@ -125,6 +125,10 @@ Here are some prompts to get you started with the Message Center Agent:
 
 `Draft an email about Microsoft Teams updates that are 'Plan for Change' messages published in the last two weeks.`
 
+`Show messages tagged as 'New feature'` 
+
+>Possible (Case sensitive) tag values: Updated message, New feature, User impact, Admin impact, Retirement
+
 ### Key Files 
 The following files are key to the implementation of the declarative agent:
 
