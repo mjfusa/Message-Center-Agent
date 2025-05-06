@@ -20,12 +20,12 @@
       "text": "Show messages with 'security update' in the message body."
     },
     {
-      "title": "Inform the team regarding upcoming changes in Microsoft 365 Copilot",
-      "text": "Draft an email to the team regarding the upcoming major changes in Microsoft 365 Copilot. Look for the messages published in the last two weeks."
+      "title": "Inform the team regarding upcoming major changes in Microsoft 365 Copilot",
+      "text": "Draft an email to the team regarding the upcoming major changes in Microsoft 365 Copilot. Look for the messages published in the last month."
     },
     {
-      "title": "Major Change Messages",
-      "text": "Find all Major Change messages published in the last 72 hours."
+      "title": "Find messages tagged as User impact",
+      "text": "Find messages tagged as User impact with Copilot in the title published after April 4, 2025."
     },
     {
       "title": "Get Critical Updates",
