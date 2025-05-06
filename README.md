@@ -121,9 +121,11 @@ Here are some prompts to get you started with the Message Center Agent:
 
 `Find all messages with 'Copilot' in the title that were created after March 1, 2025 that are Major Change messages.`
 
-`Find all messages regarding Microsoft Teams that are 'stay informed' messages published in the last two weeks.`
+`Draft an email informing the team about Microsoft Teams updates that are 'Plan for Change' messages published in the last month.`
 
-`Draft an email about Microsoft Teams updates that are 'Plan for Change' messages published in the last two weeks.`
+`Find messages tagged as User impact with Copilot in the title published after April 4`
+
+>Possible (Case sensitive) tag values: Updated message, New feature, User impact, Admin impact, Retirement
 
 `Show messages tagged as 'New feature'` 
 
