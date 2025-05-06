@@ -119,15 +119,13 @@ Here are some prompts to get you started with the Message Center Agent:
 
 `Show me all messages with 'security update' in the message body.`
 
+`Show all critical messages`
+
 `Find all messages with 'Copilot' in the title that were created after March 1, 2025 that are Major Change messages.`
 
 `Draft an email informing the team about Microsoft Teams updates that are 'Plan for Change' messages published in the last month.`
 
 `Find messages tagged as User impact with Copilot in the title published after April 4`
-
->Possible (Case sensitive) tag values: Updated message, New feature, User impact, Admin impact, Retirement
-
-`Show messages tagged as 'New feature'` 
 
 >Possible (Case sensitive) tag values: Updated message, New feature, User impact, Admin impact, Retirement
 
