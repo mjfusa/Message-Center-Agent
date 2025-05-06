@@ -34,5 +34,8 @@
         "identity",
         "messageTeamMembers"
     ],
-    "validDomains": []
+    "validDomains": [
+        "teams.microsoft.com",
+        "graph.microsoft.com"
+    ]
 }
