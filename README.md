@@ -125,6 +125,8 @@ Here are some prompts to get you started with the Message Center Agent:
 
 `Find messages tagged as User impact with Copilot in the title published after April 4`
 
+>Possible (Case sensitive) tag values: Updated message, New feature, User impact, Admin impact, Retirement
+
 ### Key Files 
 The following files are key to the implementation of the declarative agent:
 
