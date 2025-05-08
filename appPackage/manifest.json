@@ -1,7 +1,7 @@
 {
     "$schema": "https://developer.microsoft.com/json-schemas/teams/v1.19/MicrosoftTeams.schema.json",
     "manifestVersion": "1.19",
-    "version": "1.0.9",
+    "version": "1.1.1",
     "id": "${{TEAMS_APP_ID}}",
     "developer": {
         "name": "Teams App, Inc.",
@@ -18,8 +18,8 @@
         "full": "Message Center Agent${{APP_NAME_SUFFIX}}"
     },
     "description": {
-        "short": "Read messages from Microsoft Admin Center Message center.",
-        "full": "Read messages from Microsoft Admin Center Message center. This agent can read messages from Microsoft Admin Center Message center and provide information to users in Microsoft 365 Copilot. Use this M365 Copilot agent to help you summarize messages, prepare internal communications, obtain insights, find alternatives for deprecated features, receive recommended actions, and other generative AI use cases."
+        "short": "Use AI to search Microsoft 365 Admin Center messages with natural language",
+        "full": "Keep up with the latest Microsoft 365 Admin Center messages using AI. Search for messages using natural language and use generative AI to summarize and create comms to keep your organization informed regarding changes in Microsoft 365."
     },
     "accentColor": "#FFFFFF",
     "copilotAgents": {
@@ -36,6 +36,7 @@
     ],
     "validDomains": [
         "teams.microsoft.com",
-        "graph.microsoft.com"
+        "graph.microsoft.com",
+        "M365CPI19787536.onmicrosoft.com"
     ]
 }
