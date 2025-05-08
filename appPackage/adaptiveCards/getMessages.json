@@ -57,6 +57,10 @@
         {
           "title": "Tags:",
           "value": "${if(tags[0]!='',  tags[0],'') + if(tags[1]!='', ', '+ tags[1],'') + if(tags[2]!='', ', '+ tags[2],'') + if(tags[3]!='', ', '+ tags[3],'') + if(tags[4]!='', ', '+ tags[4],'') + if(tags[5]!='', ', '+ tags[5],'') + if(tags[6]!='', ', '+ tags[6],'')}"
+        },
+        {
+          "title": "Services:",
+          "value": "${if(services[0]!='',  services[0],'') + if(services[1]!='', ', '+ services[1],'') + if(services[2]!='', ', '+ services[2],'') + if(services[3]!='', ', '+ services[3],'') + if(services[4]!='', ', '+ services[4],'') + if(services[5]!='', ', '+ services[5],'') + if(services[6]!='', ', '+ services[6],'')}"
         }
       ]
     }
