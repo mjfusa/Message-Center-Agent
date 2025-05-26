@@ -21,10 +21,20 @@
             "name": "$count",
             "in": "query",
             "description": "Total number of records returned",
-            "required": false,
+            "required": true,
             "schema": {
               "type": "boolean",
               "default": true
+            }
+          },
+          {
+            "name": "Prefer",
+            "in": "header",
+            "description": "Specifies the maximum number of items to return in a result set",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "odata.maxpagesize=10"
             }
           },
           {
