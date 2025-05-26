@@ -2,7 +2,7 @@ name: Deploy Message Center Agent
 
 on:
   push:
-    branches: [ deploy ]
+    branches: [ main ]
   workflow_dispatch: # Allows manual triggering
 
 permissions:
@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
           
       - name: Package app
         run: |
@@ -41,14 +41,13 @@ jobs:
           - Ensure your account has appropriate Microsoft Graph permissions for message center access
           EOF
           
-      - name: Upload deployment package
-        uses: actions/upload-artifact@v2
+      - uses: actions/upload-artifact@main
         with:
           name: message-center-agent
           path: |
             message-center-agent.zip
             DEPLOYMENT.md
-          retention-days: 30  # Specify how long to keep the artifacts
+          retention-days: 30
           
       - name: Output Deployment Details
         run: |
