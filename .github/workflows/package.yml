@@ -42,12 +42,13 @@ jobs:
           EOF
           
       - name: Upload deployment package
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
           name: message-center-agent
           path: |
             message-center-agent.zip
             DEPLOYMENT.md
+          retention-days: 30  # Specify how long to keep the artifacts
           
       - name: Output Deployment Details
         run: |
