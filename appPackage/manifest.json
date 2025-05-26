@@ -35,8 +35,10 @@
         "messageTeamMembers"
     ],
     "validDomains": [
-        "teams.microsoft.com",
-        "graph.microsoft.com",
-        "M365CPI19787536.onmicrosoft.com"
-    ]
+        "teams.microsoft.com"
+    ],
+    "webApplicationInfo": {
+        "id": "${{AZURE_CLIENT_ID}}",
+        "resource": "api://${{AZURE_CLIENT_ID}}"
+    }
 }
