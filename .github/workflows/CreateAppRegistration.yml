@@ -6,7 +6,7 @@ on:
       displayName:
         description: 'App registration display name'
         required: true
-        default: 'AppAdminCenterMessages'
+        default: 'MessageCenterAgent-reg'
       environment:
         description: 'Environment to deploy to'
         required: true
