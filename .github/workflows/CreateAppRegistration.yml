@@ -166,7 +166,7 @@ jobs:
           echo "Key Vault: $VAULT_NAME" >> app_info.txt
             
       - name: Upload app info as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@main
         with:
           name: app-registration-info
           path: app_info.txt
