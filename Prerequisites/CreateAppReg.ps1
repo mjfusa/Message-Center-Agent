@@ -24,10 +24,6 @@ $graphApiId = '00000003-0000-0000-c000-000000000000'
 
 $web = @{
     redirectUris = @("https://teams.microsoft.com/api/platform/v1.0/oAuthRedirect")
-    implicitGrantSettings = @{
-        enableAccessTokenIssuance = $true
-        enableIdTokenIssuance = $true
-    }
 }
 
 # Create a new application

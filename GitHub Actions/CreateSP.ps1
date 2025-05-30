@@ -14,4 +14,4 @@ az ad app permission add --id $sp_appId --api 00000003-0000-0000-c000-0000000000
 az ad app permission grant --id $sp_appId --api 00000003-0000-0000-c000-000000000000   --scope Role
 
 # read permissions
-$sp_output
+$sp_output | ConvertTo-Json -Depth 10 
