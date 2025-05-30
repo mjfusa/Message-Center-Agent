@@ -23,7 +23,7 @@ jobs:
           npm install @microsoft/m365agentstoolkit-cli@${{env.TEAMSAPP_CLI_VERSION}}
       
       - name: Deploy to Teams
-        run: npx atk deploy --env prod --ignore-env-file true --interactive false
+        run: npx atk deploy --env prod --interactive false
         env:
           TEAMS_APP_ID: ${{ secrets.TEAMS_APP_ID }}
           M365_CLIENT_ID: ${{ secrets.M365_CLIENT_ID }}
