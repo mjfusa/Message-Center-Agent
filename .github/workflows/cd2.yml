@@ -8,6 +8,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    env:
+      TEAMSAPP_CLI_VERSION: "1.0.0"
     steps:
       - uses: actions/checkout@v3
       
@@ -16,11 +18,12 @@ jobs:
         with:
           node-version: '18'
       
-      - name: Install Teams Toolkit
-        run: npm install -g @microsoft/teamsfx-cli
+      - name: install cli
+        run: |
+          npm install @microsoft/m365agentstoolkit-cli@${{env.TEAMSAPP_CLI_VERSION}}
       
       - name: Deploy to Teams
-        run: teamsapp deploy --env prod --ignore-env-file
+        run: npx atk deploy --env prod --ignore-env-file true --interactive false
         env:
           TEAMS_APP_ID: ${{ secrets.TEAMS_APP_ID }}
           M365_CLIENT_ID: ${{ secrets.M365_CLIENT_ID }}
