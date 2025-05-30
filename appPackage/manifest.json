@@ -36,9 +36,5 @@
     ],
     "validDomains": [
         "teams.microsoft.com"
-    ],
-    "webApplicationInfo": {
-        "id": "${{AZURE_CLIENT_ID}}",
-        "resource": "api://${{AZURE_CLIENT_ID}}"
-    }
+    ]
 }
