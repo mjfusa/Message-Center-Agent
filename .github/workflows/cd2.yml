@@ -20,7 +20,7 @@ jobs:
         run: npm install -g @microsoft/teamsfx-cli
       
       - name: Deploy to Teams
-        run: teamsapp deploy --env prod --ignore-env-file
+        run: teamsapp deploy --env prod 
         env:
           TEAMS_APP_ID: ${{ secrets.TEAMS_APP_ID }}
           M365_CLIENT_ID: ${{ secrets.M365_CLIENT_ID }}
