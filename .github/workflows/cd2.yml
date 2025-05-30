@@ -1,0 +1,29 @@
+name: Deploy Agent 2
+
+on:
+  #push:
+  #  branches: [ main ]
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      
+      - name: Install Teams Toolkit
+        run: npm install -g @microsoft/teamsfx-cli
+      
+      - name: Deploy to Teams
+        run: teamsapp deploy --env prod --ignore-env-file
+        env:
+          TEAMS_APP_ID: ${{ secrets.TEAMS_APP_ID }}
+          M365_CLIENT_ID: ${{ secrets.M365_CLIENT_ID }}
+          M365_CLIENT_SECRET: ${{ secrets.M365_CLIENT_SECRET }}
+          M365_TENANT_ID: ${{ secrets.M365_TENANT_ID }}
+          TEAMSFX_ENV: prod
