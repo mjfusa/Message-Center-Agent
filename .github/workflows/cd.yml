@@ -1,8 +1,8 @@
 name: Deploy Agent
 
 on:
-  push:
-      branches: [ main ]
+  #push:
+      #branches: [ deploy ] # Trigger on push to the deploy branch
   workflow_dispatch: # Allows manual triggering  
 
 jobs:
@@ -35,12 +35,14 @@ jobs:
 
       - name: Deploy to hosting environment
         run: |
-          npx atk deploy --ignore-env-file true \
+          # npx atk deploy
+          npx atk provision --ignore-env-file true \
           --interactive false
 
       - name: Package app
         run: |
-          npx atk package
+          # npx atk package
+          npx atk publish
 
       - name: upload appPackage
         uses: actions/upload-artifact@v4
