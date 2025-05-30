@@ -1,8 +1,8 @@
 name: Deploy Agent
 
 on:
-  push:
-      branches: [ main ]
+  #push:
+      #branches: [ deploy ] # Trigger on push to the deploy branch
   workflow_dispatch: # Allows manual triggering  
 
 jobs:
