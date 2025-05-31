@@ -21,6 +21,18 @@ jobs:
       - name: install cli
         run: |
           npm install @microsoft/m365agentstoolkit-cli@${{env.TEAMSAPP_CLI_VERSION}}
+
+      - name: Parse configuration secrets
+        run: |
+          CONFIG_BLOCK="${{ secrets.COPILOT_AGENT_ENV }}"
+          while IFS= read -r line; do
+            if [[ ! -z "$line" ]]; then
+              key=$(echo "$line" | cut -d'=' -f1)
+              value=$(echo "$line" | cut -d'=' -f2-)
+              echo "$key=$value" >> $GITHUB_ENV
+              echo "Setting $key from config block"
+            fi
+          done <<< "$CONFIG_BLOCK"          
       
       - name: Deploy to Teams
         run: npx atk deploy --env prod --interactive false
