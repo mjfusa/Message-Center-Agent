@@ -41,4 +41,4 @@ jobs:
           M365_CLIENT_ID: ${{ env.M365_CLIENT_ID }}
           M365_CLIENT_SECRET: ${{ env.M365_CLIENT_SECRET }}
           M365_TENANT_ID: ${{ env.M365_TENANT_ID }}
-          TEAMSFX_ENV: prod
+          TEAMSFX_ENV: ${{ env.TEAMSFX_ENV }}
