@@ -37,7 +37,7 @@ jobs:
       - name: Deploy to Teams
 #        run: npx atk deploy --ignore-env-file true --interactive false
         #run: npx atk deploy --env prod --ignore-env-file true --interactive false
-        run: npx atk deploy --ignore-env-file true --interactive false
+        run: npx atk deploy --env development --ignore-env-file true --interactive false
         env:
           TEAMS_APP_ID: ${{ env.TEAMS_APP_ID }}
           M365_CLIENT_ID: ${{ env.M365_CLIENT_ID }}
