@@ -12,6 +12,16 @@ jobs:
       TEAMSAPP_CLI_VERSION: "1.0.0"
     steps:
       - uses: actions/checkout@v3
+      - name: Set release type variable
+        id: set_release_type
+        run: |
+          if [[ "${GITHUB_REF}" == refs/tags/* ]]; then
+            echo "RELEASE_TYPE=prod" >> $GITHUB_ENV
+          else
+            echo "RELEASE_TYPE=dev" >> $GITHUB_ENV
+          fi
+      - name: Show release type
+        run: echo "Release type is $RELEASE_TYPE"      
       
       - name: Setup Node.js
         uses: actions/setup-node@v3
@@ -37,7 +47,8 @@ jobs:
       - name: Deploy to Teams
 #        run: npx atk deploy --ignore-env-file true --interactive false
         #run: npx atk deploy --env prod --ignore-env-file true --interactive false
-        run: npx atk deploy --ignore-env-file true --interactive false
+        # conditionally 
+        run: npx atk deploy --env $env.RELEASE_TYPE --ignore-env-file true --interactive false
         env:
           TEAMS_APP_ID: ${{ env.TEAMS_APP_ID }}
           M365_CLIENT_ID: ${{ env.M365_CLIENT_ID }}
