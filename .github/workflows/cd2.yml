@@ -35,10 +35,10 @@ jobs:
           done <<< "$CONFIG_BLOCK"          
       
       - name: Deploy to Teams
-        run: npx atk deploy --env prod --interactive false
+        run: npx atk deploy --ignore-env-file true --interactive false
         env:
-          TEAMS_APP_ID: ${{ secrets.TEAMS_APP_ID }}
-          M365_CLIENT_ID: ${{ secrets.M365_CLIENT_ID }}
-          M365_CLIENT_SECRET: ${{ secrets.M365_CLIENT_SECRET }}
-          M365_TENANT_ID: ${{ secrets.M365_TENANT_ID }}
+          TEAMS_APP_ID: ${{ env.TEAMS_APP_ID }}
+          M365_CLIENT_ID: ${{ env.M365_CLIENT_ID }}
+          M365_CLIENT_SECRET: ${{ env.M365_CLIENT_SECRET }}
+          M365_TENANT_ID: ${{ env.M365_TENANT_ID }}
           TEAMSFX_ENV: prod
