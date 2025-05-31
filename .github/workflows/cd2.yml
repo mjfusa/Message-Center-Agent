@@ -32,6 +32,14 @@ jobs:
         run: |
           npm install @microsoft/m365agentstoolkit-cli@${{env.TEAMSAPP_CLI_VERSION}}
 
+      - name: Login Azure by service principal
+        run: |
+          npx atk auth login azure --username ${{vars.AZURE_SERVICE_PRINCIPAL_CLIENT_ID}}  \
+          --service-principal true \
+          --tenant ${{vars.AZURE_TENANT_ID}} \
+          --password ${{secrets.AZURE_SERVICE_PRINCIPAL_CLIENT_SECRET }} \
+          --interactive false
+
       - name: Parse configuration secrets
         run: |
           CONFIG_BLOCK="${{ secrets.COPILOT_AGENT_ENV }}"
@@ -45,7 +53,13 @@ jobs:
           done <<< "$CONFIG_BLOCK"          
       
       - name: Deploy to Teams
-#        run: npx atk deploy --ignore-env-file true --interactive false
+        env:
+          M365_CLIENT_ID: ${{ secrets.M365_CLIENT_ID }}
+          M365_CLIENT_SECRET: ${{ secrets.M365_CLIENT_SECRET }}
+          M365_TENANT_ID: ${{ env.M365_TENANT_ID }}
+          TEAMSFX_ENV: ${{ env.TEAMSFX_ENV }}
+          CI_ENABLED: 'true'
+      #        run: npx atk deploy --ignore-env-file true --interactive false
         #run: npx atk deploy --env prod --ignore-env-file true --interactive false
         if: ${{ env.RELEASE_TYPE == 'dev' }}
         run: npx atk deploy --env dev --ignore-env-file true --interactive false
@@ -54,8 +68,4 @@ jobs:
         if: ${{ env.RELEASE_TYPE == 'prod' }}
         #run: npx atk publish --env prod --ignore-env-file true --interactive false
         run: npx atk deploy --env prod --ignore-env-file true --interactive false
-        env:
-          M365_CLIENT_ID: ${{ secrets.M365_CLIENT_ID }}
-          M365_CLIENT_SECRET: ${{ secrets.M365_CLIENT_SECRET }}
-          M365_TENANT_ID: ${{ env.M365_TENANT_ID }}
-          TEAMSFX_ENV: ${{ env.TEAMSFX_ENV }}
+        
