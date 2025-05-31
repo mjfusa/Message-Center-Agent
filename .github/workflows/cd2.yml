@@ -47,11 +47,15 @@ jobs:
       - name: Deploy to Teams
 #        run: npx atk deploy --ignore-env-file true --interactive false
         #run: npx atk deploy --env prod --ignore-env-file true --interactive false
-        # conditionally 
-        run: npx atk deploy --env $env.RELEASE_TYPE --ignore-env-file true --interactive false
         env:
-          TEAMS_APP_ID: ${{ env.TEAMS_APP_ID }}
-          M365_CLIENT_ID: ${{ env.M365_CLIENT_ID }}
-          M365_CLIENT_SECRET: ${{ env.M365_CLIENT_SECRET }}
-          M365_TENANT_ID: ${{ env.M365_TENANT_ID }}
-          TEAMSFX_ENV: ${{ env.TEAMSFX_ENV }}
+          TEAMS_APP_ID: ${{ secrets.TEAMS_APP_ID }}
+          M365_CLIENT_ID: ${{ secrets.M365_CLIENT_ID }}
+          M365_CLIENT_SECRET: ${{ secrets.M365_CLIENT_SECRET }}
+          M365_TENANT_ID: ${{ secrets.M365_TENANT_ID }}
+          TEAMSFX_ENV: ${{ secrets.TEAMSFX_ENV }}
+        if: ${{ env.RELEASE_TYPE == 'dev' }}
+        run: npx atk deploy --env dev --ignore-env-file true --interactive false
+        # if the release type is prod, use atk publish
+      - name: Publish to Teams
+        if: ${{ env.RELEASE_TYPE == 'prod' }}
+        run: npx atk publish --env prod --ignore-env-file true --interactive false
