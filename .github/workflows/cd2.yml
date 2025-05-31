@@ -53,7 +53,7 @@ jobs:
       - name: Publish to Teams
         if: ${{ env.RELEASE_TYPE == 'prod' }}
         #run: npx atk publish --env prod --ignore-env-file true --interactive false
-        run: npx atk deploy --env prod --ignore-env-file true 
+        run: npx atk deploy --env prod --ignore-env-file true --interactive false
         env:
           M365_CLIENT_ID: ${{ secrets.M365_CLIENT_ID }}
           M365_CLIENT_SECRET: ${{ secrets.M365_CLIENT_SECRET }}
