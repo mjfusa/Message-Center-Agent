@@ -1,0 +1,40 @@
+version: 1.0.0
+projectId: 1bdc0422-b7fe-40b4-abf5-cfed3fb395ed
+provision:
+  - uses: agent/register
+    with:
+      name: Message Center Agent${{APP_NAME_SUFFIX}}
+      description: "Keep up with the latest Microsoft 365 Admin Center messages using AI"
+      instructions: ./appPackage/instruction.md
+      agentIconPath: ./appPackage/color.png
+      capabilities: ./appPackage/ai-plugin.json
+      manifestPath: ./appPackage/manifest.json
+    writeToEnvironmentFile:
+      agentId: AGENT_ID
+      endpoint: AGENT_ENDPOINT
+
+  - uses: oauth/register
+    with:
+      name: Message Center Agent OAuth
+      appId: ${{TEAMS_APP_ID}}
+      apiSpecPath: ./appPackage/apiSpecificationFile/openapi.json
+    writeToEnvironmentFile:
+      configurationId: OAUTH2_REGISTRATION_ID
+
+package:
+  - uses: agent/package
+    with:
+      outputZipPath: ./appPackage/build/appPackage.zip
+      manifestPath: ./appPackage/manifest.json
+      instructionsPath: ./appPackage/instruction.md
+      iconPath: ./appPackage/color.png
+      capabilities: ./appPackage/ai-plugin.json
+
+deploy:
+  - uses: agent/deploy
+    with:
+      agentId: ${{AGENT_ID}}
+      manifestPath: ./appPackage/manifest.json
+      instructionsPath: ./appPackage/instruction.md
+      iconPath: ./appPackage/color.png
+      capabilities: ./appPackage/ai-plugin.json

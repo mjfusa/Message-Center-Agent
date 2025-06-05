@@ -14,8 +14,8 @@
         "outline": "outline.png"
     },
     "name": {
-        "short": "Message Center Agent${{APP_NAME_SUFFIX}}",
-        "full": "Message Center Agent${{APP_NAME_SUFFIX}}"
+        "short": "Message Center Agent",
+        "full": "Message Center Agent"
     },
     "description": {
         "short": "Use AI to search Microsoft 365 Admin Center messages with natural language",
@@ -36,9 +36,5 @@
     ],
     "validDomains": [
         "teams.microsoft.com"
-    ],
-    "webApplicationInfo": {
-        "id": "${{AZURE_CLIENT_ID}}",
-        "resource": "api://${{AZURE_CLIENT_ID}}"
-    }
+    ]
 }
