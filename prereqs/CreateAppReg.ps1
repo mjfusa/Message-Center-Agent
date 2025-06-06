@@ -1,8 +1,34 @@
 # Increase JSON conversion depth for this session
 $PSDefaultParameterValues['ConvertTo-Json:Depth'] = 10
 
+# Check if Microsoft.Graph.Applications module is installed
+$moduleName = "Microsoft.Graph.Applications"
+$module = Get-Module -ListAvailable -Name $moduleName -ErrorAction SilentlyContinue
+
+if (-not $module) {
+    Write-Host "Required module '$moduleName' is not installed. Installing now..." -ForegroundColor Yellow
+    try {
+        Install-Module -Name $moduleName -Scope CurrentUser -Force -AllowClobber -ErrorAction Stop
+        Write-Host "Successfully installed module '$moduleName'." -ForegroundColor Green
+    }
+    catch {
+        Write-Error "Failed to install module '$moduleName': $_"
+        Exit 1
+    }
+}
+else {
+    Write-Host "Module '$moduleName' is already installed." -ForegroundColor Green
+}
+
 # Connect to Entra with required scopes
-Connect-Entra -Scopes 'Application.ReadWrite.All', 'DelegatedPermissionGrant.ReadWrite.All' -NoWelcome
+try {
+    Connect-Entra -Scopes 'Application.ReadWrite.All', 'DelegatedPermissionGrant.ReadWrite.All' -NoWelcome -ErrorAction Stop
+}
+catch {
+    Write-Error "Failed to connect to Entra: $_"
+    Write-Host "Make sure you have the Microsoft.Graph.Applications module and you are authorized to create app registrations." -ForegroundColor Yellow
+    Exit 1
+}
 # Define application name and redirect URI
 $appName = "MessageCenterAgent-reg"
 $redirectUri = 'https://teams.microsoft.com/api/platform/v1.0/oAuthRedirect'
