@@ -16,5 +16,6 @@ env/.env.production
 env/.env.production.user
 env/.env.dev
 env/.env.dev.user
+out/
 
 
