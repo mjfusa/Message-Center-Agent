@@ -116,7 +116,7 @@ If you want to modify the M365 Copilot Message Center Agent, you can do so by fo
 
 The M365 Agents Toolkit for Visual Studio Code streamlines app registration and deployment to Microsoft Teams. It automates OAuth2.0 setup, securely manages client credentials, and eliminates the need to handle infrastructure, letting you focus on app development.
 
-1. Rename the file `.env.production.sample` to `.env.production` in the root folder of the repository. This file contains will be populated with environment variables for the project for production release, including the client ID and OAuth2 authentication information.
+1. Rename the file `.env.production.sample` to `.env.production` in the `env` folder of the project. This file will be populated with environment variables for the project for production release, including the client ID and OAuth2 authentication id.
 1. Using the M365 Agents Toolkit, in the LIFECYCLE section, select 'Provision'.
 3. Provide the client id, and client secret obtained when running the app registration script. Note that the M365 Agents Toolkit will register the app in the Teams Developer Portal and update the OAUTH2_REGISTRATION_ID variable in your .env file with the value received from the Teams Developer Portal.
 
