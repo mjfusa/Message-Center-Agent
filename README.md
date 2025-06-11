@@ -36,8 +36,13 @@ Steps to deploy the M365 Copilot Message Center Agent using the Microsoft 365 Ag
 2. Install the [Microsoft 365 Agents Toolkit CLI](#install-microsoft-365-agents-toolkit-cli) and NodeJS using the PowerShell script provided in the `prereqs` folder.
    
    1. Open a PowerShell terminal
-   
-   2. Change to the `prereqs` folder and run `InstallNodeAtk.ps1`. The output should be similar to this:
+   2. Set the Script Execution Policy to allow running scripts. You can do this by running the following command:
+      ```powershell
+      Set-ExecutionPolicy Unrestricted -Scope CurrentUser
+      ```
+      This command allows you to run scripts in your current user context. You may need to confirm the change by typing 'Y' and pressing Enter.
+
+   3. Change to the `prereqs` folder and run `InstallNodeAtk.ps1`. The output should be similar to this:
       ![Install Node and ATK](./Images/InstallNodeAndAtk.png)
 
 3. Register an application with Entra (Azure AD) to enable OAuth2.0 authentication and API access.
@@ -60,8 +65,9 @@ To deploy the M365 Copilot Message Center Agent, you need the following requirem
 
 ## Provisioning the Agent for testing and demos
 
-1. You're now ready to deploy the M365 Copilot Message Center Agent using the Microsoft 365 Agents Toolkit (ATK) CLI.
+You're now ready to deploy the M365 Copilot Message Center Agent using the Microsoft 365 Agents Toolkit (ATK) CLI.
 
+1. Start a new PowerShell terminal and change to the root folder of the cloned repository.
 1. In the root folder of the repository, run the following command to deploy the agent:
    
    ```bash

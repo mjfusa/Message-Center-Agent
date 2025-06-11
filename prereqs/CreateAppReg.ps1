@@ -1,8 +1,5 @@
-# Increase JSON conversion depth for this session
-$PSDefaultParameterValues['ConvertTo-Json:Depth'] = 10
-
-# Check if Microsoft.Graph.Applications module is installed
-$moduleName = "Microsoft.Graph.Applications"
+# Check if Microsoft.Entra module is installed
+$moduleName = "Microsoft.Entra"
 $module = Get-Module -ListAvailable -Name $moduleName -ErrorAction SilentlyContinue
 
 if (-not $module) {
@@ -80,9 +77,6 @@ Set-EntraServicePrincipal -ServicePrincipalId $servicePrincipal.Id -AppRoleAssig
 # # Grant OAuth2 permission
 $permissionGrant = New-EntraOauth2PermissionGrant -ClientId $servicePrincipal.Id -ConsentType 'AllPrincipals' -ResourceId $graphServicePrincipal.Id -Scope $delegatedPermission
 
-# # Get and filter OAuth2 permission grants
-#Get-EntraOAuth2PermissionGrant -All | Where-Object { $_.Id -eq $permissionGrant.Id }
-
 # Create secret for the application
 $secret = New-EntraApplicationPasswordCredential -ApplicationId $app.Id -CustomKeyIdentifier  "MessageCenterAgentSecret" -EndDate (Get-Date).AddYears(1)
 
@@ -96,5 +90,5 @@ $appDetails = @{
 
 # Output the application and service principal details
 Write-Host "Application created successfully"
-$appDetailsJson= $appDetails | ConvertTo-Json -Depth 100
+$appDetailsJson= $appDetails | ConvertTo-Json 
 Write-Host $appDetailsJson
