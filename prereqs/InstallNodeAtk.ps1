@@ -34,8 +34,8 @@ if (-not $nodeInstalled) {
     
     # Install Node.js using winget
     try {
-        Write-Host "Installing Node.js 20.x..." -ForegroundColor Cyan
-        winget install OpenJS.NodeJS -v "~20" --accept-source-agreements --accept-package-agreements
+        Write-Host "Installing Node.js latest version" -ForegroundColor Cyan
+        winget install OpenJS.NodeJS  --accept-source-agreements --accept-package-agreements
         
         if ($LASTEXITCODE -ne 0) {
             Exit-WithError "Failed to install Node.js. winget returned error code: $LASTEXITCODE"
@@ -118,4 +118,4 @@ catch {
 
 # Final success message
 Write-Host "`nSetup completed successfully!" -ForegroundColor Green
-Write-Host "You can now use the Microsoft 365 Agents Toolkit CLI with the 'atk' command." -ForegroundColor Cyan
+Write-Host "Now you can now use the Microsoft 365 Agents Toolkit CLI with the 'atk' command." -ForegroundColor Cyan
