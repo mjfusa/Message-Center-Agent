@@ -86,15 +86,15 @@ Test the agent by starting Copilot in the web or app and selecting the Message C
 ![Message Center Agent in Copilot Chat](./Images/MessageCenterAgentInCopilotChat.png)
 
 ## Publish the Agent (Optional)
-If you want to make the agent available to your entire organization, you can publish it to the Teams app store. This step is optional and is only needed if you want to share the agent with others in your organization.
+If you want to make the agent available to your entire organization, you can publish it to the Copilot agents store. This step is optional and is only needed if you want to share the agent with others in your organization.
 
 To **publish** the agent to your organization, you can submit it to your Teams administrator for distribution by running the following command:
    
    ```bash
    atk publish --env production
    ```
-   
-   This will upload the agent to your Microsoft 365 tenant and make it available in the Teams app store after the Teams administrator approves it. 
+
+   This will upload the agent to your Microsoft 365 tenant and make it available in the Copilot agents store after the Teams administrator approves it.
 
 # [Modification Guide](#modification-guide)
 
@@ -131,7 +131,7 @@ The M365 Agents Toolkit for Visual Studio Code streamlines app registration and 
 The 'Provision' step deploys the agent privately to you for testing purposes. Start Copilot chat in the app or web and select 'Message Center Agent'.
 
 ## Publish the Agent (Optional)
-If you want to make the agent available to your entire organization, you can publish it to the Teams app store. This step is optional and is only needed if you want to share the agent with others in your organization.
+If you want to make the agent available to your entire organization, you can publish it to the Copilot agents store. This step is optional and is only needed if you want to share the agent with others in your organization.
 
 1. Using the M365 Agents Toolkit, in the LIFECYCLE section, select 'Publish to Organization'.
 
@@ -194,7 +194,7 @@ The following files are key to the implementation of the declarative agent:
 Extract the openapi definition for the graph API /admin/serviceAnnouncement/messages from https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/refs/heads/master/openapi/v1.0/openapi.yaml. Covert YAML output to JSON.
 
 - **declarativeCopilot.json**: This file contains the declarative agent configuration that defines the behavior and capabilities of the agent. No capabilities have been defined for this agent.
-- **manifest.json**: This file contains the Teams application manifest that defines metadata for the declarative agent.This is what is displayed in the Teams app store.
+- **manifest.json**: This file contains the Teams application manifest that defines metadata for the declarative agent.This is what is displayed in the Copilot agents store.
 - **m365agents.yml**: This file contains the M365 Agents Toolkit project configuration, including the OAuth2 registration and other settings.
 - **.env.production**: This file contains environment variables for the project for production release, including the client ID and secret for OAuth2 authentication.
 
