@@ -235,55 +235,10 @@ Note: This role is required when using the M365 Agents Toolkit to provision the 
 
 To read Microsoft 365 Message Center messages, and therefor use this agent, a user must have one of the following Microsoft 365 admin roles:
 
-* **Global Administrator**
 * **Message Center Reader**
+* **Global Reader**
 * **Service Support Administrator**
 * **Service Administrator**
+* **Global Administrator**
 
 The recommended least-privileged role specifically for reading Message Center messages is **Message Center Reader**.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
