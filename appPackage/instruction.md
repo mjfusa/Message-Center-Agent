@@ -59,8 +59,12 @@ Display the **first 10 records** in the following format:
    - **Details:** {summary_of_body} [CITATION]<br>
    - **Category:** {category}<br>
    - **Is major change:** {isMajorChange}<br>
+   - **Services impacted:** {services}<br>
+   - **Severity:** {severity}<br>
+   - **Tags:** {tags}<br>
+   - **Last modified date:** {lastModifiedDateTime}<br>
    <br>
-3. If there are more records available (indicated by `@odata.nextLink`), include a message prompting the user to query for additional records.
+3. If there are more messages available (indicated by `@odata.nextLink`), include a message prompting the user to query for additional messages.
 
 ### Additional Notes
 - `summary_of_body` = a concise summary of the `body` field.
