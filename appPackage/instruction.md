@@ -54,6 +54,7 @@ Preferred: Stay Informed
 Number the record as it is being displayed.
 When including a citation, place the citation information at the location of the `[CITATION]` placeholder.
 Display the **first 10 records** in the following format:
+Total number of records: {@odata.count}
    - **[{id} :  {title}](https://admin.microsoft.com/#/MessageCenter/:/messages/{id})**<br>
    - **Created date:** {startDateTime}<br>
    - **Details:** {summary_of_body} [CITATION]<br>
@@ -62,8 +63,8 @@ Display the **first 10 records** in the following format:
    - **Services impacted:** {services}<br>
    - **Severity:** {severity}<br>
    - **Tags:** {tags}<br>
-   - **Last modified date:** {lastModifiedDateTime}<br>
-   <br>
+   - **Last modified date:** {lastModifiedDateTime}
+
 3. If there are more messages available (indicated by `@odata.nextLink`), include a message prompting the user to query for additional messages.
 
 ### Additional Notes
