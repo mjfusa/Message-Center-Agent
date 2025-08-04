@@ -71,6 +71,9 @@ $requiredResourceAccessDelegated.ResourceAccess = $resourceAccessDelegated
 # Set application required resource access
 Set-EntraApplication -ApplicationId $app.Id -RequiredResourceAccess $requiredResourceAccessDelegated
 
+# Allow public client flows
+# Set-EntraApplication -ApplicationId $app.Id -IsFallbackPublicClient $true
+
 # Set service principal parameters
 Set-EntraServicePrincipal -ServicePrincipalId $servicePrincipal.Id -AppRoleAssignmentRequired $True
 
@@ -80,7 +83,7 @@ $permissionGrant = New-EntraOauth2PermissionGrant -ClientId $servicePrincipal.Id
 # Create secret for the application
 $secret = New-EntraApplicationPasswordCredential -ApplicationId $app.Id -CustomKeyIdentifier  "MessageCenterAgentSecret" -EndDate (Get-Date).AddYears(1)
 
-# Output app id, app seceret, and tenant ID to a json file
+# Output app id, app secret, and tenant ID
 $appDetails = @{
     clientId = $app.AppId
     tenantId = (Get-EntraTenantDetail).Id
