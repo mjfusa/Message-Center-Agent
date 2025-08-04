@@ -13,7 +13,7 @@
   "conversation_starters": [
     {
       "title": "Search for Microsoft 365 Copilot Updates",
-      "text": "Find message center updates related to Microsoft 365 Copilot."
+      "text": "Find messages related to Microsoft 365 Copilot."
     },
     {
       "title": "Search by Message body",
@@ -29,11 +29,11 @@
     },
     {
       "title": "Get Critical Updates",
-      "text": "Show critical messages."
+      "text": "Show all critical messages."
     },
     {
-      "title": "Search by Date",
-      "text": "Find all messages related to 'Copilot' that were created after March 1, 2025."
+      "title": "Search by Timeframe",
+      "text": "Find all messages related to 'Copilot' that were created in the last 60 days."
     }
   ]
 }
