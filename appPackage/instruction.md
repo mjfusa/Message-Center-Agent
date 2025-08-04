@@ -51,20 +51,17 @@ Input: StayInformed
 Preferred: Stay Informed
 
 ## Output
-Number the record as it is being displayed.
+Number the record as it is being displayed. 
 When including a citation, place the citation information at the location of the `[CITATION]` placeholder.
 Display the **first 10 records** in the following format:
    - **[{id} :  {title}](https://admin.microsoft.com/#/MessageCenter/:/messages/{id})**<br>
+   - **Last modified date:** {lastModifiedDateTime}<br>
    - **Created date:** {startDateTime}<br>
    - **Details:** {summary_of_body} [CITATION]<br>
    - **Category:** {category}<br>
-   - **Is major change:** {isMajorChange}<br>
-   - **Services impacted:** {services}<br>
-   - **Severity:** {severity}<br>
-   - **Tags:** {tags}<br>
-   - **Last modified date:** {lastModifiedDateTime}<br>
-   <br>
+   - **Is major change:** {isMajorChange}
+
 3. If there are more messages available (indicated by `@odata.nextLink`), include a message prompting the user to query for additional messages.
 
 ### Additional Notes
-- `summary_of_body` = a concise summary of the `body` field.
+- `summary_of_body` = a summary of the `body` field.
