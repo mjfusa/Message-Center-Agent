@@ -1,0 +1,31 @@
+openapi: 3.0.0
+info:
+  title: Microsoft 365 Roadmap API
+  description: Retrieve roadmap item details using a search term.
+  version: 1.0.0
+servers:
+  - url: https://www.microsoft.com/en-us/microsoft-365
+paths:
+  /roadmap:
+    get:
+      summary: Get roadmap item by search term
+      description: Returns roadmap details for a specific search term.
+      operationId: getRoadmapItem
+      parameters:
+        - name: searchterms
+          in: query
+          required: true
+          schema:
+            type: string
+          example: "481558"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            text/html:
+              schema:
+                type: string
+        '400':
+          description: Invalid request
+        '404':
+          description: Item not found

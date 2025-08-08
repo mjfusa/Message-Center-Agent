@@ -1,0 +1,30 @@
+openapi: 3.0.0
+info:
+  title: Microsoft Release Communications API
+  version: 2.0
+paths:
+  /releasecommunications/api/v2/m365/rss/{roadmapId}:
+    get:
+      summary: Get XML RSS feed for a specific roadmap item
+      description: Returns roadmap details for a specific search term.
+      operationId: getRoadmapItem
+      parameters:
+        - name: roadmapId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the roadmap item to retrieve
+      responses:
+        '200':
+          description: Successful response with RSS feed data
+          content:
+            application/rss+xml:
+              schema:
+                type: string
+        '404':
+          description: Roadmap item not found
+        '500':
+          description: Server error
+servers:
+  - url: https://www.microsoft.com

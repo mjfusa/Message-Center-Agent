@@ -1,0 +1,36 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/copilot/plugin/v2.2/schema.json",
+    "schema_version": "v2.2",
+    "name_for_human": "M365 Roadmap Items",
+    "description_for_human": "API to obtain M365 roadmap items",
+    "namespace": "openapiM365Roadmap",
+    "functions": [
+        {
+            "name": "getRoadmapItem",
+            "description": "Retrieve the roadmap item details",
+            "capabilities": {
+                "response_semantics": {
+                    "data_path": "$.value",
+                    "properties": {
+                        "title": "$.title",
+                        "subtitle": "$.id"
+                    }
+                }
+            }
+        }
+    ],
+    "runtimes": [
+        {
+            "type": "OpenApi",
+            "auth": {
+                "type": "None"
+            },
+            "spec": {
+                "url": "apiSpecificationFile/openapiM365Roadmap2.yaml"
+            },
+            "run_for_functions": [
+                "getRoadmapItem"
+            ]
+        }
+    ]
+}
