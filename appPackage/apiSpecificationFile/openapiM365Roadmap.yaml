@@ -14,10 +14,18 @@ paths:
       parameters:
         - name: searchterms
           in: query
-          required: true
+          description: ad hoc search terms for roadmap items
+          required: false
           schema:
             type: string
           example: "481558"
+        - name: filters
+          in: query
+          description: Comma-separated filters for rollout state and product (e.g., "In development,Outlook")
+          required: false
+          schema:
+            type: string
+          example: "In development,Outlook,Microsoft Copilot,GCC,New within: last-week"
       responses:
         '200':
           description: Successful response

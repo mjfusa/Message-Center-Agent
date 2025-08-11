@@ -15,16 +15,58 @@ paths:
           schema:
             type: string
           description: The ID of the roadmap item to retrieve
+          example: "417005"
       responses:
         '200':
-          description: Successful response with RSS feed data
+          description: Successful response with RSS XML
           content:
-            application/rss+xml:
+            text/xml:
               schema:
                 type: string
+                description: RSS XML feed content
+                example: |
+                  <?xml version="1.0" encoding="utf-8"?>
+                  <rss xmlns:a10="http://www.w3.org/2005/Atom" version="2.0">
+                    <channel>
+                      <title>OneNote: Copilot Chat on OneNote for web and in Teams</title>
+                      <link>https://www.microsoft.com/releasecommunications/api/v2/M365/rss/417005</link>
+                      <description>Microsoft 365 roadmap item details</description>
+                      <lastBuildDate>Tue, 08 Jul 2025 23:15:08 Z</lastBuildDate>
+                      <ttl>1440</ttl>
+                      <item>
+                        <guid isPermaLink="false">417005</guid>
+                        <link>https://www.microsoft.com/microsoft-365/roadmap?id=417005</link>
+                        <category>Launched</category>
+                        <category>General Availability</category>
+                        <title>OneNote: Copilot Chat on OneNote for web and in Teams</title>
+                        <description>Bringing the power of Microsoft Copilot to OneNote for web and in Teams.</description>
+                        <pubDate>Fri, 20 Sep 2024 22:15:31 Z</pubDate>
+                      </item>
+                    </channel>
+                  </rss>
+            application/xml:
+              schema:
+                type: string
+                description: Alternative XML content type
         '404':
           description: Roadmap item not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Roadmap item not found"
         '500':
           description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Internal server error"
 servers:
   - url: https://www.microsoft.com

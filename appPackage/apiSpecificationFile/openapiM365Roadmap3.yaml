@@ -1,0 +1,150 @@
+openapi: 3.0.0
+info:
+  title: Microsoft 365 Roadmap API
+  description: Retrieve roadmap item details using a search term.
+  version: 1.0.0
+servers:
+  - url: https://www.microsoft.com
+paths:
+  /releasecommunications/api/v1/m365:
+    get:
+      summary: Get roadmap item by search term
+      description: Returns roadmap details for a specific search term.
+      operationId: getRoadmapItem
+      parameters:
+        - name: searchterms
+          in: query
+          required: false
+          schema:
+            type: string
+          example: "481558"
+        - name: filters
+          in: query
+          description: Comma-separated filters for rollout state and product (e.g., "In development,Outlook")
+          required: false
+          schema:
+            type: string
+          example: "In development,Outlook,Microsoft Copilot,GCC,New within: last-week"
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                      description: Unique identifier for the roadmap item
+                      example: 500242
+                    title:
+                      type: string
+                      description: Title of the roadmap item
+                      example: "Microsoft Teams: Intelligent recap for DoD"
+                    description:
+                      type: string
+                      description: Detailed description of the feature
+                      example: "Intelligent meeting recap uses AI to provide a quick summary of your meeting, highlighting key discussion points, identifying follow-up actions, and offering quick access to significant points such as name mentions, when a screen was shared, individualized speaker markers, topics, and chapters."
+                    moreInfoLink:
+                      type: string
+                      nullable: true
+                      description: Link to additional information
+                      example: null
+                    publicDisclosureAvailabilityDate:
+                      type: string
+                      description: Expected availability date
+                      example: "September CY2025"
+                    publicPreviewDate:
+                      type: string
+                      description: Public preview date
+                      example: ""
+                    created:
+                      type: string
+                      format: date-time
+                      description: Creation timestamp
+                      example: "2025-08-08T22:15:46"
+                    publicRoadmapStatus:
+                      type: string
+                      description: Status on the public roadmap
+                      example: "Include this month"
+                    status:
+                      type: string
+                      description: Current development status
+                      example: "In development"
+                    modified:
+                      type: string
+                      format: date-time
+                      description: Last modification timestamp
+                      example: "2025-08-08T22:15:46"
+                    locale:
+                      type: string
+                      nullable: true
+                      description: Locale information
+                      example: null
+                    tags:
+                      type: array
+                      description: Array of tags associated with the roadmap item
+                      items:
+                        type: object
+                        properties:
+                          tagName:
+                            type: string
+                            example: "Microsoft Teams"
+                    tagsContainer:
+                      type: object
+                      description: Organized tags by category
+                      properties:
+                        products:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              tagName:
+                                type: string
+                                example: "Microsoft Teams"
+                        cloudInstances:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              tagName:
+                                type: string
+                                example: "DoD"
+                        releasePhase:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              tagName:
+                                type: string
+                                example: "General Availability"
+                        platforms:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              tagName:
+                                type: string
+                                example: "Desktop"
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "Invalid search parameters"
+        '404':
+          description: Item not found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                    example: "No roadmap items found for the specified search terms"

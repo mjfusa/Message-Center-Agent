@@ -1,0 +1,54 @@
+{
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+    "type": "AdaptiveCard",
+    "version": "1.5",
+    "body": [
+        {
+            "type": "TextBlock",
+            "text": "Roadmap Item Details",
+            "weight": "Bolder",
+            "size": "Medium"
+        },
+        {
+            "type": "FactSet",
+            "facts": [
+                {
+                    "title": "Status:",
+                    "value": "${status}"
+                },
+                {
+                    "title": "Release Phase:",
+                    "value": "${releasePhase}"
+                },
+                {
+                    "title": "Products:",
+                    "value": "${products}"
+                },
+                {
+                    "title": "Cloud Instance:",
+                    "value": "${cloudInstance}"
+                },
+                {
+                    "title": "Launched Date:",
+                    "value": "${launchedDate}"
+                },
+                {
+                    "title": "Feature Id:",
+                    "value": "${featureId}"
+                }
+            ]
+        },
+        {
+            "type": "TextBlock",
+            "text": "${description}",
+            "wrap": true
+        }
+    ],
+    "actions": [
+        {
+            "type": "Action.OpenUrl",
+            "title": "View Details",
+            "url": "${detailsUrl}"
+        }
+    ]
+}
