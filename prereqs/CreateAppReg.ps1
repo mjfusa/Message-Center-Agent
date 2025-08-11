@@ -75,7 +75,7 @@ Set-EntraApplication -ApplicationId $app.Id -RequiredResourceAccess $requiredRes
 # Set-EntraApplication -ApplicationId $app.Id -IsFallbackPublicClient $true
 
 # Set service principal parameters
-Set-EntraServicePrincipal -ServicePrincipalId $servicePrincipal.Id -AppRoleAssignmentRequired $True
+Set-EntraServicePrincipal -ServicePrincipalId $servicePrincipal.Id -AppRoleAssignmentRequired $false
 
 # # Grant OAuth2 permission
 $permissionGrant = New-EntraOauth2PermissionGrant -ClientId $servicePrincipal.Id -ConsentType 'AllPrincipals' -ResourceId $graphServicePrincipal.Id -Scope $delegatedPermission
