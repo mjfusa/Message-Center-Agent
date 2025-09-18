@@ -23,16 +23,15 @@ The output at this point should look similar to the following:
 
 5. In Copilot Chat, enter the following prompt:
 
->I am an IT Lead. I need to review with my team this information. Please create a PowerPoint deck based on based on the consolidation of the content above. The deck should inform the reader, that this content is the latest information from Microsoft Message Center. It should also indicate the criteria used to generate the message list. Be sure to include the message id in each slide.
+>I am an IT Lead. I need to review with my team this information. Please create a PowerPoint deck based on based on the consolidation of the content above. The deck should inform the reader, that this content is the latest information from Microsoft Message Center. It should also indicate the criteria used to generate the message list. Be sure to include the message id in each slide.  
 
-Here is the output:
+Here is the prompt and the output:  
 ![PowerPoint deck generated](./images/PPT%20Generated.png)
 
 Here is an example of the PowerPoint deck generated [Team Briefing on New Copilot Features](./other/Team%20Briefing%20on%20New%20Copilot%20Features.pptx)
----
 
 **Note:**  
-This process is designed to help IT leads and teams stay informed about Copilot-related changes and new features. Always include the Message ID for traceability and reference.
+This process is designed to help IT leads and teams stay informed about Copilot-related changes and new features. 
 
 ## Author:
 Mike Francis (mjfusa)
