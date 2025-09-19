@@ -44,8 +44,8 @@ Here’s the Output:
 IT Administrator Checklist:  
 ![Checklist](./images/checklist8.png)
     
-Administrator Checklist Before Rollout:    
-![Checklist](./images/RolloutCheckList.png)
+<!-- Administrator Checklist Before Rollout:    
+![Checklist](./images/RolloutCheckList.png) -->
 
 Draft Email to Team:    
 ![Checklist](./images/emailtoteam.png)
