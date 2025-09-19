@@ -4,6 +4,8 @@ The power of AI agents is realized with the combination of the output of the mes
 
 See the [Prompting Guide](./prompting_guide.md) for tips on creating effective prompts with the Message Center Agent.
 
+Suggested prompts can be found in the [Message Center Agent Prompts by Category](./message_center_agent_prompts.md) page.
+
 See the [Playbook Template](./Template.md) for instructions on creating your own playbook.
 
 ## Suggested Playbooks
