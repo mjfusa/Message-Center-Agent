@@ -10,8 +10,9 @@ See the [Playbook Template](./Template.md) for instructions on creating your own
 
 ## Suggested Playbooks
 
-[Create PPT Team Briefing on New Copilot Features](./Create_PPT_Team_Briefing_on_New_Copilot_Features/Create_PPT_Team_Briefing_on_New_Copilot_Features.md)  
-[Create Customer M365 Feature and Technology Update Emails](./Create_Customer_M365_Feature_and_Technology_Update_Email/Create_Customer_M365_Feature_and_Technology_Update_Email.md)
+[Preparing for Changes to Copilot Reporting Dashboards and Admin Center Views](./preparing_for_changes_to_copilot_reporting_dashboards/preparing_for_changes_to_copilot_reporting_dashboards.md)  
+[Create Customer M365 Feature and Technology Update Emails](./Create_Customer_M365_Feature_and_Technology_Update_Email/Create_Customer_M365_Feature_and_Technology_Update_Email.md)  
+[Create PowerPoint Team Briefing on New Copilot Features](./Create_PPT_Team_Briefing_on_New_Copilot_Features/Create_PPT_Team_Briefing_on_New_Copilot_Features.md)  
 
 
 
