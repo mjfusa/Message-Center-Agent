@@ -25,8 +25,6 @@ Below are concise natural-language query patterns that can be used with the Mess
   - services (array)
     - Natural language: "Filter on services containing 'Copilot'" / "Messages for Microsoft Teams"
     - Important phrasing: say "for service" or "services containing" to target array elements.
-  - expiryDateTime (nullable datetime)
-    - Natural language: "Not expired" / "Expires after Aug 1, 2022"
   - details (array of name/value pairs)
     - Natural language: "Messages with an ExternalLink" / "Where details contain an ExternalLink equal to '...'"
   - body.content
