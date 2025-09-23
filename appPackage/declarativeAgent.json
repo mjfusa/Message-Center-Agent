@@ -2,12 +2,22 @@
   "$schema": "https://developer.microsoft.com/json-schemas/copilot/declarative-agent/v1.2/schema.json",
   "version": "v1.2",
   "name": "Message Center Agent",
-  "description": "Declarative agent created with Teams Toolkit can assist user in calling APIs and retrieving responses",
+  "description": "This agent helps you search and summarize Microsoft 365 Admin Center messages using natural language.",
   "instructions": "$[file('instruction.md')]",
   "actions": [
     {
       "id": "action_1",
       "file": "ai-plugin.json"
+    }
+  ],
+  "capabilities": [
+    {
+      "name": "GraphConnectors",
+      "connections": [
+        {
+          "connection_id": "M365Roadmap"
+        }
+      ]
     }
   ],
   "conversation_starters": [
