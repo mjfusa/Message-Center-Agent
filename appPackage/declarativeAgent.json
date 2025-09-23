@@ -1,8 +1,8 @@
 {
   "$schema": "https://developer.microsoft.com/json-schemas/copilot/declarative-agent/v1.2/schema.json",
-  "version": "v1.2",
+  "version": "v1.3",
   "name": "Message Center Agent",
-  "description": "This agent helps you search and summarize Microsoft 365 Admin Center messages using natural language.",
+  "description": "This agent helps you search and summarize Microsoft 365 Admin Center messages using natural language. Works with the M365Roadmap Copilot Connector to provide related Microsoft 365 Roadmap information.",
   "instructions": "$[file('instruction.md')]",
   "actions": [
     {
@@ -23,7 +23,7 @@
   "conversation_starters": [
     {
       "title": "Search for Microsoft 365 Copilot Updates",
-      "text": "Find messages related to Microsoft 365 Copilot."
+      "text": "Find messages related to Microsoft 365 Copilot published in the last 30 days."
     },
     {
       "title": "Search by Message body",
@@ -31,19 +31,19 @@
     },
     {
       "title": "Inform the team regarding upcoming major changes in Microsoft 365 Copilot",
-      "text": "Draft an email to the team regarding the upcoming major changes in Microsoft 365 Copilot. Look for the messages published in the last month."
+      "text": "Draft an email to the team regarding the upcoming major changes. Filter on services containing 'Copilot'. Look for the messages published in the last month."
     },
     {
-      "title": "Find messages tagged as User impact",
-      "text": "Find messages tagged as User impact with Copilot in the title published after April 4, 2025."
+      "title": "Access messages by service and tags",
+      "text": "Find messages tagged as User impact. Filter on services containing 'Copilot'. Show messages published in the last 30 days."
     },
     {
       "title": "Get Critical Updates",
       "text": "Show all critical messages."
     },
     {
-      "title": "Search by Timeframe",
-      "text": "Find all messages related to 'Copilot' that were created in the last 60 days."
+      "title": "Find out about new AI capabilities in Microsoft 365",
+      "text": "Which updates introduce new AI capabilities in Microsoft 365?"
     }
   ]
 }
