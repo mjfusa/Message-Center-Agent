@@ -1,14 +1,14 @@
 {
     "@odata.context": "https://graph.microsoft.com/v1.0/$metadata#admin/serviceAnnouncement/messages",
-    "@odata.count": 63,
+    "@odata.count": 1,
     "value": [
         {
-            "startDateTime": "2025-02-12T23:30:04Z",
-            "endDateTime": "2025-05-30T07:00:00Z",
-            "lastModifiedDateTime": "2025-03-04T16:02:51.4Z",
-            "title": "Microsoft Viva Glint: Use Feature Access Management in Viva for Microsoft 365 Copilot in Glint",
-            "id": "MC1004409",
-            "category": "stayInformed",
+            "startDateTime": "2025-04-24T00:51:01Z",
+            "endDateTime": "2025-11-10T07:00:00Z",
+            "lastModifiedDateTime": "2025-08-14T16:01:03.793Z",
+            "title": "(Updated) Microsoft 365 Copilot can generate an audio overview of documents, meetings, and files",
+            "id": "MC1061100",
+            "category": "planForChange",
             "severity": "normal",
             "tags": [
                 "Updated message",
@@ -16,63 +16,35 @@
                 "User impact",
                 "Admin impact"
             ],
-            "isMajorChange": false,
+            "isMajorChange": true,
             "actionRequiredByDateTime": null,
             "services": [
-                "Microsoft Viva",
-                "Microsoft Copilot (Microsoft 365)"
+                "Microsoft Copilot (Microsoft 365)",
+                "Microsoft Copilot Chat"
             ],
             "hasAttachments": false,
-            "viewPoint": null,
             "details": [
                 {
                     "name": "RoadmapIds",
-                    "value": "478655"
+                    "value": "478649,485747,487423,487854,490051"
                 },
                 {
                     "name": "Summary",
-                    "value": "Microsoft Viva Glint will add Microsoft 365 Copilot to Feature Access Management, allowing global and AI admins to control its rollout and availability. By default, Copilot is enabled in Viva but disabled in Viva Glint. Admins can create policies to manage access. Rollout starts late February 2025 and completes by late March 2025."
+                    "value": "Microsoft 365 Copilot will generate podcast-style audio overviews of documents, meetings, and files, available in OneDrive, Teams, Word, and Copilot Notebooks starting May 2025 (English only). Users can customize speaker style and length. Features require a Copilot license and rollout varies by app and platform."
                 },
                 {
                     "name": "Platforms",
-                    "value": "Web"
+                    "value": "Mobile, Web, Desktop, Android, iOS, Mac"
                 }
             ],
             "body": {
                 "contentType": "html",
-                "content": "<p>Updated March 3, 2025: We have updated the content. Thank you for your patience.</p><p>We are excited to announce that we will add the Microsoft 365 Copilot in Viva Glint feature to Feature Access"
-            }
-        },
-        {
-            "startDateTime": "2025-02-15T04:28:43Z",
-            "endDateTime": "2025-05-30T07:00:00Z",
-            "lastModifiedDateTime": "2025-02-15T04:29:14.143Z",
-            "title": "Microsoft 365 Copilot Chat in Microsoft Edge Mobile will support page summarization",
-            "id": "MC1006605",
-            "category": "stayInformed",
-            "severity": "normal",
-            "tags": [
-                "New feature",
-                "User impact",
-                "Admin impact"
-            ],
-            "isMajorChange": false,
-            "actionRequiredByDateTime": null,
-            "services": [
-                "Microsoft 365 apps",
-                "Microsoft Copilot (Microsoft 365)"
-            ],
-            "hasAttachments": false,
-            "viewPoint": null,
-            "details": [
-                {
-                    "name": "Summary",
-                    "value": "Microsoft 365 Copilot Chat in Edge Mobile for Android and iOS will re-enable page summarization features in two phases from mid-February to late March 2025. The Copilot Chat icon will be displayed by default to all Microsoft Entra ID users. No admin action is required before the rollout."
-                }
-            ],
-            "body": {
-                "contentType": "html",
-                "content": "<p>If your organization does not support mobile devices, you can safely ignore this message.\n</p><p>Microsoft 365 Copilot Chat in Edge Mobile for Android and iOS will soon re-enable page summarization features, allowing users to summarize open webpages or PDFs."
+                "content": "<p>Updated August 14, 2025: We have updated the content. Thank you for your patience.</p><p>Copilot can help users engage with their content in a new and dynamic way—through audio. This new feature will enable Copilot to turn documents, meetings, and files into an audio overview, creating a listening experience that’s easy to follow. Users can ask Copilot to generate an audio overview in the Copilot chat pane, and Copilot will bring the content to life through a podcast-style discussion between two hosts who offer insightful commentary, draw connections between topics, and even exchange lively banter about the key points of their content. Soon, Copilot will also allow users to choose how they want to listen: select one or two speakers, adjust the style from concise to playful, and tailor the length to short, medium, or long. This capability is integrated directly into the tools users are familiar with—OneDrive, Teams, Word, and Copilot Notebooks—so it’s ready whenever and wherever they are.  </p><p>This message is associated with Microsoft 365 Roadmap IDs: <font color='#000000' style=''><a href='https://www.microsoft.com/microsoft-365/roadmap?searchterms=487423' target='_blank' style=''>487423</a>, <a href='https://www.microsoft.com/microsoft-365/roadmap?searchterms=478649' target='_blank' style=''>478649</a>, <a href='https://www.microsoft.com/microsoft-365/roadmap?searchterms=485747' target='_blank' style=''>485747</a>, <a href='https://www.microsoft.com/microsoft-365/roadmap?searchterms=487854' target='_blank' style=''>487854</a>, <a href='https://www.microsoft.com/microsoft-365/roadmap?searchterms=490051' target='_blank' style=''>490051</a></font></p><p>[When this will happen:]</p><p>General Availability (Worldwide):</p><ul><li>This capability will begin rolling out in Copilot Notebooks on web for English only in May 2025 </li><li>This capability will begin rolling out for Copilot in OneDrive on web for English only in May 2025</li><li>This capability will begin rolling out for Copilot in Teams on desktop and mobile for English only in September 2025  </li><li>The podcast-style overview will begin rolling out for Copilot in Word on web and Windows desktop in May for English only. The ability to configure the audio overview format will be available in Word on web and desktop in August 2025 (previously July). </li></ul><p>[How this affects your organization:]</p><p>To generate an audio overview in Word, open the Copilot chat pane and ask Copilot to generate an audio overview. Podcast-style overviews will be available in Word on web and desktop in English only in May. The ability to configure the audio overview format will be available in Word on web and desktop in English only in the coming months.  </p><p>To generate an audio overview in Teams, navigate to meeting recap page, click on :” audio recap ” on upper right corner, Or to the Meet app and select the ‘audio recap’ tab. Choose the transcribed meeting or multiple meetings, and select ‘Generate audio overview.’ Audio overview for Copilot in Teams will be available on mobile and Windows desktop in English only in September 2025 (previously June).   </p><p>To generate an audio overview in OneDrive web, select the Copilot icon for the file, then select ‘Generate an audio overview.’ Copilot will generate a narrated summary of the file highlighting the key points. Users can choose to switch to a podcast-style discussion from the ‘…’ menu on the overview player, and Copilot will regenerate the overview in the style of a podcast discussion between two hosts. You can also generate an audio overview from the chat pane. This will be available for Copilot in OneDrive on web in English only in May and coming soon to mobile in August 2025 (previously June 2025).</p><p>To generate an audio overview in Copilot Notebooks, select ‘Generate audio overview’ near the top of the notebook. Copilot will generate a podcast-style discussion of the referenced files with key insights. This capability will be available in Copilot Notebooks on web in English only in May 2025.</p><p><a href='https://techcommunity.microsoft.com/blog/microsoft365copilotblog/whats-new-in-microsoft-365-copilot--april-2025/4370396#:~:text=out%20in%20May.-,Generate%20audio%20overviews%20of%20documents%2C%20meetings%2C%20and%20files%20with%20Copilot,-Soon%20Copilot%20can' target='_blank'>Generate audio overviews of documents, meetings, and files with Copilot</a> </p><p>[What you need to do to prepare:]\n</p><p>You may consider updating your training and documentation as appropriate. These features are available to users with a Copilot license.</p><p>Review the following resource to understand how to manage Microsoft 365 Copilot access within your organization:</p><ul><li><a href='https://learn.microsoft.com/copilot/microsoft-365/microsoft-365-copilot-page' target='_blank'>Manage Microsoft 365 Copilot scenarios in the Microsoft 365 admin center</a></li></ul><p>You can manage Copilot for specific apps or users through either the Microsoft 365 Admin center or Group Policy.</p>"
+            },
+            "viewPoint": {
+                "isRead": true,
+                "isArchived": false,
+                "isFavorited": false
             }
         }
     ]
