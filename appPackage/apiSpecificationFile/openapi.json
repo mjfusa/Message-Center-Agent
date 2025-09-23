@@ -34,7 +34,7 @@
             "required": false,
             "schema": {
               "type": "string",
-              "default": "odata.maxpagesize=10"
+              "default": "odata.maxpagesize=5"
             }
           },
           {
@@ -60,7 +60,7 @@
           {
             "name": "$filter",
             "in": "query",
-            "description": "Filter the results based on specific conditions. Use `contains(title,'search term')` to search within the title property for a specific term. For create time, use the 'startDateTime' property with a date format. For example, `startDateTime ge 2025-03-01T00:00:00Z` to filter messages created after March 1, 2025. For major change messages, use `isMajorChange eq true`. To combine filters, use `and` operator. For example, `contains(title,'Copilot') and startDateTime ge 2025-03-01T00:00:00Z`. Searches should be in lowercase. For example, `contains(tolower(title),tolower('microsoft 365'))`. For the 'Tags' field, here is an example of the a query segment for the tags field: tags/any(t: t eq 'New feature'). For the 'Services' field, here is an example of a query segment for the services field: services/any(s: s eq 'Microsoft Teams'). Note that the 'Services' and 'Tags' fields are arrays, so you can use `any` to check if any element matches the condition. For the 'category' field, you can filter by category using `category eq 'stayInformed'` or `category eq 'planForChange'` or `category eq 'preventOrFixIssue'`. For the 'severity' field, you can filter by severity using `severity eq 'normal'` or `severity eq 'high'` or `severity eq 'critical'`.",
+            "description": "Filter the results based on specific conditions. Use `contains(title,'search term')` to search within the title property for a specific term. For create time, use the 'startDateTime' property with a date format. For example, `startDateTime ge 2025-03-01T00:00:00Z` to filter messages created after March 1, 2025. For major change messages, use `isMajorChange eq true`. To combine filters, use `and` operator. For example, `contains(title,'Copilot') and startDateTime ge 2025-03-01T00:00:00Z`. For the 'Tags' field, here is an example of the a query segment for the tags field: tags/any(t: t eq 'New feature'). For the 'severity' field, you can filter by severity using `severity eq 'normal'` or `severity eq 'high'` or `severity eq 'critical'`. For the 'category' field, you can filter by category using `category eq 'stayInformed'` or `category eq 'planForChange'` or `category eq 'preventOrFixIssue'`. For the 'Services' field, here is an example of a query segment for the services field: services/any(s: contains(s, 'Copilot')). Only query body.content field with $search parameter. Do not use $filter for body.content field. Do not use $filter and $search in the same query.",
             "required": false,
             "schema": {
               "type": "string"
@@ -71,8 +71,8 @@
                 "description": "Case insensitive search for messages containing 'Microsoft 365' in the title."
               },
               "example2": {
-                "value": "contains(tolower(body.content), tolower('agents'))",
-                "description": "Case insensitive filter for messages with 'agents' in the body."
+                "value": "services/any(s: contains(s, 'Copilot'))",
+                "description": "Filter for services that contain 'Copilot'."
               },
               "example3": {
                 "value": "isMajorChange eq true",
@@ -81,7 +81,20 @@
               "example4": {
                 "value": "tags/any(x:x eq 'New feature') and contains(tolower(title), tolower('Microsoft Teams'))",
                 "description": "Filter for messages tagged as 'New Feature' and messages regarding Microsoft Teams."
+              },
+              "example5": {
+                "value": "severity eq 'critical'",
+                "description": "Filter for 'Critical' messages."
               }
+            }
+          },
+          {
+            "name": "$search",
+            "in": "query",
+            "description": "Search messages using a keyword. This performs full-text search across indexed fields including body.content. Do not use the $search parameter for title field search. For example, use `$search=\"agents\"` to find messages containing the word 'agents'. Note: You cannot combine $search with $filter in the same query.",
+            "required": false,
+            "schema": {
+              "type": "string"
             }
           }
         ],
@@ -113,7 +126,46 @@
                             "type": "string"
                           },
                           "body": {
-                            "type": "string"
+                            "type": "object",
+                            "properties": {
+                              "contentType": {
+                                "type": "string",
+                                "enum": [
+                                  "html",
+                                  "text"
+                                ]
+                              },
+                              "content": {
+                                "type": "string",
+                                "description": "HTML-encoded content string"
+                              }
+                            },
+                            "required": [
+                              "contentType",
+                              "content"
+                            ]
+                          },
+                          "tags": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          },
+                          "services": {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            },
+                            "enum": [
+                              "Microsoft 365 suite",
+                              "Exchange Online",
+                              "Microsoft 365 for the web",
+                              "Microsoft 365 apps",
+                              "Microsoft Purview",
+                              "Microsoft Copilot (Microsoft 365)",
+                              "Microsoft Copilot Chat",
+                              "Power Platform"
+                            ]
                           },
                           "category": {
                             "type": "string",
