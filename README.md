@@ -2,9 +2,10 @@
 
 ## Overview
 
- The M365 Copilot Message Center Agent allows you to search the **Microsoft 365 Admin Center** messages with Copilot chat using natural language prompts.
+ The M365 Copilot Message Center Agent allows you to search the **Microsoft 365 Admin Center** messages with Copilot chat using natural language prompts. Includes details regarding related features in the Microsoft 365 Roadmap. (Optional. Roadmap support requires installation of the [M365 Roadmap Copilot Connector.](https://github.com/mjfusa/m365-roadmap-copilot-connector)
 
- ![Message Center Agent Starter Prompts](./Images/starterprompts.png)
+  
+-  ![Message Center Agent Starter Prompts](./Images/starterprompts.png)
 
 ## M365 Message Center Agent Use Cases
 
