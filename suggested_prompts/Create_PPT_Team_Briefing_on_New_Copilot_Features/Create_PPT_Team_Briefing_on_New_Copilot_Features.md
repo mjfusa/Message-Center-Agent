@@ -13,7 +13,9 @@ This process uses the Message Center Agent and Copilot’s generative AI capabil
 2.	@ mention the Message Center Agent
 
 3.	Enter the following prompt:  
->Find 'Plan for change' messages. Filter on services containing Copilot. Show messages tagged as 'New Feature'. Show messages published since August 1. Sort by Date Last Updated In descending order with newest to oldest.
+>Find 'Plan for change' messages. Filter on services containing Copilot. Show messages tagged as 'New Feature'. Show messages published since August 1. Sort by Date Last Updated In descending order with newest to oldest.  
+
+Here is the prompt entered:
 ![Enter prompt](./images/IT%20Team%20Briefing1.png)
 
 The output at this point should look similar to the following:
