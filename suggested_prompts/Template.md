@@ -1,17 +1,16 @@
-Instructions for Creating a New Playbook:
+Instructions for Creating a New Scenario:
 
-Please create a folder that approximates the title of your playbook. Optionally create corresponding 'image' and 'other' folders for supporting files. In the main folder create a file named '[tile of your playbook].md' and use the following template to describe your prompt. Replace the bracketed sections with your content.  
+Please create a folder that approximates the title of your scenario. Optionally create corresponding 'image' and 'other' folders for supporting files. In the main folder create a file named '[tile of your scenario].md' and use the following template to describe your prompt. Replace the bracketed sections with your content.  
 
-See folder 'Create PPT Team Briefing on New Copilot Features' for an example of a completed playbook.
+See folder 'Create PPT Team Briefing on New Copilot Features' for an example of a completed scenario.
 
 ```markdown
 # [TITLE]
 
 ## Scenario
-
 [SCENARIO]
-## Methodology
 
+## Methodology
 [METHODOLOGY]
 
 ## Instructions
@@ -24,5 +23,4 @@ Image here as needed
 Image here as needed
 
 ## Author:
-
 [AUTHOR NAME]

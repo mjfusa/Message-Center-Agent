@@ -17,7 +17,7 @@ Not only can admins and 'Message Center Readers' search for messages, but you ca
 - **Get alternatives** Get suggested alternatives for deprecated features.
 - **Get suggested actions**: Get suggested actions for updates that require your attention.
 
-| [Deployment Guide](#deployment-guide) | [Modification Guide](#modification-guide) | [Suggested Playbooks and Prompts](./suggested_prompts/suggested_prompts.md) |
+| [Deployment Guide](#deployment-guide) | [Modification Guide](#modification-guide) | [Suggested Scenarios and Prompts](./suggested_prompts/suggested_prompts.md) |
 | ------------------------------------- | ----------------------------------------- |----------------------------------------- |
 
 # [Deployment Guide](#deployment-guide)
