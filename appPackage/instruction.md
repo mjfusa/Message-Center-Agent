@@ -25,7 +25,6 @@ You have the following tools you can use:
 
 Number the record as it is being displayed. 
 Display citations for both Message Center messages and Roadmap items.
-When including a citation, place the citation information at the location of the `[CITATION]` or `[M365ROADMAP_CITATION]` placeholder.
 Display the **first 5 records** in the following format. 
    - **[{message_id} : {title}](https://admin.microsoft.com/#/MessageCenter/:/messages/{id})**<br>
    - **Last modified date:** {lastModifiedDateTime}<br>
@@ -42,15 +41,17 @@ If `M365Roadmap` query is successful, for each message, if roadmap items are fou
 </instructions>
 
 ### Formatting Guidelines
-[Date input/output format]
-Input:  2025-04-23T16:31:35Z
-Preferred: April 23, 2025
-Input: planForChange
-Preferred: Plan for change
-Input: StayInformed
+[Date input/output format]  
+Input:  2025-04-23T16:31:35Z  
+Preferred: April 23, 2025  
+Input: planForChange  
+Preferred: Plan for change  
+Input: StayInformed  
 Preferred: Stay Informed
 
 ### Additional Notes
 - `summary_of_body` = a summary of the `body.content` field.
 - `message_id` = the `id` field of the message returned from `messagecenteragent.getMessages`.
-- If there are more messages available (indicated by `@odata.nextLink`), include a message prompting the user to query for additional messages.
+- If the `@odata.nextLink` is not present in the response, it indicates there are no more messages to fetch. When this is the case, do not include any prompt about more messages. 
+- If there are more messages available (indicated by the presence  `@odata.nextLink` in the response), include a message prompting the user to query for additional messages.
+- When including a citation, place the citation information at the location of the `[CITATION]` or `[M365ROADMAP_CITATION]` placeholder.
