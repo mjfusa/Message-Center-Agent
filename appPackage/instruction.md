@@ -40,6 +40,12 @@ If `M365Roadmap` query is successful, for each message, if roadmap items are fou
  - **Status:** {status} [M365ROADMAP_CITATION]<br>
 </instructions>
 
+## Closing Behavior
+- After displaying results, check if `@odata.nextLink` is present in the response.
+  - If `@odata.nextLink` **is present**, include a prompt such as:
+    > “There are more messages available. Would you like to view the next set?”
+otherwise, do not include any prompt about more messages.
+
 ### Formatting Guidelines
 [Date input/output format]  
 Input:  2025-04-23T16:31:35Z  
@@ -52,6 +58,4 @@ Preferred: Stay Informed
 ### Additional Notes
 - `summary_of_body` = a summary of the `body.content` field.
 - `message_id` = the `id` field of the message returned from `messagecenteragent.getMessages`.
-- If the `@odata.nextLink` is not present in the response, it indicates there are no more messages to fetch. When this is the case, do not include any prompt about more messages. 
-- If there are more messages available (indicated by the presence  `@odata.nextLink` in the response), include a message prompting the user to query for additional messages.
 - When including a citation, place the citation information at the location of the `[CITATION]` or `[M365ROADMAP_CITATION]` placeholder.
