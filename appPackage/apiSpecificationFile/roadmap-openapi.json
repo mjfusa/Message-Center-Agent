@@ -1,0 +1,355 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Microsoft 365 Feature Updates API",
+    "description": "OData-compliant API for Microsoft 365 feature updates and roadmap information",
+    "version": "2.0.0",
+    "contact": {
+      "name": "Microsoft Release Communications",
+      "url": "https://www.microsoft.com/releasecommunications"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://www.microsoft.com/releasecommunications/api/v2",
+      "description": "Microsoft Release Communications API"
+    }
+  ],
+  "paths": {
+    "/m365": {
+      "get": {
+        "summary": "Get Microsoft 365 feature updates",
+        "description": "Retrieve Microsoft 365 feature updates with OData query capabilities",
+        "operationId": "getM365RoadmapInfo",
+        "parameters": [
+          {
+            "name": "$select",
+            "in": "query",
+            "description": "Select specific fields to return",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "id,title,status,created,modified"
+            }
+          },
+          {
+            "name": "$filter",
+            "in": "query",
+            "description": "Filter the results using OData filter expressions",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "examples": {
+              "byId": {
+                "value": "id eq 65632",
+                "description": "Filter by specific ID"
+              },
+              "byTitle": {
+                "value": "contains(title,'Excel')",
+                "description": "Filter by title containing text"
+              },
+              "byStatus": {
+                "value": "status eq 'In development'",
+                "description": "Filter by status"
+              },
+              "byCreatedDate": {
+                "value": "created gt 2023-01-01T00:00:00Z",
+                "description": "Filter by created date"
+              },
+              "byModifiedDate": {
+                "value": "modified lt 2025-05-01T00:00:00Z",
+                "description": "Filter by modified date"
+              },
+              "byGADate": {
+                "value": "generalAvailabilityDate eq '2025-05'",
+                "description": "Filter by general availability date"
+              },
+              "byProducts": {
+                "value": "products/any(p: p eq 'Excel')",
+                "description": "Filter by products collection"
+              },
+              "byCloudInstances": {
+                "value": "cloudInstances/any(c: c eq 'GCC High')",
+                "description": "Filter by cloud instances collection"
+              },
+              "byPlatforms": {
+                "value": "platforms/any(p: p eq 'Web')",
+                "description": "Filter by platforms collection"
+              },
+              "byReleaseRings": {
+                "value": "releaseRings/any(r: r eq 'General Availability')",
+                "description": "Filter by release rings collection"
+              },
+              "byAvailabilities": {
+                "value": "availabilities/any(a: a/year eq 2025 and a/month eq 'May')",
+                "description": "Filter by availabilities complex type"
+              },
+              "composite": {
+                "value": "products/any(p: p eq 'Excel') and cloudInstances/any(c: c eq 'GCC High') and generalAvailabilityDate eq '2025-05'",
+                "description": "Complex filter with multiple conditions"
+              }
+            }
+          },
+          {
+            "name": "$orderby",
+            "in": "query",
+            "description": "Order the results",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "modified desc"
+            }
+          },
+          {
+            "name": "$top",
+            "in": "query",
+            "description": "Limit the number of results returned",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 1,
+              "maximum": 1000,
+              "example": 10
+            }
+          },
+          {
+            "name": "$skip",
+            "in": "query",
+            "description": "Skip a number of results",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "minimum": 0,
+              "example": 0
+            }
+          },
+          {
+            "name": "$count",
+            "in": "query",
+            "description": "Include the total count of matching entities",
+            "required": false,
+            "schema": {
+              "type": "boolean",
+              "example": true
+            }
+          },
+          {
+            "name": "$search",
+            "in": "query",
+            "description": "Full-text search across searchable fields",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "example": "Excel"
+            }
+          },
+          {
+            "name": "$expand",
+            "in": "query",
+            "description": "Expand related entities or complex types",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+              "examples": {
+                "simple": {
+                  "value": "availabilities",
+                  "description": "Expand availabilities"
+                },
+                "withSelect": {
+                  "value": "availabilities($select=ring,year,month)",
+                  "description": "Expand availabilities with specific fields"
+                }
+              }
+            }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/M365UpdateCollection"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - Invalid OData query"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "M365UpdateCollection": {
+        "type": "object",
+        "properties": {
+          "@odata.context": {
+            "type": "string",
+            "description": "OData context URL"
+          },
+          "@odata.count": {
+            "type": "integer",
+            "description": "Total count of matching entities (when $count=true)"
+          },
+          "value": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/M365Update"
+            }
+          }
+        }
+      },
+      "M365Update": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "Unique identifier for the feature update",
+            "example": 65632
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the feature update",
+            "example": "Excel - New formula functions"
+          },
+          "status": {
+            "type": "string",
+            "description": "Current status of the feature",
+            "enum": [
+              "In development",
+              "Rolling out",
+              "Launched",
+              "Cancelled"
+            ],
+            "example": "In development"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation date of the update entry",
+            "example": "2023-01-15T10:30:00Z"
+          },
+          "modified": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Last modification date of the update entry",
+            "example": "2025-03-20T14:45:00Z"
+          },
+          "generalAvailabilityDate": {
+            "type": "string",
+            "description": "General availability date (YYYY-MM format)",
+            "example": "2025-05"
+          },
+          "products": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Microsoft 365 products affected by this update",
+            "example": [
+              "Excel",
+              "Word",
+              "PowerPoint"
+            ]
+          },
+          "cloudInstances": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Cloud instances where this update applies",
+            "example": [
+              "Worldwide",
+              "GCC",
+              "GCC High",
+              "DoD"
+            ]
+          },
+          "platforms": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Platforms supported by this update",
+            "example": [
+              "Web",
+              "Desktop",
+              "Mobile",
+              "Mac"
+            ]
+          },
+          "releaseRings": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Release rings for this update",
+            "example": [
+              "Targeted Release",
+              "General Availability"
+            ]
+          },
+          "availabilities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Availability"
+            },
+            "description": "Availability information across different rings"
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description of the feature update"
+          },
+          "category": {
+            "type": "string",
+            "description": "Category of the feature update"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Tags associated with the update"
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "status"
+        ]
+      },
+      "Availability": {
+        "type": "object",
+        "properties": {
+          "ring": {
+            "type": "string",
+            "description": "Release ring name",
+            "example": "General Availability"
+          },
+          "year": {
+            "type": "integer",
+            "description": "Year of availability",
+            "example": 2025
+          },
+          "month": {
+            "type": "string",
+            "description": "Month of availability",
+            "example": "May"
+          },
+          "quarter": {
+            "type": "string",
+            "description": "Quarter of availability",
+            "example": "Q2"
+          }
+        }
+      }
+    }
+  }
+}
