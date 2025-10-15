@@ -3,21 +3,11 @@
   "version": "v1.3",
   "name": "Message Center Agent",
   "description": "This agent helps you search and summarize Microsoft 365 Admin Center messages using natural language. Works with the M365Roadmap Copilot Connector to provide related Microsoft 365 Roadmap information.",
-  "instructions": "$[file('instruction.md')]",
+  "instructions": "$[file('instructions.md')]",
   "actions": [
     {
       "id": "action_1",
       "file": "ai-plugin.json"
-    }
-  ],
-  "capabilities": [
-    {
-      "name": "GraphConnectors",
-      "connections": [
-        {
-          "connection_id": "M365Roadmap"
-        }
-      ]
     }
   ],
   "conversation_starters": [

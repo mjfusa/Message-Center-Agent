@@ -20,6 +20,22 @@
                     }
                 }
             }
+        },
+        {
+            "name": "getM365RoadmapInfo",
+            "description": "Retrieve Microsoft 365 roadmap information",
+            "capabilities": {
+                "response_semantics": {
+                    "data_path": "$.value",
+                    "properties": {
+                        "title": "$.title",
+                        "subtitle": "$.id"
+                    },
+                    "static_template": {
+                        "file": "adaptiveCards/displayRoadmapItem.json"
+                    }
+                }
+            }
         }
     ],
     "runtimes": [
@@ -34,6 +50,18 @@
             },
             "run_for_functions": [
                 "getMessages"
+            ]
+        },
+        {
+            "type": "OpenApi",
+            "auth": {
+                "type": "None"
+            },
+            "spec": {
+                "url": "apiSpecificationFile/roadmap-openapi.json"
+            },
+            "run_for_functions": [
+                "getM365RoadmapInfo"
             ]
         }
     ]

@@ -47,10 +47,6 @@
           "value": "${if(hasAttachments, 'Yes', 'No')}"
         },
         {
-          "title": "Roadmap ID:",
-          "value": "${if(details[0].name=='RoadmapIds',  details[0].value,'')}"
-        },
-        {
           "title": "Platforms:",
           "value": "${if(details[2].name=='Platforms',  details[2].value,'')}"
         },
@@ -63,14 +59,6 @@
           "value": "${if(services[0]!='',  services[0],'') + if(services[1]!='', ', '+ services[1],'') + if(services[2]!='', ', '+ services[2],'') + if(services[3]!='', ', '+ services[3],'') + if(services[4]!='', ', '+ services[4],'') + if(services[5]!='', ', '+ services[5],'') + if(services[6]!='', ', '+ services[6],'')}"
         }
       ]
-    }
-  ],
-  "actions": [
-    {
-      "type": "Action.OpenUrl",
-      "title": "Roadmap Details",
-      "url": "${if(details[0].name=='RoadmapIds', 'https://www.microsoft.com/en-us/microsoft-365/roadmap?searchterms=' + details[0].value, '')}",
-      "isEnabled": "${if(equals(details[0].name, 'RoadmapIds'), true, false)}"
     }
   ]
 }
