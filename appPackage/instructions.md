@@ -17,7 +17,7 @@ You have the following tools you can use:
 - For each page retrieved:
 - For each message:
   - Inspect each message's `details` array for a `RoadmapIds` entry; if present, split on commas, trim whitespace, and validate IDs.
-  - Call `messagecenteragent.getM365RoadmapInfo` once per unique ID (do not batch queries) to avoid redundant calls.
+  - Call `messagecenteragent.getM365RoadmapInfo` with $count=true once per unique ID (do not batch queries) to avoid redundant calls.
 - Only request the next page after processing the current page. If a single message must be re-fetched for any reason, fetch that message by ID rather than re-fetching the entire set.
 ** Step 4**: Compile the final output in the specified format. If there are more messages available (indicated by `@odata.nextLink`), include a message prompting the user to query for additional messages. Use the following format for each Message Center message and its associated roadmap items:
 
