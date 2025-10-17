@@ -2,8 +2,7 @@
 
 ## Overview
 
- The M365 Copilot Message Center Agent allows you to search the **Microsoft 365 Admin Center** messages with Copilot chat using natural language prompts. Includes details regarding related features in the Microsoft 365 Roadmap. (Optional. Roadmap support requires installation of the [M365 Roadmap Copilot Connector.](https://github.com/mjfusa/m365-roadmap-copilot-connector)
-
+ The M365 Copilot Message Center Agent allows you to search the **Microsoft 365 Admin Center** messages with Copilot chat using natural language prompts. Includes details regarding related features in the Microsoft 365 Roadmap. 
   
 -  ![Message Center Agent Starter Prompts](./Images/starterprompts.png)
 
@@ -17,7 +16,8 @@ Not only can admins and 'Message Center Readers' search for messages, but you ca
 - **Get insights**: Gain insights regarding impact of updates for your organization.
 - **Get alternatives** Get suggested alternatives for deprecated features.
 - **Get suggested actions**: Get suggested actions for updates that require your attention.
-
+- **Roadmap Detail Included**: Results include related Microsoft 365 Roadmap details to provide additional context about upcoming features and changes.  
+  
 | [Deployment Guide](#deployment-guide) | [Modification Guide](#modification-guide) |
 | ------------------------------------- | ----------------------------------------- |
 
@@ -182,7 +182,10 @@ Here are some prompts to get you started with the Message Center Agent:
 If the results include one message - the adaptive card is displayed.
 
 ![Draft an email informing team of major changed coming to M365 Copilot](./Images/Citation%20with%20Adaptive%20Card.png)
-Here we are drafting an email to inform the team about major changes coming to M365 Copilot. Note that citations are included, and their content will be displayed when hovered over.
+Here we are drafting an email to inform the team about major changes coming to M365 Copilot. Note that citations are included, and their content will be displayed when hovered over.  
+
+Here's an example of output with M365 Roadmap details included:  
+![Output with M365 Roadmap details included](./Images/OutputWithRoadmapInfo.png)
 
 ### Key Files
 
