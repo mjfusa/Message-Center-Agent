@@ -1,0 +1,125 @@
+swagger: '2.0'
+info:
+  title: Microsoft Graph API
+  version: v1.0
+  description: API to obtain message center messages including OAuth authentication
+host: graph.microsoft.com
+basePath: /v1.0
+schemes:
+  - https
+paths:
+  /admin/serviceAnnouncement/messages:
+    get:
+      summary: Get message center messages
+      description: Retrieve the message center messages
+      operationId: getMessages
+      parameters:
+        - name: $top
+          in: query
+          description: Number of records to return
+          required: false
+          type: integer
+          minimum: 1
+        - name: $skip
+          in: query
+          description: Number of records to skip
+          required: false
+          type: integer
+          minimum: 0
+        - name: $filter
+          in: query
+          description: >-
+            Filter the results based on specific conditions. Use
+            `contains(title,'search term')` to search within the title property
+            for a specific term. For create time, use the 'startDateTime'
+            property with a date format. For example, `startDateTime ge
+            2025-03-01T00:00:00Z` to filter messages created after March 1,
+            2025. For major change messages, use `isMajorChange eq true`. To
+            combine filters, use `and` operator. For example,
+            `contains(title,'Copilot') and startDateTime ge
+            2025-03-01T00:00:00Z`. Searches should be in lowercase. For example,
+            `contains(tolower(title),tolower('microsoft 365'))`. To filter by
+            message body, use `contains(body.content,'search term')`. To filter
+            on messages tags, use `tags/any(t:t eq 'tagValue')`, where 'tagValue'
+            can be User impact, Planned maintenance, etc. To filter on services,
+            use `services/any(s:s eq 'serviceValue')`, where 'serviceValue' can be
+            Exchange, SharePoint, etc.
+          required: false
+          type: string
+      responses:
+        '200':
+          description: Successful response
+          schema:
+            type: object
+            properties:
+              value:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    id:
+                      type: string
+                    title:
+                      type: string
+                    body:
+                      type: object
+                      properties:
+                        contentType:
+                          type: string
+                          enum:
+                            - html
+                            - text
+                        content:
+                          type: string
+                          description: HTML-encoded content string
+                    category:
+                      type: string
+                    severity:
+                      type: string
+                    startDateTime:
+                      type: string
+                      format: date-time
+                    lastModifiedDateTime:
+                      type: string
+                      format: date-time
+                    isMajorChange:
+                      type: boolean
+        '401':
+          description: Unauthorized. Please check your authentication credentials.
+          schema:
+            type: object
+            properties:
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+        '403':
+          description: >-
+            Insufficient permissions. You need the Message Center Reader or the
+            Global Admin role to access this agent.
+          schema:
+            type: object
+            properties:
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+        '404':
+          description: Not Found
+          schema:
+            type: object
+            properties:
+              error:
+                type: object
+                properties:
+                  code:
+                    type: string
+                  message:
+                    type: string
+securityDefinitions: {}
