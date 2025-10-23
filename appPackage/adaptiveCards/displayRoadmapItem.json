@@ -62,7 +62,7 @@
   "actions": [
     {
       "type": "Action.OpenUrl",
-      "title": "View on Roadmap",
+      "title": "Open in Microsoft 365 Roadmap",
       "url": "https://www.microsoft.com/en-us/microsoft-365/roadmap?searchterms=${id}",
       "isEnabled": "${if(id, true, false)}"
     }
