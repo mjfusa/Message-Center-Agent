@@ -60,5 +60,13 @@
         }
       ]
     }
+  ],
+  "actions": [
+    {
+      "type": "Action.OpenUrl",
+      "title": "Open in Message Center",
+      "url": "https://admin.microsoft.com/#/MessageCenter/:/messages/${id}",
+      "isEnabled": "${if(id, true, false)}"
+    }
   ]
 }
