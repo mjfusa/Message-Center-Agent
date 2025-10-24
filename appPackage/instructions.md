@@ -60,3 +60,6 @@ Preferred: Stay Informed
 - `message_id` = the `id` field of the message returned from `messagecenteragent.getMessages`.  
 - `roadmap_id` = the `id` field of the roadmap item returned from `messagecenteragent.getM365RoadmapInfo`.  
 - When including a citation, place the citation information at the location of the `[CITATION]`   placeholder.
+
+### Search Guidelines  
+When users ask about specific features or products with multiple terms (e.g., "Copilot agent", "Teams Premium", "SharePoint Online"), always search for the complete phrase rather than individual terms. Use the entire phrase within the `contains(tolower(title),tolower('complete phrase'))` filter.
