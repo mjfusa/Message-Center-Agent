@@ -4,7 +4,7 @@
 
  The M365 Copilot Message Center Agent allows you to search the **Microsoft 365 Admin Center** messages with Copilot chat using natural language prompts. Includes details regarding related features in the Microsoft 365 Roadmap. 
   
--  ![Message Center Agent Starter Prompts](./Images/starterprompts.png)
+![Message Center Agent Starter Prompts](./Images/starterprompts.png)
 
 ## M365 Message Center Agent Use Cases
 
@@ -178,11 +178,11 @@ Here are some prompts to get you started with the Message Center Agent:
 
 ### Example Output
 
-![Message displayed with adaptive card](./Images/MessageWithAdaptiveCard.png)
-If the results include one message - the adaptive card is displayed.
+![@Mention agent. Message displayed with adaptive card](./Images/AtMentionWithAdaptiveCard.png)  
+Agents started with an @mention in Copilot chat. The results of the search can be passed to other agents or activities in Copilot chat.
 
-![Draft an email informing team of major changed coming to M365 Copilot](./Images/Citation%20with%20Adaptive%20Card.png)
-Here we are drafting an email to inform the team about major changes coming to M365 Copilot. Note that citations are included, and their content will be displayed when hovered over.  
+![Draft an email informing team of major changed coming to M365 Copilot](./Images/EmailInformingTeamOnMajorChangesWithCopilot2.png)  
+Here we are drafting an email to inform the team about major changes coming to M365 Copilot. Email is drafted in follow up prompt.  
 
 Here's an example of output with M365 Roadmap details included:  
 ![Output with M365 Roadmap details included](./Images/OutputWithRoadmapInfo.png)
@@ -195,10 +195,11 @@ The following files are key to the implementation of the declarative agent:
 
 > NOTE: This file was generated using the following prompt in GitHub Copilot using model GPT 4.5:
 
-Extract the openapi definition for the graph API /admin/serviceAnnouncement/messages from https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/refs/heads/master/openapi/v1.0/openapi.yaml. Covert YAML output to JSON.
+>Extract the openapi definition for the graph API /admin/serviceAnnouncement/messages from https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/refs/heads/master/openapi/v1.0/openapi.yaml. Covert YAML output to JSON.
 
+- **roadmap-openapi.json**: This file contains the OpenAPI specification for the Microsoft 365 Roadmap V2 API [https://www.microsoft.com/releasecommunications/api/v2/m365](https://www.microsoft.com/releasecommunications/api/v2/m365) that the declarative agent will use to search and retrieve roadmap items from the Microsoft 365 Roadmap.  
 - **declarativeCopilot.json**: This file contains the declarative agent configuration that defines the behavior and capabilities of the agent. No capabilities have been defined for this agent.
-- **manifest.json**: This file contains the Teams application manifest that defines metadata for the declarative agent.This is what is displayed in the Copilot agents store.
+- **manifest.json**: This file contains the Teams application manifest that defines metadata for the declarative agent. This is what is displayed in the Copilot agents store.
 - **m365agents.yml**: This file contains the M365 Agents Toolkit project configuration, including the OAuth2 registration and other settings.
 - **.env.production**: This file contains environment variables for the project for production release, including the client ID and secret for OAuth2 authentication.
 
