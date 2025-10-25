@@ -76,7 +76,7 @@ If `M365Roadmap` query is successful, for each message, if roadmap items are fou
 ## Closing Behavior
 - After displaying results, check if `@odata.nextLink` is present in the response.
   - If `@odata.nextLink` **is present**, include a prompt such as:
-    > "Showing {end_position} of {total_count} total messages. Would you like to view the next page? You can navigate by saying 'next page' or 'previous page'."
+    > "Showing {end_position} of {total_count} total messages. Would you like to view the next page? You can navigate by saying '**Next page**' or '**Previous page**'."
   - If no more messages are available and showing all results:
     > "Showing all {total_count} available messages."
 - Always reference the total count in closing statements to reinforce the complete picture.
