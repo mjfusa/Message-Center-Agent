@@ -60,7 +60,11 @@
                           "category": "Microsoft 365",
                           "status": "In Development",
                           "targetDate": "2025-12-01T00:00:00Z",
-                          "platforms": ["Web", "Desktop", "Mobile"]
+                          "platforms": [
+                            "Web",
+                            "Desktop",
+                            "Mobile"
+                          ]
                         },
                         {
                           "id": "12346",
@@ -70,7 +74,9 @@
                           "category": "Power Platform",
                           "status": "Rolling Out",
                           "targetDate": "2025-11-15T00:00:00Z",
-                          "platforms": ["Web"]
+                          "platforms": [
+                            "Web"
+                          ]
                         }
                       ],
                       "@odata.count": 2,
@@ -90,7 +96,10 @@
                           "category": "Microsoft Teams",
                           "status": "Preview",
                           "targetDate": "2025-11-30T00:00:00Z",
-                          "platforms": ["Web", "Desktop"]
+                          "platforms": [
+                            "Web",
+                            "Desktop"
+                          ]
                         }
                       ],
                       "@odata.count": 1
@@ -135,6 +144,16 @@
           "type": "string"
         },
         "examples": {
+          "filter_by_id": {
+            "summary": "Find roadmap item by id",
+            "description": "Find specific roadmap item by its unique ID. ALWAYS use 'eq' operator for ID lookups, never 'contains'.",
+            "value": "id eq 123456"
+          },
+          "filter_by_multiple_ids": {
+            "summary": "Find multiple roadmap items by IDs",
+            "description": "When looking up multiple IDs use 'in' operator. ALWAYS use 'in' for multiple ID lookups.",
+            "value": "id in (123456, 789012, 345678)"
+          },
           "copilot_last_week": {
             "summary": "Copilot items from last week",
             "description": "Find roadmap items containing 'copilot' published in the last week",
@@ -311,7 +330,14 @@
             "description": "Supported platforms for this feature",
             "items": {
               "type": "string",
-              "enum": ["Web", "Desktop", "Mobile", "Mac", "iOS", "Android"]
+              "enum": [
+                "Web",
+                "Desktop",
+                "Mobile",
+                "Mac",
+                "iOS",
+                "Android"
+              ]
             }
           },
           "tags": {
@@ -322,7 +348,14 @@
             }
           }
         },
-        "required": ["id", "title", "created", "description", "category", "status"]
+        "required": [
+          "id",
+          "title",
+          "created",
+          "description",
+          "category",
+          "status"
+        ]
       },
       "RoadmapResponse": {
         "type": "object",
@@ -345,7 +378,9 @@
             "nullable": true
           }
         },
-        "required": ["value"]
+        "required": [
+          "value"
+        ]
       },
       "ErrorResponse": {
         "type": "object",
@@ -367,16 +402,25 @@
                 "items": {
                   "type": "object",
                   "properties": {
-                    "code": {"type": "string"},
-                    "message": {"type": "string"}
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
                   }
                 }
               }
             },
-            "required": ["code", "message"]
+            "required": [
+              "code",
+              "message"
+            ]
           }
         },
-        "required": ["error"]
+        "required": [
+          "error"
+        ]
       }
     }
   },
@@ -406,7 +450,11 @@
               "category": "Microsoft 365",
               "status": "In Development",
               "targetDate": "2025-12-01T00:00:00Z",
-              "platforms": ["Web", "Desktop", "Mobile"]
+              "platforms": [
+                "Web",
+                "Desktop",
+                "Mobile"
+              ]
             }
           ],
           "@odata.count": 1
