@@ -19,3 +19,4 @@ env/.env.dev.user
 out/
 
 
+.vscode/settings.json

@@ -1,0 +1,487 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Microsoft 365 Roadmap API",
+    "description": "API for accessing Microsoft 365 roadmap items with OData query capabilities. Use 'created' field for date filtering (not 'createdDateTime').",
+    "version": "v2",
+    "contact": {
+      "name": "Microsoft 365 Roadmap",
+      "url": "https://www.microsoft.com/microsoft-365/roadmap"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://www.microsoft.com/releasecommunications/api/v2",
+      "description": "Microsoft 365 Roadmap API"
+    }
+  ],
+  "paths": {
+    "/m365": {
+      "get": {
+        "summary": "Get Microsoft 365 roadmap items",
+        "description": "Retrieve roadmap items with optional filtering, sorting, and pagination. Always use 'created' field for date operations, not 'createdDateTime'.",
+        "operationId": "getM365RoadmapInfo",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/FilterParameter"
+          },
+          {
+            "$ref": "#/components/parameters/OrderByParameter"
+          },
+          {
+            "$ref": "#/components/parameters/TopParameter"
+          },
+          {
+            "$ref": "#/components/parameters/SkipParameter"
+          },
+          {
+            "$ref": "#/components/parameters/CountParameter"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response with roadmap items",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RoadmapResponse"
+                },
+                "examples": {
+                  "copilot_items": {
+                    "summary": "Recent Copilot roadmap items",
+                    "description": "Example response for Copilot items from the last week",
+                    "value": {
+                      "value": [
+                        {
+                          "id": "12345",
+                          "title": "Microsoft Copilot for Microsoft 365 - Enhanced AI capabilities",
+                          "created": "2025-10-12T14:30:00Z",
+                          "description": "New AI-powered features for Copilot in Microsoft 365 applications",
+                          "category": "Microsoft 365",
+                          "status": "In Development",
+                          "targetDate": "2025-12-01T00:00:00Z",
+                          "platforms": [
+                            "Web",
+                            "Desktop",
+                            "Mobile"
+                          ]
+                        },
+                        {
+                          "id": "12346",
+                          "title": "Copilot Studio - Custom connector improvements",
+                          "created": "2025-10-10T09:15:00Z",
+                          "description": "Enhanced custom connector capabilities in Copilot Studio",
+                          "category": "Power Platform",
+                          "status": "Rolling Out",
+                          "targetDate": "2025-11-15T00:00:00Z",
+                          "platforms": [
+                            "Web"
+                          ]
+                        }
+                      ],
+                      "@odata.count": 2,
+                      "@odata.nextLink": null
+                    }
+                  },
+                  "filtered_response": {
+                    "summary": "Filtered roadmap items",
+                    "description": "Example response with multiple filtering criteria",
+                    "value": {
+                      "value": [
+                        {
+                          "id": "12347",
+                          "title": "Teams Meeting Copilot Integration",
+                          "created": "2025-10-09T11:45:00Z",
+                          "description": "Integration of Copilot capabilities in Teams meetings",
+                          "category": "Microsoft Teams",
+                          "status": "Preview",
+                          "targetDate": "2025-11-30T00:00:00Z",
+                          "platforms": [
+                            "Web",
+                            "Desktop"
+                          ]
+                        }
+                      ],
+                      "@odata.count": 1
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad request - invalid query parameters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "parameters": {
+      "FilterParameter": {
+        "name": "$filter",
+        "in": "query",
+        "description": "OData filter expression. IMPORTANT: Use 'created' field for date filtering (not 'createdDateTime'). Supports contains(), tolower(), and date comparisons.",
+        "required": false,
+        "schema": {
+          "type": "string"
+        },
+        "examples": {
+          "filter_by_id": {
+            "summary": "Find roadmap item by id",
+            "description": "Find specific roadmap item by its unique ID. ALWAYS use 'eq' operator for ID lookups, never 'contains'.",
+            "value": "id eq 123456"
+          },
+          "filter_by_multiple_ids": {
+            "summary": "Find multiple roadmap items by IDs",
+            "description": "When looking up multiple IDs use 'in' operator. ALWAYS use 'in' for multiple ID lookups.",
+            "value": "id in (123456, 789012, 345678)"
+          },
+          "copilot_last_week": {
+            "summary": "Copilot items from last week",
+            "description": "Find roadmap items containing 'copilot' published in the last week",
+            "value": "contains(tolower(title), 'copilot') and created ge 2025-10-08T00:00:00Z"
+          },
+          "recent_items": {
+            "summary": "Recent items (last 7 days)",
+            "description": "Items created in the last 7 days",
+            "value": "created ge 2025-10-08T00:00:00Z"
+          },
+          "title_search": {
+            "summary": "Search by title",
+            "description": "Search for items containing specific text in title",
+            "value": "contains(tolower(title), 'teams')"
+          },
+          "date_range": {
+            "summary": "Date range filter",
+            "description": "Items within a specific date range",
+            "value": "created ge 2025-10-01T00:00:00Z and created le 2025-10-15T00:00:00Z"
+          },
+          "status_filter": {
+            "summary": "Filter by status",
+            "description": "Items with specific status",
+            "value": "status eq 'In Development'"
+          },
+          "category_and_date": {
+            "summary": "Category and date filter",
+            "description": "Items in specific category from recent date",
+            "value": "category eq 'Microsoft 365' and created ge 2025-10-01T00:00:00Z"
+          },
+          "complex_filter": {
+            "summary": "Complex multi-criteria filter",
+            "description": "Multiple conditions with title, category, and date",
+            "value": "contains(tolower(title), 'copilot') and category eq 'Microsoft 365' and created ge 2025-10-01T00:00:00Z"
+          }
+        }
+      },
+      "OrderByParameter": {
+        "name": "$orderby",
+        "in": "query",
+        "description": "Order results by specified field. Use 'created' for date ordering (not 'createdDateTime').",
+        "required": false,
+        "schema": {
+          "type": "string"
+        },
+        "examples": {
+          "newest_first": {
+            "summary": "Newest items first",
+            "description": "Order by creation date, newest first",
+            "value": "created desc"
+          },
+          "oldest_first": {
+            "summary": "Oldest items first",
+            "description": "Order by creation date, oldest first",
+            "value": "created asc"
+          },
+          "title_alphabetical": {
+            "summary": "Alphabetical by title",
+            "description": "Order alphabetically by title",
+            "value": "title asc"
+          },
+          "status_then_date": {
+            "summary": "Status then date",
+            "description": "Order by status, then by creation date",
+            "value": "status asc, created desc"
+          }
+        }
+      },
+      "TopParameter": {
+        "name": "$top",
+        "in": "query",
+        "description": "Number of items to return (default: 10, max: 100)",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 1,
+          "maximum": 100,
+          "default": 5
+        },
+        "examples": {
+          "default": {
+            "summary": "Default count",
+            "value": 10
+          },
+          "large_set": {
+            "summary": "Large result set",
+            "value": 50
+          },
+          "maximum": {
+            "summary": "Maximum allowed",
+            "value": 100
+          }
+        }
+      },
+      "SkipParameter": {
+        "name": "$skip",
+        "in": "query",
+        "description": "Number of items to skip for pagination",
+        "required": false,
+        "schema": {
+          "type": "integer",
+          "minimum": 0,
+          "default": 0
+        }
+      },
+      "CountParameter": {
+        "name": "$count",
+        "in": "query",
+        "description": "Include total count of items in response",
+        "required": true,
+        "schema": {
+          "type": "boolean",
+          "default": true
+        }
+      }
+    },
+    "schemas": {
+      "RoadmapItem": {
+        "type": "object",
+        "description": "A Microsoft 365 roadmap item with details about new features and updates",
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique identifier for the roadmap item"
+          },
+          "title": {
+            "type": "string",
+            "description": "Title of the roadmap item"
+          },
+          "created": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Creation date and time of the roadmap item (ISO 8601 format). Use this field for date filtering, not 'createdDateTime'."
+          },
+          "description": {
+            "type": "string",
+            "description": "Detailed description of the roadmap item"
+          },
+          "category": {
+            "type": "string",
+            "description": "Product category (e.g., 'Microsoft 365', 'Microsoft Teams', 'Power Platform')",
+            "enum": [
+              "Microsoft 365",
+              "Microsoft Teams",
+              "SharePoint",
+              "Exchange",
+              "OneDrive",
+              "Power Platform",
+              "Viva",
+              "Security & Compliance",
+              "Other"
+            ]
+          },
+          "status": {
+            "type": "string",
+            "description": "Current development status of the roadmap item",
+            "enum": [
+              "In Development",
+              "Rolling Out",
+              "Launched",
+              "Preview",
+              "Planned",
+              "Cancelled"
+            ]
+          },
+          "targetDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Expected release date (ISO 8601 format)",
+            "nullable": true
+          },
+          "platforms": {
+            "type": "array",
+            "description": "Supported platforms for this feature",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Web",
+                "Desktop",
+                "Mobile",
+                "Mac",
+                "iOS",
+                "Android"
+              ]
+            }
+          },
+          "tags": {
+            "type": "array",
+            "description": "Tags associated with the roadmap item",
+            "items": {
+              "type": "string"
+            }
+          }
+        },
+        "required": [
+          "id",
+          "title",
+          "created",
+          "description",
+          "category",
+          "status"
+        ]
+      },
+      "RoadmapResponse": {
+        "type": "object",
+        "description": "Response containing roadmap items with OData metadata",
+        "properties": {
+          "value": {
+            "type": "array",
+            "description": "Array of roadmap items",
+            "items": {
+              "$ref": "#/components/schemas/RoadmapItem"
+            }
+          },
+          "@odata.count": {
+            "type": "integer",
+            "description": "Total count of items (when $count=true is specified)"
+          },
+          "@odata.nextLink": {
+            "type": "string",
+            "description": "URL for next page of results (for pagination)",
+            "nullable": true
+          }
+        },
+        "required": [
+          "value"
+        ]
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "description": "Error response structure",
+        "properties": {
+          "error": {
+            "type": "object",
+            "properties": {
+              "code": {
+                "type": "string",
+                "description": "Error code"
+              },
+              "message": {
+                "type": "string",
+                "description": "Error message"
+              },
+              "details": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "code": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            },
+            "required": [
+              "code",
+              "message"
+            ]
+          }
+        },
+        "required": [
+          "error"
+        ]
+      }
+    }
+  },
+  "x-ms-examples": {
+    "find-recent-copilot-items": {
+      "summary": "Find recent Copilot items",
+      "description": "Example query to find roadmap items related to Copilot published in the last week using the correct 'created' field",
+      "request": {
+        "method": "GET",
+        "url": "/m365?$filter=contains(tolower(title), 'copilot') and created ge 2025-10-08T00:00:00Z&$orderby=created desc&$top=10",
+        "headers": {
+          "Accept": "application/json"
+        }
+      },
+      "response": {
+        "status": 200,
+        "headers": {
+          "Content-Type": "application/json"
+        },
+        "body": {
+          "value": [
+            {
+              "id": "12345",
+              "title": "Microsoft Copilot for Microsoft 365 - Enhanced AI capabilities",
+              "created": "2025-10-12T14:30:00Z",
+              "description": "New AI-powered features for Copilot in Microsoft 365 applications",
+              "category": "Microsoft 365",
+              "status": "In Development",
+              "targetDate": "2025-12-01T00:00:00Z",
+              "platforms": [
+                "Web",
+                "Desktop",
+                "Mobile"
+              ]
+            }
+          ],
+          "@odata.count": 1
+        }
+      }
+    },
+    "search-teams-features": {
+      "summary": "Search Teams features",
+      "description": "Example query to find Teams-related roadmap items",
+      "request": {
+        "method": "GET",
+        "url": "/m365?$filter=contains(tolower(title), 'teams') and category eq 'Microsoft Teams'&$orderby=created desc&$top=5",
+        "headers": {
+          "Accept": "application/json"
+        }
+      }
+    },
+    "date-range-query": {
+      "summary": "Date range query",
+      "description": "Example query for items within a specific date range using the 'created' field",
+      "request": {
+        "method": "GET",
+        "url": "/m365?$filter=created ge 2025-10-01T00:00:00Z and created le 2025-10-15T00:00:00Z&$orderby=created desc",
+        "headers": {
+          "Accept": "application/json"
+        }
+      }
+    }
+  }
+}

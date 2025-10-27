@@ -1,0 +1,70 @@
+{
+  "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+  "type": "AdaptiveCard",
+  "version": "1.4",
+  "body": [
+    {
+      "type": "TextBlock",
+      "text": "${id} : ${title}",
+      "size": "large",
+      "weight": "bolder",
+      "wrap": true,
+      "color": "${if(status=='In development', 'accent', if(status=='Rolling out', 'good', if(status=='Launched', 'good', 'default')))}"
+    },
+    {
+      "type": "TextBlock",
+      "text": "${description}",
+      "wrap": true,
+      "spacing": "medium"
+    },
+    {
+      "type": "FactSet",
+      "facts": [
+        {
+          "title": "Status:",
+          "value": "${status}"
+        },
+        {
+          "title": "General Availability:",
+          "value": "${if(generalAvailabilityDate, generalAvailabilityDate, 'Not specified')}"
+        },
+        {
+          "title": "Preview Availability:",
+          "value": "${if(previewAvailabilityDate, previewAvailabilityDate, 'Not specified')}"
+        },
+        {
+          "title": "Products:",
+          "value": "${if(products[0]!='', products[0],'') + if(products[1]!='', ', '+ products[1],'') + if(products[2]!='', ', '+ products[2],'') + if(products[3]!='', ', '+ products[3],'') + if(products[4]!='', ', '+ products[4],'')}"
+        },
+        {
+          "title": "Platforms:",
+          "value": "${if(platforms[0]!='', platforms[0],'') + if(platforms[1]!='', ', '+ platforms[1],'') + if(platforms[2]!='', ', '+ platforms[2],'') + if(platforms[3]!='', ', '+ platforms[3],'') + if(platforms[4]!='', ', '+ platforms[4],'')}"
+        },
+        {
+          "title": "Cloud Instances:",
+          "value": "${if(cloudInstances[0]!='', cloudInstances[0],'') + if(cloudInstances[1]!='', ', '+ cloudInstances[1],'') + if(cloudInstances[2]!='', ', '+ cloudInstances[2],'')}"
+        },
+        {
+          "title": "Release Rings:",
+          "value": "${if(releaseRings[0]!='', releaseRings[0],'') + if(releaseRings[1]!='', ', '+ releaseRings[1],'') + if(releaseRings[2]!='', ', '+ releaseRings[2],'')}"
+        },
+        {
+          "title": "Created:",
+          "value": "${formatDateTime(created,'MMMM dd, yyyy')}"
+        },
+        {
+          "title": "Last Modified:",
+          "value": "${formatDateTime(modified,'MMMM dd, yyyy')}"
+        }
+      ]
+    }
+  ],
+  "actions": [
+    {
+      "type": "Action.OpenUrl",
+      "title": "Open in Microsoft 365 Roadmap",
+      "url": "https://www.microsoft.com/en-us/microsoft-365/roadmap?searchterms=${id}",
+      "isEnabled": "${if(id, true, false)}"
+    }
+  ]
+}
