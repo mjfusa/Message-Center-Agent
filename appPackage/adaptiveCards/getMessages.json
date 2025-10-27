@@ -47,10 +47,6 @@
           "value": "${if(hasAttachments, 'Yes', 'No')}"
         },
         {
-          "title": "Roadmap ID:",
-          "value": "${if(details[0].name=='RoadmapIds',  details[0].value,'')}"
-        },
-        {
           "title": "Platforms:",
           "value": "${if(details[2].name=='Platforms',  details[2].value,'')}"
         },
@@ -68,9 +64,9 @@
   "actions": [
     {
       "type": "Action.OpenUrl",
-      "title": "Roadmap Details",
-      "url": "${if(details[0].name=='RoadmapIds', 'https://www.microsoft.com/en-us/microsoft-365/roadmap?searchterms=' + details[0].value, '')}",
-      "isEnabled": "${if(equals(details[0].name, 'RoadmapIds'), true, false)}"
+      "title": "Open in Message Center",
+      "url": "https://admin.microsoft.com/#/MessageCenter/:/messages/${id}",
+      "isEnabled": "${if(id, true, false)}"
     }
   ]
 }

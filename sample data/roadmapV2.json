@@ -1,0 +1,40 @@
+{
+    "@odata.context": "https://relcomms-prod-dagnegedescbeefs.b02.azurefd.net/api/v2/$metadata#M365",
+    "value": [
+        {
+            "id": 476488,
+            "title": "Microsoft Teams: Ability to separate out the Townhall attendee invites",
+            "description": "This backend change will now address the \u0027separation of attendee\u0027 invites from the events crew. This feature allows the organizers of Townhalls to maintain separate invites for attendees.",
+            "cloudInstances": [
+                "Worldwide (Standard Multi-Tenant)",
+                "GCC",
+                "GCC High"
+            ],
+            "platforms": [
+                "Desktop",
+                "Mac"
+            ],
+            "releaseRings": [
+                "General Availability",
+                "Targeted Release"
+            ],
+            "moreInfoUrls": [],
+            "products": [
+                "Microsoft Teams"
+            ],
+            "generalAvailabilityDate": "2026-03",
+            "previewAvailabilityDate": null,
+            "created": "2025-01-23T00:15:18.0000000Z",
+            "status": "In development",
+            "modified": "2025-09-17T23:00:20.4802984Z",
+            "locale": null,
+            "availabilities": [
+                {
+                    "ring": "General Availability",
+                    "year": 2026,
+                    "month": "March"
+                }
+            ]
+        }
+    ]
+}
