@@ -136,6 +136,26 @@ If you want to make the agent available to your entire organization, you can pub
 
 1. Using the M365 Agents Toolkit, in the LIFECYCLE section, select 'Publish to Organization'.
 
+## Release Notes Generator
+
+A PowerShell script is provided to automatically generate release notes from Git commit history. This tool is useful for tracking changes and creating changelogs for releases.
+
+### Usage
+
+Generate release notes for commits from the last day:
+
+```powershell
+.\GenerateReleaseNotes.ps1
+```
+
+Generate release notes for the last 7 days:
+
+```powershell
+.\GenerateReleaseNotes.ps1 -Days 7 -OutputFile "WEEKLY_RELEASE_NOTES.md"
+```
+
+For complete documentation, see [RELEASE_NOTES_README.md](./RELEASE_NOTES_README.md).
+
 ## Architecture   
 ### Zero Code
    
