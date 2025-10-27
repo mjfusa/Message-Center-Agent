@@ -1,8 +1,8 @@
 # Prompting Guide for Message Center Agent
 
-Below are concise natural-language query patterns that can be used with the Message Center Agent. Use these patterns as templates you can paste into the Message Center Agent.
+Below are concise natural-language query patterns that can be used with the Message Center Agent. Use these patterns as templates you can paste into the Message Center Agent for both Message Center posts and Microsoft 365 Roadmap items.
 
-## Overview
+## Message Center Posts Overview
 - value[] (message object) — per-property patterns
   - **id**
     - Natural language: "Get message MC172851" / "Show message with id MC172851"
@@ -42,4 +42,47 @@ Below are concise natural-language query patterns that can be used with the Mess
   - Use "for service" or "services containing" for the `services` array 
   - Use "modified since / before" to target `lastModifiedDateTime`.
   - Use "major change" to target `isMajorChange eq true`.
+
+## Microsoft 365 Roadmap Items Overview
+- value[] (roadmap item object) — per-property patterns
+  - **id**
+    - Natural language: "Get roadmap item 12345" / "Show roadmap item with id 12345"
+    - Important: Use exact ID (numbers only) for specific item lookups
+  - **title**
+    - Natural language: "Roadmap items with 'Copilot' in the title" / "Show roadmap items containing 'Teams'"
+  - **created** (creation date)
+    - Natural language: "Roadmap items from last week" / "Items created since October 1, 2025" / "Recent roadmap items"
+    - Important: Use "created" not "createdDateTime" for date filtering
+  - **description**
+    - Natural language: "Roadmap items about AI features" / "Items describing enhanced capabilities"
+  - **category** 
+    - Natural language: "Roadmap items in Microsoft 365 category" / "Show Power Platform roadmap items"
+    - Available categories: Microsoft 365, Microsoft Teams, SharePoint, Exchange, OneDrive, Power Platform, Viva, Security & Compliance, Other
+  - **status**
+    - Natural language: "Show items in development" / "Rolling out features" / "Preview roadmap items"
+    - Available statuses: In Development, Rolling Out, Launched, Preview, Planned, Cancelled
+  - **targetDate** (expected release date)
+    - Natural language: "Items releasing in December 2025" / "Features expected by end of year"
+  - **platforms** (array)
+    - Natural language: "Roadmap items for Web platform" / "Mobile-supported features"
+    - Available platforms: Web, Desktop, Mobile, Mac, iOS, Android
+  - **tags** (array)
+    - Natural language: "Roadmap items tagged with 'AI'" / "Show items tagged 'Preview'"
+
+- **Combined / compound roadmap queries**
+  - Natural language: "Show recent Copilot roadmap items from last month"
+  - Natural language: "Microsoft Teams features in development created since October 1"
+  - Natural language: "Top 10 newest Power Platform roadmap items"
+  - Natural language: "Preview status roadmap items for Web and Desktop platforms"
+
+- **Pagination / next page** (roadmap)
+  - Natural language: "Show more roadmap items" / "Next page of roadmap results" / "Give me 20 more roadmap items"
+
+- **Tips / phrasing guidance for roadmap items**
+  - Use "roadmap items" or "roadmap" to clearly target roadmap data vs message center
+  - Use "created since/after/before" for date filtering (not "createdDateTime")
+  - Use exact category names: "Microsoft 365", "Microsoft Teams", "Power Platform", etc.
+  - Use exact status names: "In Development", "Rolling Out", "Preview", etc.
+  - For specific items, use "roadmap item 12345" (ID only, no prefixes)
+  - Combine multiple criteria: "Copilot roadmap items in Microsoft 365 category from last week"
 
