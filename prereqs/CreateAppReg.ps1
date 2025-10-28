@@ -53,7 +53,7 @@ $web = @{
 $app = New-EntraApplication -DisplayName $appName -Web $web 
 
 # Create a service principal for the application
-$servicePrincipal = New-EntraServicePrincipal -AppId $app.AppId
+$servicePrincipal = New-EntraServicePrincipal -AppId $app.appId
 
 # Get Graph service principal
 $graphServicePrincipal = Get-EntraServicePrincipal -Filter "AppId eq '$graphApiId'"
