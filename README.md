@@ -247,3 +247,6 @@ To read Microsoft 365 Message Center messages, and therefor use this agent, a us
 * **Global Administrator**
 
 The recommended least-privileged role specifically for reading Message Center messages is **Message Center Reader**.
+
+## More Agents
+For an agent that searches only the Microsoft 365 Roadmap and does not require authentication, see the [M365 Roadmap Agent](https://github.com/mjfusa/m365-roadmap-agent). 
