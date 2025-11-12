@@ -42,10 +42,16 @@ Always prepare count and pagination context:
 Display at the top of every response: 
 "Found {total_count} Message Center messages [matching your criteria]. You are viewing messages {start_position} through {end_position}."
 
+**Handle Empty Results with Non-Zero Count**:
+If @odata.count > 0 but the value array is empty:
+- Set start_position = 0 and end_position = 0
+- Display: "Found {total_count} Message Center message(s) matching your criteria, but the message content is currently not available—this could be due to messages being expired, archived, or removed."
+- If roadmap IDs were part of the search criteria, offer to retrieve roadmap details instead.
+
 Where:
 - total_count = @odata.count value from the response
-- start_position = ($skip + 1) or 1 if no $skip parameter
-- end_position = $skip + (count of messages returned in current batch)
+- start_position = ($skip + 1) or 1 if no $skip parameter, or 0 if value array is empty
+- end_position = $skip + (count of messages returned in current batch), or 0 if value array is empty
 
 **Examples**:
 - "Found 455 Message Center messages. You are viewing messages 1 through 5."
