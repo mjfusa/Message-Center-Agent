@@ -46,6 +46,9 @@ Steps to deploy the M365 Copilot Message Center Agent using the Microsoft 365 Ag
    3. Change to the `prereqs` folder and run `InstallNodeAtk.ps1`. The output should be similar to this:
       ![Install Node and ATK](./Images/InstallNodeAndAtk.png)
 
+>[!WARNING]
+>Note: The ATK works with any [LTS version of Node](https://nodejs.org/en/about/previous-releases) >= v20. It does not work and generates errors with non-LTS version 25.2.1.
+
 3. Register an application with Entra (Azure AD) to enable OAuth2.0 authentication and API access.
    
    1. In the `prereqs` folder, run the following command to register the application:
