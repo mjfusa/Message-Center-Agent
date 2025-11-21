@@ -2,7 +2,7 @@
   "$schema": "https://developer.microsoft.com/json-schemas/copilot/declarative-agent/v1.2/schema.json",
   "version": "v1.3",
   "name": "Message Center Agent",
-  "description": "This agent helps you search and summarize Microsoft 365 Admin Center messages using natural language. Works with the M365Roadmap Copilot Connector to provide related Microsoft 365 Roadmap information.",
+  "description": "This agent helps you search and summarize Microsoft 365 Admin Center messages using natural language. Works with the M365Roadmap Copilot Connector to provide related Microsoft 365 Roadmap information. Requires Message Center Reader role or higher.",
   "instructions": "$[file('instructions.md')]",
   "actions": [
     {
