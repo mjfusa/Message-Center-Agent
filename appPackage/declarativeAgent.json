@@ -21,7 +21,7 @@
     },
     {
       "title": "Inform the team regarding upcoming major changes in Microsoft 365 Copilot",
-      "text": "Draft an email to the team regarding the upcoming major changes. Filter on services containing 'Copilot'. Look for the messages published in the last month."
+      "text": "Show message regarding updates from the last month that are related to Copilot and marked as major changes."
     },
     {
       "title": "Access messages by service and tags",
