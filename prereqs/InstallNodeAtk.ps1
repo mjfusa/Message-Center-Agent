@@ -119,3 +119,22 @@ catch {
 # Final success message
 Write-Host "`nSetup completed successfully!" -ForegroundColor Green
 Write-Host "Now you can now use the Microsoft 365 Agents Toolkit CLI with the 'atk' command." -ForegroundColor Cyan
+
+# Reminder about user access requirements
+Write-Host ""
+Write-Host "========================================================" -ForegroundColor Yellow
+Write-Host "  IMPORTANT: User Access Requirements" -ForegroundColor Yellow
+Write-Host "========================================================" -ForegroundColor Yellow
+Write-Host ""
+Write-Host "After deploying the Message Center Agent, users will need the" -ForegroundColor White
+Write-Host "'Message Center Reader' role to access it." -ForegroundColor White
+Write-Host ""
+Write-Host "Quick Start Guide: .\GrantAccess-QuickStart.md" -ForegroundColor Cyan
+Write-Host ""
+Write-Host "Three options for granting access:" -ForegroundColor White
+Write-Host "  1. Direct assignment (small teams)" -ForegroundColor White
+Write-Host "  2. Bulk assignment via CSV (medium teams)" -ForegroundColor White
+Write-Host "  3. Security group (recommended for large orgs)" -ForegroundColor Green
+Write-Host ""
+Write-Host "See the Quick Start Guide for detailed instructions." -ForegroundColor Cyan
+Write-Host ""

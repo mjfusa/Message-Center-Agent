@@ -28,7 +28,6 @@ catch {
 }
 # Define application name and redirect URI
 $appName = "MessageCenterAgent-reg"
-$redirectUri = 'https://teams.microsoft.com/api/platform/v1.0/oAuthRedirect'
 
 # check if the application already exists
 $existingApp = Get-EntraApplication -Filter "DisplayName eq '$appName'" -ErrorAction SilentlyContinue   
@@ -78,7 +77,7 @@ Set-EntraApplication -ApplicationId $app.Id -RequiredResourceAccess $requiredRes
 Set-EntraServicePrincipal -ServicePrincipalId $servicePrincipal.Id -AppRoleAssignmentRequired $false
 
 # # Grant OAuth2 permission
-$permissionGrant = New-EntraOauth2PermissionGrant -ClientId $servicePrincipal.Id -ConsentType 'AllPrincipals' -ResourceId $graphServicePrincipal.Id -Scope $delegatedPermission
+# $permissionGrant = New-EntraOauth2PermissionGrant -ClientId $servicePrincipal.Id -ConsentType 'AllPrincipals' -ResourceId $graphServicePrincipal.Id -Scope $delegatedPermission
 
 # Create secret for the application
 $secret = New-EntraApplicationPasswordCredential -ApplicationId $app.Id -CustomKeyIdentifier  "MessageCenterAgentSecret" -EndDate (Get-Date).AddYears(1)

@@ -239,9 +239,9 @@ Note that this step is done via the M365 Agents Toolkit's 'Provision' feature. T
 The recommended least-privileged role specifically for managing and deploying Teams apps is **Teams Administrator**.
 Note: This role is required when using the M365 Agents Toolkit to provision the app registration and deploy the app.
 
-## Required Roles - Agent Usage
+## Required Roles - Agent Usage  
 
-To read Microsoft 365 Message Center messages, and therefor use this agent, a user must have one of the following Microsoft 365 admin roles:
+To read Microsoft 365 Message Center messages, and therefore use this agent, a user must have one of the following Microsoft 365 admin roles:
 
 * **Message Center Reader**
 * **Global Reader**
@@ -250,6 +250,96 @@ To read Microsoft 365 Message Center messages, and therefor use this agent, a us
 * **Global Administrator**
 
 The recommended least-privileged role specifically for reading Message Center messages is **Message Center Reader**.
+
+### Granting User Access to the Agent
+
+Once the agent is deployed, users need the **Message Center Reader** role (or higher) to access it. Admins have several options for granting this access efficiently:
+
+#### Quick Reference
+
+For step-by-step instructions on granting access, see the **[Quick Start Guide](./prereqs/GrantAccess-QuickStart.md)** which provides fast methods for assigning the Message Center Reader role.
+
+#### Option 1: Direct Role Assignment (Individual Users)
+
+**Best for:** Small teams or assigning access to a few specific users
+
+Use the PowerShell script to assign the role directly to users:
+
+```powershell
+cd prereqs
+.\AssignMessageCenterReaderRole.ps1 -UserPrincipalNames "user1@contoso.com", "user2@contoso.com"
+```
+
+#### Option 2: Bulk Assignment via CSV
+
+**Best for:** Medium-sized teams or one-time bulk assignments
+
+1. Edit the `prereqs\users-template.csv` file with your users' email addresses
+2. Run the bulk assignment script:
+
+```powershell
+cd prereqs
+.\AssignMessageCenterReaderRole.ps1 -FromCsvFile -CsvPath ".\users-template.csv"
+```
+
+#### Option 3: Security Group (Recommended for Large Organizations) ⭐
+
+**Best for:** Organizations with ongoing access management needs
+
+This is the recommended approach as it allows admins to manage access by simply adding/removing users from a group rather than managing individual role assignments.
+
+**Requirements:**
+- Azure AD Premium P1 (or higher) license
+- Privileged Role Administrator or Global Administrator role
+
+**Initial Setup (One-Time):**
+```powershell
+cd prereqs
+.\SetupMessageCenterReaderGroup.ps1
+```
+
+This creates a **role-assignable** security group called **"Message Center Agent Users"** with the Message Center Reader role already assigned.
+
+**Managing Access After Setup:**
+
+Once the group is created, simply add or remove users from the group:
+
+**Via Microsoft 365 Admin Center:**
+1. Go to [Microsoft 365 Admin Center](https://admin.microsoft.com)
+2. Navigate to **Teams & groups** > **Active teams & groups**
+3. Find and select **"Message Center Agent Users"**
+4. Click **Members** > **Add members**
+5. Select users and save
+
+**Via PowerShell:**
+```powershell
+Connect-MgGraph -Scopes "GroupMember.ReadWrite.All"
+$user = Get-MgUser -Filter "UserPrincipalName eq 'user@contoso.com'"
+$group = Get-MgGroup -Filter "displayName eq 'Message Center Agent Users'"
+New-MgGroupMember -GroupId $group.Id -DirectoryObjectId $user.Id
+```
+
+#### Verification
+
+After granting access, users should:
+1. Sign out and sign back in (for permissions to take effect)
+2. Open Microsoft 365 Copilot or Teams
+3. Look for the **Message Center Agent** in the Copilot interface
+4. Test with a prompt like: *"Show me recent message center posts"*
+
+**Note:** Role propagation can take up to 1 hour in some cases.
+
+#### User Experience with Missing Permissions
+
+If a user attempts to use the agent without the required Message Center Reader role, the agent will automatically detect the permission issue and provide helpful guidance, including:
+- Which roles are required
+- How to contact their admin for access
+- Links to the admin center for administrators
+- Instructions for signing out/in after receiving permissions
+
+This built-in error handling ensures users understand why they can't access the agent and know exactly what steps to take to get access.
+
+For detailed instructions, troubleshooting, and best practices, see the **[Quick Start Guide](./prereqs/GrantAccess-QuickStart.md)**.
 
 ## Troubleshooting
 If you encounter issues during deployment or usage of the M365 Copilot Message Center Agent, consider the following troubleshooting steps:
