@@ -2,6 +2,16 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "PowerShell Launch Run-Evaluation",
+            "type": "PowerShell",
+            "request": "launch",
+            "script": "${workspaceFolder}/eval/Run-Evaluation.ps1",
+            "cwd": "${cwd}",
+            "args": ["-mode 'live' -MaxApiCalls 80 -TestCategories 'roadmap_queries'"
+
+            ]
+        },
+        {
             "name": "Preview Agent in Copilot (Edge)",
             "type": "msedge",
             "request": "launch",

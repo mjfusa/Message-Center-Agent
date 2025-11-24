@@ -53,56 +53,38 @@
                     "value": {
                       "value": [
                         {
-                          "id": "12345",
-                          "title": "Microsoft Copilot for Microsoft 365 - Enhanced AI capabilities",
-                          "created": "2025-10-12T14:30:00Z",
-                          "description": "New AI-powered features for Copilot in Microsoft 365 applications",
-                          "category": "Microsoft 365",
-                          "status": "In Development",
-                          "targetDate": "2025-12-01T00:00:00Z",
+                          "id": 476488,
+                          "title": "Microsoft Teams: Ability to separate out the Townhall attendee invites",
+                          "created": "2025-01-23T00:15:18.0000000Z",
+                          "description": "This backend change will now address the 'separation of attendee' invites from the events crew.",
+                          "cloudInstances": [
+                            "Worldwide (Standard Multi-Tenant)",
+                            "GCC"
+                          ],
                           "platforms": [
-                            "Web",
                             "Desktop",
-                            "Mobile"
-                          ]
-                        },
-                        {
-                          "id": "12346",
-                          "title": "Copilot Studio - Custom connector improvements",
-                          "created": "2025-10-10T09:15:00Z",
-                          "description": "Enhanced custom connector capabilities in Copilot Studio",
-                          "category": "Power Platform",
-                          "status": "Rolling Out",
-                          "targetDate": "2025-11-15T00:00:00Z",
-                          "platforms": [
-                            "Web"
+                            "Mac"
+                          ],
+                          "releaseRings": [
+                            "General Availability",
+                            "Targeted Release"
+                          ],
+                          "products": [
+                            "Microsoft Teams"
+                          ],
+                          "status": "In development",
+                          "generalAvailabilityDate": "2026-03",
+                          "availabilities": [
+                            {
+                              "ring": "General Availability",
+                              "year": 2026,
+                              "month": "March"
+                            }
                           ]
                         }
                       ],
-                      "@odata.count": 2,
+                      "@odata.count": 1,
                       "@odata.nextLink": null
-                    }
-                  },
-                  "filtered_response": {
-                    "summary": "Filtered roadmap items",
-                    "description": "Example response with multiple filtering criteria",
-                    "value": {
-                      "value": [
-                        {
-                          "id": "12347",
-                          "title": "Teams Meeting Copilot Integration",
-                          "created": "2025-10-09T11:45:00Z",
-                          "description": "Integration of Copilot capabilities in Teams meetings",
-                          "category": "Microsoft Teams",
-                          "status": "Preview",
-                          "targetDate": "2025-11-30T00:00:00Z",
-                          "platforms": [
-                            "Web",
-                            "Desktop"
-                          ]
-                        }
-                      ],
-                      "@odata.count": 1
                     }
                   }
                 }
@@ -138,56 +120,51 @@
       "FilterParameter": {
         "name": "$filter",
         "in": "query",
-        "description": "OData filter expression. IMPORTANT: Use 'created' field for date filtering (not 'createdDateTime'). Supports contains(), tolower(), and date comparisons.",
+        "description": "OData filter expression. IMPORTANT: Use 'created' field for created date filtering (not 'createdDateTime'). Use the 'modified' field for last modified date filtering (not 'lastModifiedDateTime'). Supports contains(), tolower(), and date comparisons. Filter the results based on specific conditions. Use `contains(tolower(title),tolower('search term'))` to search within the title property for a specific term. For creation date filtering, use the 'created' property with ISO 8601 date format. For example, `created ge 2025-03-01T00:00:00Z` to filter roadmap items created after March 1, 2025. To combine filters, use `and` operator. For example, `contains(tolower(title),tolower('Teams')) and created ge 2025-03-01T00:00:00Z`. For the 'status' field, you can filter by status using `status eq 'In development'`, `status eq 'Rolling out'`, `status eq 'Launched'`, `status eq 'Preview'`, `status eq 'Planned'`, or `status eq 'Cancelled'`. For array fields, use the any() operator: For 'platforms' array, use `platforms/any(p: contains(tolower(p), 'desktop'))` to find items available on desktop platform, or `platforms/any(p: p eq 'Web')` for exact platform match. For 'products' array, use `products/any(p: contains(tolower(p), 'teams'))` to search within product names. For 'releaseRings' array, use `releaseRings/any(r: contains(tolower(r), 'general'))` to filter by release ring. For 'cloudInstances' array, use `cloudInstances/any(c: contains(tolower(c), 'gcc'))` to filter by cloud instance. For 'availabilities' array, use nested object filtering: `availabilities/any(a: a/ring eq 'General Availability')` to filter by release ring, `availabilities/any(a: a/year eq 2026)` to filter by year, or `availabilities/any(a: a/month eq 'March')` to filter by month. Date range filtering example: `created ge 2025-01-01T00:00:00Z and created le 2025-12-31T23:59:59Z`. For complex date ranges spanning multiple months and years, ALWAYS use proper parentheses grouping: `(availabilities/any(a: a/year eq 2025 and (a/month eq 'November' or a/month eq 'December')) or availabilities/any(a: a/year eq 2026 and a/month eq 'January'))`. Complex example: `contains(tolower(title), 'teams') and platforms/any(p: p eq 'Desktop') and (availabilities/any(a: a/year eq 2025 and (a/month eq 'November' or a/month eq 'December')) or availabilities/any(a: a/year eq 2026 and a/month eq 'January'))`. To find roadmap items that are 'major changes', use contains(tolower(title), 'major') or contains(tolower(title), 'breaking') or contains(tolower(description), 'major') or contains(tolower(description), 'significant'). Do not use '$filter=isMajorChange+eq+true' as it is not supported by the API.",
         "required": false,
         "schema": {
           "type": "string"
         },
         "examples": {
-          "filter_by_id": {
-            "summary": "Find roadmap item by id",
-            "description": "Find specific roadmap item by its unique ID. ALWAYS use 'eq' operator for ID lookups, never 'contains'.",
-            "value": "id eq 123456"
-          },
-          "filter_by_multiple_ids": {
-            "summary": "Find multiple roadmap items by IDs",
-            "description": "When looking up multiple IDs use 'in' operator. ALWAYS use 'in' for multiple ID lookups.",
-            "value": "id in (123456, 789012, 345678)"
-          },
-          "copilot_last_week": {
-            "summary": "Copilot items from last week",
-            "description": "Find roadmap items containing 'copilot' published in the last week",
-            "value": "contains(tolower(title), 'copilot') and created ge 2025-10-08T00:00:00Z"
-          },
-          "recent_items": {
-            "summary": "Recent items (last 7 days)",
-            "description": "Items created in the last 7 days",
-            "value": "created ge 2025-10-08T00:00:00Z"
-          },
-          "title_search": {
-            "summary": "Search by title",
-            "description": "Search for items containing specific text in title",
+          "teams_items": {
+            "summary": "Teams items",
+            "description": "Find roadmap items containing 'teams' in title",
             "value": "contains(tolower(title), 'teams')"
           },
-          "date_range": {
-            "summary": "Date range filter",
-            "description": "Items within a specific date range",
-            "value": "created ge 2025-10-01T00:00:00Z and created le 2025-10-15T00:00:00Z"
+          "recent_items": {
+            "summary": "Recent items (last 30 days)",
+            "description": "Items created in the last 30 days",
+            "value": "created ge 2025-09-21T00:00:00Z"
           },
-          "status_filter": {
-            "summary": "Filter by status",
-            "description": "Items with specific status",
-            "value": "status eq 'In Development'"
+          "desktop_platform": {
+            "summary": "Desktop platform items",
+            "description": "Items available on desktop platform",
+            "value": "platforms/any(p: p eq 'Desktop')"
           },
-          "category_and_date": {
-            "summary": "Category and date filter",
-            "description": "Items in specific category from recent date",
-            "value": "category eq 'Microsoft 365' and created ge 2025-10-01T00:00:00Z"
+          "availability_2026": {
+            "summary": "Items available in 2026",
+            "description": "Items with availability in 2026",
+            "value": "availabilities/any(a: a/year eq 2026)"
           },
           "complex_filter": {
             "summary": "Complex multi-criteria filter",
-            "description": "Multiple conditions with title, category, and date",
-            "value": "contains(tolower(title), 'copilot') and category eq 'Microsoft 365' and created ge 2025-10-01T00:00:00Z"
+            "description": "Teams items on desktop available in 2026",
+            "value": "contains(tolower(title), 'teams') and platforms/any(p: p eq 'Desktop') and availabilities/any(a: a/year eq 2026)"
+          },
+          "major_change_variations": {
+            "summary": "Find roadmap items that are major changes",
+            "description": "Find roadmap items that are major changes using various keywords",
+            "value": "contains(tolower(title), 'major') or contains(tolower(title), 'breaking') or contains(tolower(description), 'major change') or contains(tolower(description), 'significant update')"
+          },
+          "complex_date_range": {
+            "summary": "Complex multi-month date range filter",
+            "description": "Items available in November-December 2025 or January 2026",
+            "value": "(availabilities/any(a: a/year eq 2025 and (a/month eq 'November' or a/month eq 'December')) or availabilities/any(a: a/year eq 2026 and a/month eq 'January'))"
+          },
+          "full_complex_example": {
+            "summary": "Complete example with products, keywords, and date range",
+            "description": "SharePoint/Viva/admin items mentioning 'agent' available November 2025 - January 2026",
+            "value": "(products/any(p: contains(tolower(p), 'sharepoint')) or products/any(p: contains(tolower(p), 'viva')) or products/any(p: contains(tolower(p), 'admin'))) and contains(tolower(description), 'agent') and (availabilities/any(a: a/year eq 2025 and (a/month eq 'November' or a/month eq 'December')) or availabilities/any(a: a/year eq 2026 and a/month eq 'January'))"
           }
         }
       },
@@ -214,11 +191,6 @@
             "summary": "Alphabetical by title",
             "description": "Order alphabetically by title",
             "value": "title asc"
-          },
-          "status_then_date": {
-            "summary": "Status then date",
-            "description": "Order by status, then by creation date",
-            "value": "status asc, created desc"
           }
         }
       },
@@ -231,21 +203,7 @@
           "type": "integer",
           "minimum": 1,
           "maximum": 100,
-          "default": 5
-        },
-        "examples": {
-          "default": {
-            "summary": "Default count",
-            "value": 10
-          },
-          "large_set": {
-            "summary": "Large result set",
-            "value": 50
-          },
-          "maximum": {
-            "summary": "Maximum allowed",
-            "value": 100
-          }
+          "default": 10
         }
       },
       "SkipParameter": {
@@ -276,7 +234,7 @@
         "description": "A Microsoft 365 roadmap item with details about new features and updates",
         "properties": {
           "id": {
-            "type": "string",
+            "type": "integer",
             "description": "Unique identifier for the roadmap item"
           },
           "title": {
@@ -292,59 +250,99 @@
             "type": "string",
             "description": "Detailed description of the roadmap item"
           },
-          "category": {
-            "type": "string",
-            "description": "Product category (e.g., 'Microsoft 365', 'Microsoft Teams', 'Power Platform')",
-            "enum": [
-              "Microsoft 365",
-              "Microsoft Teams",
-              "SharePoint",
-              "Exchange",
-              "OneDrive",
-              "Power Platform",
-              "Viva",
-              "Security & Compliance",
-              "Other"
-            ]
-          },
           "status": {
             "type": "string",
             "description": "Current development status of the roadmap item",
             "enum": [
-              "In Development",
-              "Rolling Out",
-              "Launched",
-              "Preview",
-              "Planned",
-              "Cancelled"
+              "In development",
+              "Rolling out",
+              "Launched"
             ]
           },
-          "targetDate": {
+          "modified": {
             "type": "string",
             "format": "date-time",
-            "description": "Expected release date (ISO 8601 format)",
+            "description": "Last modification date and time (ISO 8601 format)"
+          },
+          "generalAvailabilityDate": {
+            "type": "string",
+            "description": "General availability date in YYYY-MM format",
+            "pattern": "^\\d{4}-\\d{2}$",
+            "nullable": true
+          },
+          "previewAvailabilityDate": {
+            "type": "string",
+            "format": "date-time",
+            "description": "Preview availability date (ISO 8601 format)",
+            "nullable": true
+          },
+          "locale": {
+            "type": "string",
+            "description": "Locale information",
             "nullable": true
           },
           "platforms": {
             "type": "array",
             "description": "Supported platforms for this feature",
             "items": {
-              "type": "string",
-              "enum": [
-                "Web",
-                "Desktop",
-                "Mobile",
-                "Mac",
-                "iOS",
-                "Android"
-              ]
+              "type": "string"
             }
           },
-          "tags": {
+          "products": {
             "type": "array",
-            "description": "Tags associated with the roadmap item",
+            "description": "Microsoft 365 products associated with this roadmap item",
             "items": {
               "type": "string"
+            }
+          },
+          "releaseRings": {
+            "type": "array",
+            "description": "Release rings for this roadmap item",
+            "items": {
+              "type": "string"
+            }
+          },
+          "cloudInstances": {
+            "type": "array",
+            "description": "Cloud deployment instances where this feature is available",
+            "items": {
+              "type": "string"
+            }
+          },
+          "moreInfoUrls": {
+            "type": "array",
+            "description": "Additional information URLs related to this roadmap item",
+            "items": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "availabilities": {
+            "type": "array",
+            "description": "Release availability information with timing details for different release rings",
+            "items": {
+              "type": "object",
+              "properties": {
+                "ring": {
+                  "type": "string",
+                  "description": "Release ring for this availability"
+                },
+                "year": {
+                  "type": "integer",
+                  "description": "Year of availability",
+                  "minimum": 2020,
+                  "maximum": 2030
+                },
+                "month": {
+                  "type": "string",
+                  "description": "Month of availability"
+                }
+              },
+              "required": [
+                "ring",
+                "year",
+                "month"
+              ]
             }
           }
         },
@@ -353,7 +351,6 @@
           "title",
           "created",
           "description",
-          "category",
           "status"
         ]
       },
@@ -376,6 +373,10 @@
             "type": "string",
             "description": "URL for next page of results (for pagination)",
             "nullable": true
+          },
+          "@odata.context": {
+            "type": "string",
+            "description": "OData context URL"
           }
         },
         "required": [
@@ -421,66 +422,6 @@
         "required": [
           "error"
         ]
-      }
-    }
-  },
-  "x-ms-examples": {
-    "find-recent-copilot-items": {
-      "summary": "Find recent Copilot items",
-      "description": "Example query to find roadmap items related to Copilot published in the last week using the correct 'created' field",
-      "request": {
-        "method": "GET",
-        "url": "/m365?$filter=contains(tolower(title), 'copilot') and created ge 2025-10-08T00:00:00Z&$orderby=created desc&$top=10",
-        "headers": {
-          "Accept": "application/json"
-        }
-      },
-      "response": {
-        "status": 200,
-        "headers": {
-          "Content-Type": "application/json"
-        },
-        "body": {
-          "value": [
-            {
-              "id": "12345",
-              "title": "Microsoft Copilot for Microsoft 365 - Enhanced AI capabilities",
-              "created": "2025-10-12T14:30:00Z",
-              "description": "New AI-powered features for Copilot in Microsoft 365 applications",
-              "category": "Microsoft 365",
-              "status": "In Development",
-              "targetDate": "2025-12-01T00:00:00Z",
-              "platforms": [
-                "Web",
-                "Desktop",
-                "Mobile"
-              ]
-            }
-          ],
-          "@odata.count": 1
-        }
-      }
-    },
-    "search-teams-features": {
-      "summary": "Search Teams features",
-      "description": "Example query to find Teams-related roadmap items",
-      "request": {
-        "method": "GET",
-        "url": "/m365?$filter=contains(tolower(title), 'teams') and category eq 'Microsoft Teams'&$orderby=created desc&$top=5",
-        "headers": {
-          "Accept": "application/json"
-        }
-      }
-    },
-    "date-range-query": {
-      "summary": "Date range query",
-      "description": "Example query for items within a specific date range using the 'created' field",
-      "request": {
-        "method": "GET",
-        "url": "/m365?$filter=created ge 2025-10-01T00:00:00Z and created le 2025-10-15T00:00:00Z&$orderby=created desc",
-        "headers": {
-          "Accept": "application/json"
-        }
       }
     }
   }
