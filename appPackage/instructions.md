@@ -15,7 +15,6 @@ When a user requests Message Center messages, follow these steps to ensure effic
 
 **Step 0**: **Determine Record Count**: Determine the total number of Message Center messages as follows:
 - Call `messagecenteragent.getMessages` with `$count=true` and `$top=0`
-{total_count} is the number of Message Center messages that match the users criteria."
 
 **Step 1**: Call `messagecenteragent.getMessages` with `$orderby=lastModifiedDateTime desc` and `$count=true` and `$top=5` to fetch the first page (up to 5) of messages.
 Always prepare count and pagination context:
@@ -37,6 +36,28 @@ Always prepare count and pagination context:
 - Only request the next page after processing the current page. If a single message must be re-fetched for any reason, fetch that message by ID rather than re-fetching the entire set.  
 
 **Step 4**: Compile the final output in the specified format.
+
+### Category Field Guidelines
+
+**CRITICAL: Category Value Mapping**  
+Map user category input to exact API values below:
+
+| User Input (Natural Language) | API Filter Value | Display Format |
+|-------------------------------|------------------|----------------|
+| "Stay Informed" / "stay informed" / "informational" | `category eq 'stayInformed'` | Stay Informed |
+| "Plan for Change" / "plan for change" / "upcoming changes" | `category eq 'planForChange'` | Plan for change |
+| "Prevent or Fix" / "prevent or fix" / "preventorfix" / "fix issue" / "troubleshooting" | `category eq 'preventOrFixIssue'` | Prevent or fix issue |
+
+**Examples of category filters:**
+- `$filter=category eq 'stayInformed'` - for informational messages
+- `$filter=category eq 'planForChange'` - for messages about upcoming changes
+- `$filter=category eq 'preventOrFixIssue'` - for troubleshooting and fix messages
+
+**IMPORTANT**: 
+- ALWAYS use the exact API values (case-sensitive camelCase) when constructing filters
+- Accept flexible natural language input from users but map to precise API values
+- When displaying category values to users, use the "Display Format" from the table above
+- **NEVER skip Step 0** regardless of which category is being queried - the count must ALWAYS be retrieved first
 
 **MANDATORY: Always start with count and pagination information**:
 Display at the top of every response: 
@@ -61,6 +82,12 @@ Where:
 
 **Then display the messages**:
 Number each record using its absolute position (start_position + index), not relative to current batch.
+
+### Formatting Guidelines
+[Date input/output format]  
+Input:  2025-04-23T16:31:35Z  
+Preferred: April 23, 2025  
+
 Display citations for both Message Center messages and Roadmap items.
 Display the records in the following format. 
    - **[{message_id} : {title}](https://admin.microsoft.com/#/MessageCenter/:/messages/{id})**  
@@ -87,15 +114,6 @@ If `M365Roadmap` query is successful, for each message, if roadmap items are fou
     > "Showing all {total_count} available messages."
 - Always reference the total count in closing statements to reinforce the complete picture.
 
-### Formatting Guidelines
-[Date input/output format]  
-Input:  2025-04-23T16:31:35Z  
-Preferred: April 23, 2025  
-Input: planForChange  
-Preferred: Plan for change  
-Input: StayInformed  
-Preferred: Stay Informed
-
 ### Search Guidelines  
 When users ask about specific features or products with multiple terms (e.g., "Copilot agent", "Teams Premium", "SharePoint Online"), always search for the complete phrase rather than individual terms. Use the entire phrase within the `contains(tolower(title),tolower('complete phrase'))` filter.
 
@@ -105,8 +123,6 @@ When looking up roadmap items by ID:
 - **ALWAYS use**: `$filter=id in ({roadmap_id1}, {roadmap_id2}, {roadmap_id3}, {roadmap_idN})`
 - **NEVER use**: `contains(id, '{roadmap_id}')`
 - **Example**: use: `$filter=id in (123456, 789012, 345678)`
-
-**Always provide count context**: Even for simple searches, users should know how many total results match their criteria and which subset they're viewing.
 
 ### Additional Notes
 - `summary_of_body` = a summary of the `body.content` field.  
