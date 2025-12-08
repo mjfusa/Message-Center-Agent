@@ -202,15 +202,17 @@ This agent uses **TypeSpec** for configuration management. TypeSpec is a strongl
 - **m365agents.yml**: M365 Agents Toolkit project configuration, including OAuth2 registration
 - **.env.production**: Environment variables for production release (client ID and secret for OAuth2 authentication)
 
-#### Generated Files (Do Not Edit)
+#### TypeSpec Generated Files (Do Not Edit)
 The following files are automatically generated from `main.tsp` and should not be edited directly:
 - **appPackage/declarative-agent**: Declarative agent manifest (generated from TypeSpec)
-- **appPackage/messagecenterapi-apiplugin.json**: Message Center API plugin manifest
-- **appPackage/roadmapapi-apiplugin.json**: Roadmap API plugin manifest
 - **appPackage/apiSpecificationFile/MessageCenterAgent.MessageCenterAPI-openapi.json**: OpenAPI spec for Graph API message center endpoint
 - **appPackage/apiSpecificationFile/MessageCenterAgent.RoadmapAPI-openapi.json**: OpenAPI spec for M365 Roadmap API
 
-To make changes to the agent configuration, edit `main.tsp` and run `npm run build` to regenerate all configuration files.
+#### Plugin Manifest Files
+- **appPackage/messagecenterapi-apiplugin.json**: Message Center API plugin manifest (references TypeSpec-generated OpenAPI)
+- **appPackage/roadmapapi-apiplugin.json**: Roadmap API plugin manifest (references TypeSpec-generated OpenAPI)
+
+To make changes to the agent APIs, edit `main.tsp` and run `npm run build` to regenerate OpenAPI specifications.
 
 For detailed TypeSpec documentation, see [TYPESPEC.md](./TYPESPEC.md).
 

@@ -1,0 +1,39 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/copilot/plugin/v2.2/schema.json",
+  "schema_version": "v2.2",
+  "name_for_human": "M365 Roadmap Connector",
+  "description_for_human": "API for accessing Microsoft 365 roadmap items",
+  "namespace": "roadmapapi",
+  "functions": [
+    {
+      "name": "getRoadmapItems",
+      "description": "Retrieve Microsoft 365 roadmap information",
+      "capabilities": {
+        "response_semantics": {
+          "data_path": "$.value",
+          "properties": {
+            "title": "$.title",
+            "subtitle": "$.id"
+          },
+          "static_template": {
+            "file": "adaptiveCards/displayRoadmapItem.json"
+          }
+        }
+      }
+    }
+  ],
+  "runtimes": [
+    {
+      "type": "OpenApi",
+      "auth": {
+        "type": "None"
+      },
+      "spec": {
+        "url": "apiSpecificationFile/MessageCenterAgent.RoadmapAPI-openapi.json"
+      },
+      "run_for_functions": [
+        "getRoadmapItems"
+      ]
+    }
+  ]
+}

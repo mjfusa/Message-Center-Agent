@@ -9,11 +9,12 @@ node_modules/
 
 # TypeSpec generated files (regenerated from main.tsp)
 appPackage/declarative-agent
-appPackage/messagecenterapi-apiplugin.json
-appPackage/roadmapapi-apiplugin.json
 appPackage/apiSpecificationFile/MessageCenterAgent.MessageCenterAPI-openapi.json
 appPackage/apiSpecificationFile/MessageCenterAgent.RoadmapAPI-openapi.json
 tsp-output/
+
+# Note: Plugin manifest files (*-apiplugin.json) are manually maintained
+# as the TypeSpec M365 Copilot emitter doesn't auto-generate them yet
 
 # misc
 .env
