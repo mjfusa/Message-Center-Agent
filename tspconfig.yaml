@@ -1,0 +1,5 @@
+emit:
+  - "@microsoft/typespec-m365-copilot"
+options:
+  "@microsoft/typespec-m365-copilot":
+    emitter-output-dir: "{project-root}/appPackage"
