@@ -7,6 +7,14 @@ appPackage/build
 # dependencies
 node_modules/
 
+# TypeSpec generated files (regenerated from main.tsp)
+appPackage/declarative-agent
+appPackage/messagecenterapi-apiplugin.json
+appPackage/roadmapapi-apiplugin.json
+appPackage/apiSpecificationFile/MessageCenterAgent.MessageCenterAPI-openapi.json
+appPackage/apiSpecificationFile/MessageCenterAgent.RoadmapAPI-openapi.json
+tsp-output/
+
 # misc
 .env
 .deployment

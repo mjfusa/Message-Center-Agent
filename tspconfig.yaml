@@ -1,5 +1,9 @@
 emit:
   - "@microsoft/typespec-m365-copilot"
+  - "@typespec/openapi3"
 options:
   "@microsoft/typespec-m365-copilot":
     emitter-output-dir: "{project-root}/appPackage"
+  "@typespec/openapi3":
+    emitter-output-dir: "{project-root}/appPackage/apiSpecificationFile"
+    output-file: "{service-name}-openapi.json"

@@ -192,19 +192,27 @@ Here's an example of output with M365 Roadmap details included:
 
 ### Key Files
 
-The following files are key to the implementation of the declarative agent:
+This agent uses **TypeSpec** for configuration management. TypeSpec is a strongly-typed specification language that generates all agent configuration files from a single source of truth.
 
-- **openapi.json**: This file contains the OpenAPI specification for the Graph API ['https://graph.microsoft.com/v1.0/admin/serviceAnnouncement/messages'](https://learn.microsoft.com/en-us/graph/api/serviceannouncement-list-messages?view=graph-rest-1.0&tabs=http) that the declarative agent will use to search and retrieve messages from the Microsoft 365 Admin Center. 
+#### Source Files (Maintained)
+- **main.tsp**: The TypeSpec definition file containing all agent configuration (API specifications, authentication, instructions, conversation starters)
+- **tspconfig.yaml**: TypeSpec compiler configuration
+- **appPackage/instructions.md**: Detailed behavior instructions for the agent
+- **manifest.json**: Teams application manifest that defines metadata for the declarative agent
+- **m365agents.yml**: M365 Agents Toolkit project configuration, including OAuth2 registration
+- **.env.production**: Environment variables for production release (client ID and secret for OAuth2 authentication)
 
-> NOTE: This file was generated using the following prompt in GitHub Copilot using model GPT 4.5:
+#### Generated Files (Do Not Edit)
+The following files are automatically generated from `main.tsp` and should not be edited directly:
+- **appPackage/declarative-agent**: Declarative agent manifest (generated from TypeSpec)
+- **appPackage/messagecenterapi-apiplugin.json**: Message Center API plugin manifest
+- **appPackage/roadmapapi-apiplugin.json**: Roadmap API plugin manifest
+- **appPackage/apiSpecificationFile/MessageCenterAgent.MessageCenterAPI-openapi.json**: OpenAPI spec for Graph API message center endpoint
+- **appPackage/apiSpecificationFile/MessageCenterAgent.RoadmapAPI-openapi.json**: OpenAPI spec for M365 Roadmap API
 
->Extract the openapi definition for the graph API /admin/serviceAnnouncement/messages from https://raw.githubusercontent.com/microsoftgraph/msgraph-metadata/refs/heads/master/openapi/v1.0/openapi.yaml. Covert YAML output to JSON.
+To make changes to the agent configuration, edit `main.tsp` and run `npm run build` to regenerate all configuration files.
 
-- **roadmap-openapi.json**: This file contains the OpenAPI specification for the Microsoft 365 Roadmap V2 API [https://www.microsoft.com/releasecommunications/api/v2/m365](https://www.microsoft.com/releasecommunications/api/v2/m365) that the declarative agent will use to search and retrieve roadmap items from the Microsoft 365 Roadmap.  
-- **declarativeCopilot.json**: This file contains the declarative agent configuration that defines the behavior and capabilities of the agent. No capabilities have been defined for this agent.
-- **manifest.json**: This file contains the Teams application manifest that defines metadata for the declarative agent. This is what is displayed in the Copilot agents store.
-- **m365agents.yml**: This file contains the M365 Agents Toolkit project configuration, including the OAuth2 registration and other settings.
-- **.env.production**: This file contains environment variables for the project for production release, including the client ID and secret for OAuth2 authentication.
+For detailed TypeSpec documentation, see [TYPESPEC.md](./TYPESPEC.md).
 
 ## [Required Roles](#required-roles)
 
