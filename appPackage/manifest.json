@@ -26,7 +26,7 @@
         "declarativeAgents": [
             {
                 "id": "declarativeAgent",
-                "file": "declarative-agent"
+                "file": "declarative-agent.json"
             }
         ]
     },

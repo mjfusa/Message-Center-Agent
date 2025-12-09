@@ -54,7 +54,8 @@ This will:
 2. Compile `main.tsp` using the TypeSpec compiler
 3. Generate the declarative agent manifest
 4. Generate OpenAPI specifications for both APIs
-5. Generate plugin manifests (currently manual, future: automated)
+5. **Merge examples** from `roadmap-openapi.json` into the TypeSpec-generated Roadmap API spec
+6. Generate plugin manifests (currently manual, future: automated)
 
 ## Development Workflow
 
@@ -114,6 +115,93 @@ These files are now **deprecated** and should not be modified. All configuration
 - [M365 Copilot TypeSpec Guide](https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/build-declarative-agents-typespec)
 - [M365 Agents Toolkit](https://learn.microsoft.com/en-us/microsoft-365-copilot/extensibility/build-declarative-agents)
 
+## Example Merging Workaround
+
+### The Problem
+Due to a known bug in TypeSpec, `@example` decorators defined in `main.tsp` are not emitted in the generated OpenAPI JSON files. This means parameter examples, response examples, and operation-level examples are lost during compilation.
+
+### The Solution
+Two post-processing PowerShell scripts automatically merge examples from handcrafted OpenAPI files into the TypeSpec-generated outputs after compilation:
+
+1. **`scripts/Merge-MessageCenterExamples.ps1`**: Merges examples from `openapi.json` into `MessageCenterAgent.MessageCenterAPI-openapi.json`
+2. **`scripts/Merge-RoadmapExamples.ps1`**: Merges examples from `roadmap-openapi.json` into `MessageCenterAgent.RoadmapAPI-openapi.json`
+
+**What gets merged for Message Center API:**
+- **Parameter examples**: 45 examples total
+  - `$top`: 2 examples (count-only, pagination)
+  - `$filter`: 43 examples (simple filters, compound filters, temporal queries)
+
+**What gets merged for Roadmap API:**
+- **Parameter examples**: 16 examples total
+  - `$filter`: 9 examples (ID lookups, date filters, complex queries)
+  - `$orderby`: 4 examples (sorting variations)
+  - `$top`: 3 examples (default, large, max)
+- **Response examples**: 2 examples showing typical API responses
+- **Operation examples** (`x-ms-examples`): 3 complete request/response examples
+
+### How It Works
+
+1. TypeSpec compiles `main.tsp` → generates both OpenAPI files (without examples)
+2. Scripts read examples from source files:
+   - `openapi.json` for Message Center API examples
+   - `roadmap-openapi.json` for Roadmap API examples
+3. Scripts merge examples into TypeSpec-generated files
+4. Result: Complete OpenAPI specs with both TypeSpec-generated schemas AND handcrafted examples
+
+### Maintaining Examples
+
+**For Message Center API examples:**
+1. Edit `appPackage/apiSpecificationFile/openapi.json`
+2. Add/modify examples in parameter definitions
+3. Run `npm run build` to merge examples
+
+**For Roadmap API examples:**
+1. Edit `appPackage/apiSpecificationFile/roadmap-openapi.json` 
+2. Add/modify examples in:
+   - `components/parameters/*/examples` for parameter examples
+   - `paths/*/get/responses/200/content/application/json/examples` for response examples
+   - `x-ms-examples` at the root level for operation examples
+3. Run `npm run build` to merge examples
+
+### Script Details
+
+**Locations**: 
+- `scripts/Merge-MessageCenterExamples.ps1` (Message Center API)
+- `scripts/Merge-RoadmapExamples.ps1` (Roadmap API)
+
+**Integration**: Both scripts run automatically after TypeSpec compilation via the `build` script in `package.json`
+
+**Safety Features**:
+- Creates backups before modifying generated files
+- Validates JSON structure
+- Provides detailed merge reports
+- Exits gracefully if target files don't exist
+
+**Output**: The scripts report exactly what was merged:
+
+*Message Center API:*
+```
+✅ Successfully merged examples!
+
+Merged content:
+    - $top (2 examples)
+    - $filter (43 examples)
+
+📊 Total: 45 examples across 2 parameters
+```
+
+*Roadmap API:*
+```
+✅ Successfully merged examples!
+
+Merged content:
+    - $filter (9 examples)
+    - $orderby (4 examples)
+    - $top (3 examples)
+    - Response examples (2 examples)
+    - x-ms-examples (3 examples)
+```
+
 ## Troubleshooting
 
 ### Build Errors
@@ -129,9 +217,24 @@ If you encounter build errors:
 
 3. Check `main.tsp` for syntax errors
 
+4. Ensure PowerShell is available (required for example merging)
+
 ### Version Warnings
 
 You may see warnings about incompatible library versions. This is expected as the M365 Copilot emitter uses a specific version of `@typespec/http`. These warnings do not affect functionality.
+
+### Example Merge Issues
+
+If examples are not appearing in the generated files:
+
+1. Verify source files exist and contain examples:
+   - `openapi.json` for Message Center API
+   - `roadmap-openapi.json` for Roadmap API
+2. Check that the merge scripts ran successfully (look for success messages)
+3. Check the backup files (`.backup` suffix) to compare before/after
+4. Run the merge scripts manually:
+   - `.\scripts\Merge-MessageCenterExamples.ps1`
+   - `.\scripts\Merge-RoadmapExamples.ps1`
 
 ## Future Enhancements
 

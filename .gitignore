@@ -8,9 +8,9 @@ appPackage/build
 node_modules/
 
 # TypeSpec generated files (regenerated from main.tsp)
-appPackage/declarative-agent
-appPackage/apiSpecificationFile/MessageCenterAgent.MessageCenterAPI-openapi.json
-appPackage/apiSpecificationFile/MessageCenterAgent.RoadmapAPI-openapi.json
+# appPackage/declarative-agent.json
+# appPackage/apiSpecificationFile/MessageCenterAgent.MessageCenterAPI-openapi.json
+# appPackage/apiSpecificationFile/MessageCenterAgent.RoadmapAPI-openapi.json
 tsp-output/
 
 # Note: Plugin manifest files (*-apiplugin.json) are manually maintained

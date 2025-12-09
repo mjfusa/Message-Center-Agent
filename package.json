@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Microsoft 365 Copilot Message Center Agent with TypeSpec",
   "scripts": {
-    "build": "tsp compile .",
+    "build": "tsp compile . && pwsh -File scripts/Merge-MessageCenterExamples.ps1 && pwsh -File scripts/Merge-RoadmapExamples.ps1",
     "watch": "tsp compile . --watch",
     "clean": "rimraf tsp-output",
     "prebuild": "npm run clean"

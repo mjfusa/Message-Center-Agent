@@ -3,6 +3,7 @@ import "@typespec/openapi3";
 import "@microsoft/typespec-m365-copilot";
 
 using TypeSpec.Http;
+using TypeSpec.OpenAPI;
 using TypeSpec.M365.Copilot.Agents;
 using TypeSpec.M365.Copilot.Actions;
 
@@ -11,7 +12,7 @@ using TypeSpec.M365.Copilot.Actions;
   "This agent helps you search and summarize Microsoft 365 Admin Center messages using natural language. Works with the M365Roadmap Copilot Connector to provide related Microsoft 365 Roadmap information. Requires Message Center Reader role or higher."
 )
 
-@instructions("$[file('appPackage/instructions.md')]")
+@instructions("$[file('instructions.md')]")
 
 @conversationStarter(#{
   title: "Search for Microsoft 365 Copilot Updates",
@@ -39,8 +40,8 @@ using TypeSpec.M365.Copilot.Actions;
 })
 
 @conversationStarter(#{
-  title: "Find out about new AI capabilities in Microsoft 365",
-  text: "Which updates introduce new AI capabilities in Microsoft 365?"
+  title: "What changed recently?",
+  text: "What changed for Copilot since yesterday?"
 })
 
 namespace MessageCenterAgent {
@@ -171,11 +172,41 @@ namespace MessageCenterAgent {
     @get
     @doc("Retrieve roadmap items with optional filtering, sorting, and pagination. Always use 'created' field for date operations, not 'createdDateTime'.")
     op getRoadmapItems(
-      @query("$filter") @doc("OData filter expression. IMPORTANT: Use 'created' field for date filtering (not 'createdDateTime'). Supports contains(), tolower(), and date comparisons.") filter?: string,
-      @query("$orderby") @doc("OData order by expression. Use 'created' field for date sorting.") orderby?: string,
-      @query("$top") @doc("Number of items to return (1-100)") top?: int32,
-      @query("$skip") @doc("Number of items to skip for pagination") skip?: int32,
-      @query("$count") @doc("Include count of total items") count?: boolean
+      @query("$filter") 
+      @doc("OData filter expression. IMPORTANT: Use 'created' field for date filtering (not 'createdDateTime'). Supports contains(), tolower(), and date comparisons.")
+      @example("id eq 123456", #{ title: "Find roadmap item by id", description: "Find specific roadmap item by its unique ID. ALWAYS use 'eq' operator for ID lookups, never 'contains'." })
+      @example("id in (123456, 789012, 345678)", #{ title: "Find multiple roadmap items by IDs", description: "When looking up multiple IDs use 'in' operator. ALWAYS use 'in' for multiple ID lookups." })
+      @example("contains(tolower(title), 'copilot') and created ge 2025-10-08T00:00:00Z", #{ title: "Copilot items from last week", description: "Find roadmap items containing 'copilot' published in the last week" })
+      @example("created ge 2025-10-08T00:00:00Z", #{ title: "Recent items (last 7 days)", description: "Items created in the last 7 days" })
+      @example("contains(tolower(title), 'teams')", #{ title: "Search by title", description: "Search for items containing specific text in title" })
+      @example("created ge 2025-10-01T00:00:00Z and created le 2025-10-15T00:00:00Z", #{ title: "Date range filter", description: "Items within a specific date range" })
+      @example("status eq 'In Development'", #{ title: "Filter by status", description: "Items with specific status" })
+      @example("category eq 'Microsoft 365' and created ge 2025-10-01T00:00:00Z", #{ title: "Category and date filter", description: "Items in specific category from recent date" })
+      @example("contains(tolower(title), 'copilot') and category eq 'Microsoft 365' and created ge 2025-10-01T00:00:00Z", #{ title: "Complex multi-criteria filter", description: "Multiple conditions with title, category, and date" })
+      filter?: string,
+      
+      @query("$orderby") 
+      @doc("OData order by expression. Use 'created' field for date sorting.")
+      @example("created desc", #{ title: "Newest items first", description: "Order by creation date, newest first" })
+      @example("created asc", #{ title: "Oldest items first", description: "Order by creation date, oldest first" })
+      @example("title asc", #{ title: "Alphabetical by title", description: "Order alphabetically by title" })
+      @example("status asc, created desc", #{ title: "Status then date", description: "Order by status, then by creation date" })
+      orderby?: string,
+      
+      @query("$top") 
+      @doc("Number of items to return (1-100)")
+      @example(10, #{ title: "Default count" })
+      @example(50, #{ title: "Large result set" })
+      @example(100, #{ title: "Maximum allowed" })
+      top?: int32,
+      
+      @query("$skip") 
+      @doc("Number of items to skip for pagination") 
+      skip?: int32,
+      
+      @query("$count") 
+      @doc("Include count of total items") 
+      count?: boolean
     ): RoadmapResponse | {
       @statusCode statusCode: 400;
       @doc("Bad request - invalid query parameters")
