@@ -1,0 +1,43 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/copilot/declarative-agent/v1.5/schema.json",
+  "version": "v1.5",
+  "name": "Message Center Agent",
+  "description": "This agent helps you search and summarize Microsoft 365 Admin Center messages using natural language. Works with the M365Roadmap Copilot Connector to provide related Microsoft 365 Roadmap information. Requires Message Center Reader role or higher.",
+  "instructions": "$[file('instructions.md')]",
+  "conversation_starters": [
+    {
+      "title": "What changed recently?",
+      "text": "What changed for Copilot since yesterday?"
+    },
+    {
+      "title": "Get Critical Updates",
+      "text": "Show all critical messages."
+    },
+    {
+      "title": "Access messages by service and tags",
+      "text": "Find messages tagged as User impact. Filter on services containing 'Copilot'. Show messages published in the last 30 days."
+    },
+    {
+      "title": "Inform the team regarding upcoming major changes in Microsoft 365 Copilot",
+      "text": "Show message regarding updates from the last month that are related to Copilot and marked as major changes."
+    },
+    {
+      "title": "Search by Message body",
+      "text": "Show messages with 'security update' in the message body."
+    },
+    {
+      "title": "Search for Microsoft 365 Copilot Updates",
+      "text": "Find messages related to Microsoft 365 Copilot published in the last 30 days."
+    }
+  ],
+  "actions": [
+    {
+      "id": "messagecenterapi",
+      "file": "messagecenterapi-apiplugin.json"
+    },
+    {
+      "id": "roadmapapi",
+      "file": "roadmapapi-apiplugin.json"
+    }
+  ]
+}

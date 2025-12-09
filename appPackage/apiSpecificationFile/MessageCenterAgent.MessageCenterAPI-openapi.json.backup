@@ -1,0 +1,379 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Message Center Agent",
+    "x-ai-description": "Retrieve the message center messages",
+    "x-description-for-human": "API to obtain message center messages including OAuth authentication",
+    "version": "0.0.0"
+  },
+  "tags": [],
+  "paths": {
+    "/admin/serviceAnnouncement/messages": {
+      "get": {
+        "operationId": "getMessages",
+        "description": "Retrieve the message center messages or just the count",
+        "parameters": [
+          {
+            "name": "$orderby",
+            "in": "query",
+            "required": false,
+            "description": "Order by clause for sorting results. Defaults to newest messages first (lastModifiedDateTime desc)",
+            "schema": {
+              "type": "string",
+              "default": "lastModifiedDateTime desc"
+            },
+            "explode": false
+          },
+          {
+            "name": "$count",
+            "in": "query",
+            "required": true,
+            "description": "Total number of records returned",
+            "schema": {
+              "type": "boolean",
+              "default": true
+            },
+            "explode": false
+          },
+          {
+            "name": "prefer",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "type": "string",
+              "default": "odata.maxpagesize=5"
+            }
+          },
+          {
+            "name": "$top",
+            "in": "query",
+            "required": false,
+            "description": "Number of records to return. Set to 0 to retrieve only the count (@odata.count) without any message data. Useful for count-only queries like 'How many messages are there?'",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "explode": false
+          },
+          {
+            "name": "$skip",
+            "in": "query",
+            "required": false,
+            "description": "Number of records to skip",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            },
+            "explode": false
+          },
+          {
+            "name": "$filter",
+            "in": "query",
+            "required": false,
+            "description": "Filter the results based on specific conditions. For count-only queries, combine with $top=0 to get just the total number of matching records. Use `contains(tolower(title),tolower('search term'))` to search within the title property for a specific term or phrase. For multi-word searches, include the entire phrase in quotes. For create time, use the 'startDateTime' property with a date format. For example, `startDateTime ge 2025-03-01T00:00:00Z` to filter messages created after March 1, 2025. For major change messages, use `isMajorChange eq true`. To combine filters, use `and` operator. For example, `contains(tolower(title),tolower('Copilot agent')) and startDateTime ge 2025-03-01T00:00:00Z`. For the 'Tags' field, here is an example of the a query segment for the tags field: tags/any(t: t eq 'New feature'). For the 'severity' field, you can filter by severity using `severity eq 'normal'` or `severity eq 'high'` or `severity eq 'critical'`. For the 'category' field, you can filter by category using `category eq 'stayInformed'` or `category eq 'planForChange'` or `category eq 'preventOrFixIssue'`. For the 'Services' field, here is an example of a query segment for the services field: services/any(s: contains(s, 'Copilot')). When searching an message center update for roadmap ids, these are found in the 'details' field. Here is an example of a query segment for the details field, when searching for RoadmapIds: details/any(d: d/name eq 'RoadmapIds' and contains(d/value, '501107')). Note the 'name' property is used to specify the type of detail being searched, in this case 'RoadmapIds'. The 'value' property is then used to search for the specific roadmap id. RoadmapIds is case sensitive and must be used exactly as shown. To filter by message body, use `contains(tolower(body/content),tolower('search term'))` to search within the body content.",
+            "schema": {
+              "type": "string"
+            },
+            "explode": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "The request has succeeded.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MessagesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Access is unauthorized.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "description": "Unauthorized. Please check your authentication credentials."
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "Access is forbidden.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "description": "Insufficient permissions. You need the Message Center Reader or the Global Admin role to access this agent."
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "The server cannot find the requested resource.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "object",
+                      "properties": {
+                        "code": {
+                          "type": "string"
+                        },
+                        "message": {
+                          "type": "string"
+                        }
+                      },
+                      "required": [
+                        "code",
+                        "message"
+                      ],
+                      "description": "Not Found"
+                    }
+                  },
+                  "required": [
+                    "error"
+                  ]
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "security": [
+    {
+      "OAuth2Auth": [
+        "https://graph.microsoft.com/ServiceMessage.Read.All"
+      ]
+    }
+  ],
+  "components": {
+    "schemas": {
+      "MessageBody": {
+        "type": "object",
+        "required": [
+          "contentType",
+          "content"
+        ],
+        "properties": {
+          "contentType": {
+            "type": "string",
+            "enum": [
+              "html",
+              "text"
+            ]
+          },
+          "content": {
+            "type": "string"
+          }
+        }
+      },
+      "MessageDetail": {
+        "type": "object",
+        "required": [
+          "name",
+          "value"
+        ],
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string"
+          }
+        }
+      },
+      "MessagesResponse": {
+        "type": "object",
+        "required": [
+          "@odata.count",
+          "value"
+        ],
+        "properties": {
+          "@odata.context": {
+            "type": "string",
+            "description": "Context URL for the response data"
+          },
+          "@odata.count": {
+            "type": "integer",
+            "format": "int32",
+            "description": "Total number of records matching the filter. Always present when $count=true."
+          },
+          "value": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServiceAnnouncementMessage"
+            },
+            "description": "Array of message objects. Empty when $top=0 (count-only queries)."
+          },
+          "@odata.nextLink": {
+            "type": "string",
+            "description": "Next page URL if more results are available"
+          }
+        }
+      },
+      "ServiceAnnouncementMessage": {
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "body"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "title": {
+            "type": "string"
+          },
+          "body": {
+            "$ref": "#/components/schemas/MessageBody"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "details": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MessageDetail"
+            }
+          },
+          "services": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": [
+                "Basic Mobility and Security",
+                "Dynamics 365 Apps",
+                "Exchange Online",
+                "Microsoft 365 apps",
+                "Microsoft 365 Copilot Chat",
+                "Microsoft 365 for the web",
+                "Microsoft 365 suite",
+                "Microsoft Copilot (Microsoft 365)",
+                "Microsoft Copilot Chat",
+                "Microsoft Dataverse",
+                "Microsoft Defender XDR",
+                "Microsoft Entra",
+                "Microsoft Forms",
+                "Microsoft Intune",
+                "Microsoft OneDrive",
+                "Microsoft Power Automate",
+                "Microsoft Power Automate in Microsoft 365",
+                "Microsoft Purview",
+                "Microsoft Teams",
+                "Microsoft Viva",
+                "Planner",
+                "Power Apps",
+                "Power Apps in Microsoft 365",
+                "Power BI",
+                "Power Platform",
+                "Project for the web",
+                "SharePoint Online",
+                "Windows",
+                "Windows Autopatch"
+              ]
+            }
+          },
+          "category": {
+            "type": "string",
+            "enum": [
+              "stayInformed",
+              "planForChange",
+              "preventOrFixIssue"
+            ]
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "normal",
+              "high",
+              "critical"
+            ]
+          },
+          "startDateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "lastModifiedDateTime": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "isMajorChange": {
+            "type": "boolean"
+          }
+        }
+      }
+    },
+    "securitySchemes": {
+      "OAuth2Auth": {
+        "type": "oauth2",
+        "flows": {
+          "authorizationCode": {
+            "authorizationUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/authorize",
+            "tokenUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+            "refreshUrl": "https://login.microsoftonline.com/common/oauth2/v2.0/token",
+            "scopes": {
+              "https://graph.microsoft.com/ServiceMessage.Read.All": ""
+            }
+          }
+        }
+      }
+    }
+  },
+  "servers": [
+    {
+      "url": "https://graph.microsoft.com/v1.0",
+      "description": "Microsoft Graph v1.0 endpoint",
+      "variables": {}
+    }
+  ]
+}

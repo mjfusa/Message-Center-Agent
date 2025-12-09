@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/copilot/plugin/v2.2/schema.json",
+  "schema_version": "v2.2",
+  "name_for_human": "Message Center Agent",
+  "description_for_human": "API to obtain message center messages including OAuth authentication",
+  "namespace": "messagecenterapi",
+  "functions": [
+    {
+      "name": "getMessages",
+      "description": "Retrieve the message center messages",
+      "capabilities": {
+        "response_semantics": {
+          "data_path": "$.value",
+          "properties": {
+            "title": "$.title",
+            "subtitle": "$.id"
+          },
+          "static_template": {
+            "file": "adaptiveCards/getMessages.json"
+          }
+        }
+      }
+    }
+  ],
+  "runtimes": [
+    {
+      "type": "OpenApi",
+      "auth": {
+        "type": "OAuthPluginVault",
+        "reference_id": "${{OAUTH2_REGISTRATION_ID}}"
+      },
+      "spec": {
+        "url": "apiSpecificationFile/MessageCenterAgent.MessageCenterAPI-openapi.json"
+      },
+      "run_for_functions": [
+        "getMessages"
+      ]
+    }
+  ]
+}

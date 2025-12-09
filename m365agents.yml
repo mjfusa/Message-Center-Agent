@@ -23,8 +23,8 @@ provision:
       flow: authorizationCode
       # app ID
       appId: ${{TEAMS_APP_ID}}
-      # Path to OpenAPI description document
-      apiSpecPath: ./appPackage/apiSpecificationFile/openapi.json
+      # Path to OpenAPI description document - TypeSpec generated
+      apiSpecPath: ./appPackage/apiSpecificationFile/MessageCenterAgent.MessageCenterAPI-openapi.json
       # Use below property to change token exchange behaviour, BasicAuthorizationHeader: token exchange is done via HTTP headers. PostRequestBody: token exchange is done via request body
       # tokenExchangeMethodType: BasicAuthorizationHeader
       # Uncomment below property to use proof key for code exchange (PKCE)

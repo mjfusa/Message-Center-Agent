@@ -1,0 +1,22 @@
+{
+  "name": "message-center-agent",
+  "version": "1.0.0",
+  "description": "Microsoft 365 Copilot Message Center Agent with TypeSpec",
+  "scripts": {
+    "build": "tsp compile . && pwsh -File scripts/Merge-MessageCenterExamples.ps1 && pwsh -File scripts/Merge-RoadmapExamples.ps1",
+    "watch": "tsp compile . --watch",
+    "clean": "rimraf tsp-output",
+    "prebuild": "npm run clean"
+  },
+  "devDependencies": {
+    "@typespec/compiler": "^0.64.0",
+    "@typespec/http": "^0.64.0",
+    "@typespec/openapi": "^0.64.0",
+    "@typespec/openapi3": "^0.64.0",
+    "@microsoft/typespec-m365-copilot": "^1.0.0",
+    "rimraf": "^5.0.5"
+  },
+  "engines": {
+    "node": ">=20.0.0"
+  }
+}
