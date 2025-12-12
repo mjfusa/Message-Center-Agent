@@ -16,6 +16,7 @@
         "summary": "Get message center messages",
         "description": "Retrieve the message center messages or just the count",
         "operationId": "getMessages",
+        "x-openai-isConsequential": false,
         "parameters": [
           {
             "name": "$orderby",
@@ -87,220 +88,55 @@
               "type": "string"
             },
             "examples": {
-              "simple-001": {
+              "critical-001": {
                 "value": "severity eq 'critical'",
                 "description": "Show me all critical messages",
-                "summary": "simple_filters: Show me all critical messages"
+                "summary": "Show me all critical messages"
               },
-              "simple-002": {
-                "value": "contains(tolower(title),tolower('Microsoft Teams'))",
-                "description": "Find messages about Microsoft Teams",
-                "summary": "simple_filters: Find messages about Microsoft Teams"
-              },
-              "simple-003": {
-                "value": "isMajorChange eq true",
-                "description": "Show only major changes",
-                "summary": "simple_filters: Show only major changes"
-              },
-              "simple-004": {
-                "value": "category eq 'planForChange'",
-                "description": "Show Plan for Change messages",
-                "summary": "simple_filters: Show Plan for Change messages"
-              },
-              "simple-006": {
-                "value": "category eq 'stayInformed'",
-                "description": "Show Stay Informed messages",
-                "summary": "simple_filters: Show Stay Informed messages"
-              },
-              "simple-007": {
-                "value": "contains(tolower(title),tolower('security'))",
-                "description": "Find messages about security",
-                "summary": "simple_filters: Find messages about security"
-              },
-              "simple-008": {
-                "value": "contains(tolower(title),tolower('Copilot'))",
-                "description": "Show messages about Copilot",
-                "summary": "simple_filters: Show messages about Copilot"
-              },
-              "simple-009": {
-                "value": "category eq 'preventOrFixIssue'",
-                "description": "Show Prevent or Fix Issue messages",
-                "summary": "simple_filters: Show Prevent or Fix Issue messages"
-              },
-              "simple-010": {
-                "value": "severity eq 'normal'",
-                "description": "Find all normal severity messages",
-                "summary": "simple_filters: Find all normal severity messages"
-              },
-              "simple-011": {
-                "value": "contains(tolower(body/content),tolower('Copilot'))",
-                "description": "Find 'Copilot' in the message body",
-                "summary": "simple_filters: Find 'Copilot' in the message body"
-              },
-              "simple-high-001": {
-                "value": "severity eq 'high'",
-                "description": "Show me all high severity messages",
-                "summary": "simple_filters: Show me all high severity messages"
-              },
-              "compound-001": {
-                "value": "contains(tolower(title),tolower('Copilot')) and isMajorChange eq true",
-                "description": "Find messages about Copilot that are major changes",
-                "summary": "compound_filters: Find messages about Copilot that are major changes"
-              },
-              "compound-002": {
-                "value": "severity eq 'critical' and category eq 'planForChange'",
-                "description": "Show critical messages that are Plan for Change",
-                "summary": "compound_filters: Show critical messages that are Plan for Change"
-              },
-              "compound-003": {
-                "value": "severity eq 'high' and isMajorChange eq true and contains(tolower(title),tolower('Teams'))",
-                "description": "Find high severity major changes about Teams",
-                "summary": "compound_filters: Find high severity major changes about Teams"
-              },
-              "compound-004": {
-                "value": "contains(tolower(title),tolower('security')) and category eq 'stayInformed'",
-                "description": "Show messages about security that are Stay Informed",
-                "summary": "compound_filters: Show messages about security that are Stay Informed"
-              },
-              "compound-005": {
+              "critical-major-002": {
                 "value": "severity eq 'critical' and isMajorChange eq true",
                 "description": "Find critical major changes",
-                "summary": "compound_filters: Find critical major changes"
+                "summary": "Find critical major changes"
               },
-              "compound-006": {
-                "value": "category eq 'planForChange' and contains(tolower(title),tolower('Microsoft 365'))",
-                "description": "Show Plan for Change messages about Microsoft 365",
-                "summary": "compound_filters: Show Plan for Change messages about Microsoft 365"
-              },
-              "compound-007": {
-                "value": "severity eq 'high' and category eq 'preventOrFixIssue'",
-                "description": "Find high severity Prevent or Fix Issue messages",
-                "summary": "compound_filters: Find high severity Prevent or Fix Issue messages"
-              },
-              "compound-008": {
-                "value": "isMajorChange eq true and contains(tolower(title),tolower('Exchange'))",
-                "description": "Show major changes about Exchange",
-                "summary": "compound_filters: Show major changes about Exchange"
-              },
-              "compound-009": {
-                "value": "severity eq 'normal' and category eq 'stayInformed'",
-                "description": "Find normal severity Stay Informed messages",
-                "summary": "compound_filters: Find normal severity Stay Informed messages"
-              },
-              "compound-010": {
+              "plan-major-003": {
                 "value": "category eq 'planForChange' and isMajorChange eq true",
                 "description": "Show Plan for Change major changes",
-                "summary": "compound_filters: Show Plan for Change major changes"
+                "summary": "Show Plan for Change major changes"
               },
-              "compound-011": {
-                "value": "contains(tolower(title),tolower('SharePoint')) and severity eq 'critical'",
-                "description": "Find messages about SharePoint that are critical",
-                "summary": "compound_filters: Find messages about SharePoint that are critical"
+              "copilot-004": {
+                "value": "contains(tolower(title),tolower('Copilot'))",
+                "description": "Show messages about Copilot",
+                "summary": "Show messages about Copilot"
               },
-              "compound-012": {
-                "value": "category eq 'preventOrFixIssue' and isMajorChange eq true and contains(tolower(title),tolower('OneDrive'))",
-                "description": "Show Prevent or Fix Issue major changes about OneDrive",
-                "summary": "compound_filters: Show Prevent or Fix Issue major changes about OneDrive"
+              "copilot-major-005": {
+                "value": "contains(tolower(title),tolower('Copilot')) and isMajorChange eq true",
+                "description": "Find messages about Copilot that are major changes",
+                "summary": "Find messages about Copilot that are major changes"
               },
-              "temporal-001": {
-                "value": "startDateTime ge 2025-03-01T00:00:00Z",
-                "description": "Find messages created after March 1, 2025",
-                "summary": "temporal_queries: Find messages created after March 1, 2025"
-              },
-              "temporal-002": {
-                "value": "startDateTime ge 2025-10-22T00:00:00Z",
-                "description": "Show messages published in the last 30 days",
-                "summary": "temporal_queries: Show messages published in the last 30 days"
-              },
-              "temporal-003": {
-                "value": "lastModifiedDateTime ge 2025-01-01T00:00:00Z",
-                "description": "Find messages modified since January 1, 2025",
-                "summary": "temporal_queries: Find messages modified since January 1, 2025"
-              },
-              "temporal-004": {
-                "value": "startDateTime ge 2025-03-01T00:00:00Z and startDateTime le 2025-06-01T00:00:00Z",
-                "description": "Show messages created between March 1 and June 1, 2025",
-                "summary": "temporal_queries: Show messages created between March 1 and June 1, 2025"
-              },
-              "temporal-005": {
-                "value": "actionRequiredByDateTime le 2024-06-15T23:59:59Z",
-                "description": "Find messages with action required by June 15, 2024",
-                "summary": "temporal_queries: Find messages with action required by June 15, 2024"
-              },
-              "temporal-006": {
-                "value": "startDateTime ge 2025-11-14T00:00:00Z",
-                "description": "Show messages from last week",
-                "summary": "temporal_queries: Show messages from last week"
-              },
-              "temporal-007": {
-                "value": "contains(tolower(title),tolower('Copilot')) and startDateTime ge 2025-09-01T00:00:00Z",
-                "description": "Find messages about Copilot created after September 1, 2025",
-                "summary": "temporal_queries: Find messages about Copilot created after September 1, 2025"
-              },
-              "temporal-008": {
-                "value": "isMajorChange eq true and startDateTime ge 2025-10-21T00:00:00Z",
-                "description": "Show major changes from the last month",
-                "summary": "temporal_queries: Show major changes from the last month"
-              },
-              "temporal-009": {
+              "recent-critical-006": {
                 "value": "severity eq 'critical' and startDateTime ge 2025-09-22T00:00:00Z",
                 "description": "Find critical messages created in the last 60 days",
-                "summary": "temporal_queries: Find critical messages created in the last 60 days"
+                "summary": "Find critical messages created in the last 60 days"
               },
-              "temporal-010": {
-                "value": "category eq 'planForChange' and startDateTime ge 2025-01-01T00:00:00Z",
-                "description": "Show Plan for Change messages from this year",
-                "summary": "temporal_queries: Show Plan for Change messages from this year"
+              "teams-high-007": {
+                "value": "severity eq 'high' and isMajorChange eq true and contains(tolower(title),tolower('Teams'))",
+                "description": "Find high severity major changes about Teams",
+                "summary": "Find high severity major changes about Teams"
               },
-              "collection-001": {
-                "value": "tags/any(t: t eq 'New feature')",
-                "description": "Find messages tagged as New feature",
-                "summary": "collection_filters: Find messages tagged as New feature"
+              "security-008": {
+                "value": "contains(tolower(title),tolower('security'))",
+                "description": "Find messages about security",
+                "summary": "Find messages about security"
               },
-              "collection-002": {
-                "value": "tags/any(t: t eq 'User impact')",
-                "description": "Show messages tagged with User impact",
-                "summary": "collection_filters: Show messages tagged with User impact"
-              },
-              "collection-003": {
-                "value": "services/any(s: contains(tolower(s), tolower('Copilot')))",
-                "description": "Find messages for services containing Copilot",
-                "summary": "collection_filters: Find messages for services containing Copilot"
-              },
-              "collection-004": {
-                "value": "tags/any(t: t eq 'Admin impact') and tags/any(t: t eq 'User impact') and contains(tolower(title),tolower('Teams'))",
-                "description": "Show messages tagged as Admin impact with User impact about Teams",
-                "summary": "collection_filters: Show messages tagged as Admin impact with User impact about Teams"
-              },
-              "collection-005": {
-                "value": "details/any(d: d/name eq 'RoadmapIds' and contains(tolower(d/value), tolower('501107')))",
-                "description": "Find messages containing roadmap id 501107",
-                "summary": "collection_filters: Find messages containing roadmap id 501107"
-              },
-              "collection-006": {
+              "retirement-009": {
                 "value": "tags/any(t: t eq 'Retirement')",
                 "description": "Show messages tagged as Retirement",
-                "summary": "collection_filters: Show messages tagged as Retirement"
+                "summary": "Show messages tagged as Retirement"
               },
-              "collection-007": {
-                "value": "services/any(s: contains(tolower(s), tolower('Exchange')))",
-                "description": "Find messages for Exchange Online service",
-                "summary": "collection_filters: Find messages for Exchange Online service"
-              },
-              "collection-008": {
-                "value": "tags/any(t: t eq 'New feature') and contains(tolower(title),tolower('Copilot')) and startDateTime ge 2025-10-22T00:00:00Z",
-                "description": "Show New feature messages about Copilot from the last 30 days",
-                "summary": "collection_filters: Show New feature messages about Copilot from the last 30 days"
-              },
-              "count-005": {
-                "value": "category eq 'planForChange' and startDateTime ge 2025-10-22T00:00:00Z",
-                "description": "Count Plan for Change messages from the last 30 days",
-                "summary": "count_only: Count Plan for Change messages from the last 30 days"
-              },
-              "count-008": {
-                "value": "services/any(s: contains(tolower(s), tolower('Teams')))",
-                "description": "How many messages for Microsoft Teams service?",
-                "summary": "count_only: How many messages for Microsoft Teams service?"
+              "admin-user-impact-010": {
+                "value": "tags/any(t: t eq 'Admin impact') and tags/any(t: t eq 'User impact')",
+                "description": "Show messages with both Admin and User impact",
+                "summary": "Show messages with both Admin and User impact"
               }
             }
           }

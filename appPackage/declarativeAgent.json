@@ -12,28 +12,28 @@
   ],
   "conversation_starters": [
     {
-      "title": "Search for Microsoft 365 Copilot Updates",
-      "text": "Find messages related to Microsoft 365 Copilot published in the last 30 days."
-    },
-    {
-      "title": "Search by Message body",
-      "text": "Show messages with 'security update' in the message body."
-    },
-    {
-      "title": "Inform the team regarding upcoming major changes in Microsoft 365 Copilot",
-      "text": "Show message regarding updates from the last month that are related to Copilot and marked as major changes."
-    },
-    {
-      "title": "Access messages by service and tags",
-      "text": "Find messages tagged as User impact. Filter on services containing 'Copilot'. Show messages published in the last 30 days."
+      "title": "What changed recently?",
+      "text": "What changed for Copilot since yesterday?"
     },
     {
       "title": "Get Critical Updates",
       "text": "Show all critical messages."
     },
     {
-      "title": "Find out about new AI capabilities in Microsoft 365",
-      "text": "Which updates introduce new AI capabilities in Microsoft 365?"
+      "title": "Access messages by service and tags",
+      "text": "Find messages tagged as User impact. Filter on services containing 'Copilot'. Show messages published in the last 30 days."
+    },
+    {
+      "title": "Inform the team regarding upcoming major changes in Microsoft 365 Copilot",
+      "text": "Show message regarding updates from the last month that are related to Copilot and marked as major changes."
+    },
+    {
+      "title": "Search by Message body",
+      "text": "Show messages with 'security update' in the message body."
+    },
+    {
+      "title": "Search for Microsoft 365 Copilot Updates",
+      "text": "Find messages related to Microsoft 365 Copilot published in the last 30 days."
     }
   ]
 }
