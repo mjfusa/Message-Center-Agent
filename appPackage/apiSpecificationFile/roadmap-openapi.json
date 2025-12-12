@@ -21,6 +21,7 @@
         "summary": "Get Microsoft 365 roadmap items",
         "description": "Retrieve roadmap items with optional filtering, sorting, and pagination. Always use 'created' field for date operations, not 'createdDateTime'.",
         "operationId": "getM365RoadmapInfo",
+         "x-openai-isConsequential": false,
         "parameters": [
           {
             "$ref": "#/components/parameters/FilterParameter"
