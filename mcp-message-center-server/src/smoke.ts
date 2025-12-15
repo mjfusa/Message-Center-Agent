@@ -12,16 +12,6 @@ async function main() {
   const tools = await client.listTools();
   console.log('Tools:', tools.tools.map(t => t.name));
 
-  const roadmap = await client.callTool({
-    name: 'getRoadmapInfo',
-    arguments: {
-      top: 1,
-      count: true,
-      orderby: 'created desc'
-    }
-  });
-  console.log('Roadmap result:', roadmap);
-
   await client.close();
 }
 

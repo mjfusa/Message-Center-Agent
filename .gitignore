@@ -11,7 +11,7 @@ node_modules/
 .env
 
 # external MCP server local env (do not commit secrets)
-mcp-server/.env.local
+mcp-message-center-server/.env.local
 .deployment
 .DS_Store
 env/.env.prod

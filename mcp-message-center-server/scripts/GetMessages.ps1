@@ -3,9 +3,11 @@ param(
   [int]$Skip = 0,
   [string]$Filter = "",
   [string]$OrderBy = "lastModifiedDateTime desc",
-  [switch]$CountOnly,
+  [bool]$Count = $true,
   [string]$McpUrl = "http://localhost:8080/mcp",
-  [string]$GraphAccessToken = ""
+  [string]$GraphAccessToken = "",
+  # Back-compat: older usage for count-only.
+  [switch]$CountOnly
 )
 
 # Notes:
@@ -16,13 +18,14 @@ param(
 
 $arguments = @{
   orderby = $OrderBy
-  count   = $true
+  count   = $Count
   top     = $Top
   skip    = $Skip
 }
 
 if ($CountOnly) {
   $arguments.top = 0
+  $arguments.count = $true
 }
 
 if ($Filter) {

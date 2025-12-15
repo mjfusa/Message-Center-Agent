@@ -1,12 +1,13 @@
 {
-  "name": "message-center-mcp-server",
+  "name": "mcp-message-center-server",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "tsx watch src/server.ts",
+    "generate": "tsx scripts/generate-messages-input-schema.ts",
+    "dev": "npm run generate && tsx watch src/server.ts",
     "start": "node --enable-source-maps dist/server.js",
-    "build": "tsc -p tsconfig.json",
+    "build": "npm run generate && tsc -p tsconfig.json",
     "smoke": "tsx src/smoke.ts"
   },
   "dependencies": {

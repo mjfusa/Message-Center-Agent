@@ -8,13 +8,14 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import { getGraphEnvConfig } from './graph/config.js';
 import { buildLoginUrl, handleCallback, refreshAccessToken } from './graph/graphOAuth.js';
 import { clearTokenForSession, getTokenForSession, setTokenForSession } from './graph/tokenStore.js';
+import { getMessagesInputSchemaBase } from './generated/messagesInputSchema.js';
 function loadEnvLocalIfPresent() {
     // Load env vars automatically in local dev.
     // This avoids a common footgun where the server is started without first dot-sourcing a script.
     const cwd = process.cwd();
     const candidates = [
         path.resolve(cwd, '.env.local'),
-        path.resolve(cwd, 'mcp-server', '.env.local')
+        path.resolve(cwd, 'mcp-message-center-server', '.env.local')
     ];
     for (const candidate of candidates) {
         if (fs.existsSync(candidate)) {
@@ -25,37 +26,13 @@ function loadEnvLocalIfPresent() {
 }
 loadEnvLocalIfPresent();
 const GRAPH_BASE_URL = 'https://graph.microsoft.com/v1.0';
-const ROADMAP_BASE_URL = 'https://www.microsoft.com/releasecommunications/api/v2';
 const TOKEN_REFRESH_SKEW_MS = 60_000;
 const getMessagesInputSchema = {
-    orderby: z
-        .string()
-        .default('lastModifiedDateTime desc')
-        .describe('Order by clause for sorting results.'),
-    count: z.boolean().default(true).describe('Whether to include @odata.count.'),
-    prefer: z
-        .string()
-        .default('odata.maxpagesize=5')
-        .describe('Prefer header value (e.g., odata.maxpagesize=5).'),
-    top: z
-        .number()
-        .int()
-        .min(0)
-        .optional()
-        .describe('Number of records to return. Set to 0 for count-only.'),
-    skip: z.number().int().min(0).optional().describe('Number of records to skip.'),
-    filter: z.string().optional().describe('OData $filter expression.'),
+    ...getMessagesInputSchemaBase,
     accessToken: z
         .string()
         .optional()
-        .describe('Optional: Graph access token for proxying requests. Use only for local testing; OAuth flow will replace this in Step 2.')
-};
-const getRoadmapInputSchema = {
-    filter: z.string().optional().describe('OData $filter expression.'),
-    orderby: z.string().optional().describe('OData $orderby expression.'),
-    top: z.number().int().min(1).max(100).optional().describe('Number of items to return (max 100).'),
-    skip: z.number().int().min(0).optional().describe('Number of items to skip.'),
-    count: z.boolean().default(true).describe('Whether to include @odata.count.')
+        .describe('Optional: Graph access token for proxying requests. Use only for local testing; OAuth flow will replace this after browser sign-in.')
 };
 const getGraphLoginUrlSchema = {
     // Optional hint for deployments behind a proxy where PUBLIC_BASE_URL can't be inferred.
@@ -104,7 +81,7 @@ function buildUrl(baseUrl, path, query) {
     return url.toString();
 }
 function getServer() {
-    const server = new McpServer({ name: 'message-center-mcp-server', version: '0.1.0' }, { capabilities: { logging: {} } });
+    const server = new McpServer({ name: 'mcp-message-center-server', version: '0.1.0' }, { capabilities: { logging: {} } });
     server.registerTool('getGraphLoginUrl', {
         description: 'Returns an Azure AD login URL to authorize Microsoft Graph ServiceMessage.Read.All for this MCP session. Open the URL in a browser to complete sign-in.',
         inputSchema: getGraphLoginUrlSchema
@@ -175,24 +152,6 @@ function getServer() {
                 response: result
             });
         }
-        return toTextResult({ request: { url }, response: result });
-    });
-    server.registerTool('getRoadmapInfo', {
-        description: 'Retrieve Microsoft 365 Roadmap items from https://www.microsoft.com/releasecommunications/api/v2/m365 using OData query parameters.',
-        inputSchema: getRoadmapInputSchema
-    }, async (args) => {
-        const url = buildUrl(ROADMAP_BASE_URL, '/m365', {
-            $filter: args.filter,
-            $orderby: args.orderby,
-            $top: args.top !== undefined ? String(args.top) : undefined,
-            $skip: args.skip !== undefined ? String(args.skip) : undefined,
-            $count: String(args.count)
-        });
-        const result = await fetchJson(url, {
-            headers: {
-                Accept: 'application/json'
-            }
-        });
         return toTextResult({ request: { url }, response: result });
     });
     return server;
