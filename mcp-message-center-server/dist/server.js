@@ -233,6 +233,169 @@ function getServer() {
 }
 const app = express();
 app.use(express.json({ limit: '1mb' }));
+app.use(express.urlencoded({ extended: false }));
+function requiredValue(name, value) {
+    if (!value)
+        throw new Error(`Missing required value: ${name}`);
+    return value;
+}
+function normalizeString(value) {
+    if (typeof value === 'string')
+        return value;
+    if (Array.isArray(value) && typeof value[0] === 'string')
+        return value[0];
+    return undefined;
+}
+function getTenantIdForVsCodeAuth() {
+    return (process.env.MCP_OAUTH_TENANT_ID ??
+        process.env.GRAPH_TENANT_ID ??
+        process.env.TEAMS_APP_TENANT_ID ??
+        process.env.AZURE_TENANT_ID ??
+        'common');
+}
+function getPublicBaseUrl(req) {
+    const configured = process.env.PUBLIC_BASE_URL;
+    if (configured)
+        return configured.replace(/\/$/, '');
+    const host = req.get('host');
+    return `${req.protocol}://${host}`.replace(/\/$/, '');
+}
+function authorizeEndpoint(tenantId) {
+    return `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/authorize`;
+}
+function tokenEndpoint(tenantId) {
+    return `https://login.microsoftonline.com/${tenantId}/oauth2/v2.0/token`;
+}
+function getDefaultScope(clientId) {
+    // Default to requesting an access token for this MCP API.
+    // Assumes the app registration exposes an `access_as_user` scope.
+    const apiScope = `api://${clientId}/access_as_user`;
+    return `openid profile offline_access ${apiScope}`;
+}
+function getAllowedRedirectUriPrefixes() {
+    const fromEnv = (process.env.MCP_OAUTH_REDIRECT_URI_PREFIXES ?? '').trim();
+    if (fromEnv) {
+        return fromEnv
+            .split(',')
+            .map(s => s.trim())
+            .filter(Boolean);
+    }
+    // VS Code loopback redirect
+    return ['http://127.0.0.1', 'http://localhost'];
+}
+function validateClientAndRedirect(clientId, redirectUri) {
+    // Prevent this from becoming an open OAuth proxy.
+    const expectedClientId = process.env.MCP_OAUTH_EXPECTED_CLIENT_ID ?? process.env.GRAPH_CLIENT_ID;
+    if (expectedClientId && clientId !== expectedClientId) {
+        throw new Error(`Unexpected client_id. Expected ${expectedClientId} but got ${clientId}`);
+    }
+    const allowedPrefixes = getAllowedRedirectUriPrefixes();
+    if (!allowedPrefixes.some(prefix => redirectUri.startsWith(prefix))) {
+        throw new Error(`redirect_uri not allowed: ${redirectUri}`);
+    }
+}
+// Minimal OIDC discovery for clients that want it
+app.get('/.well-known/openid-configuration', (req, res) => {
+    const baseUrl = getPublicBaseUrl(req);
+    res.setHeader('Cache-Control', 'no-store');
+    res.json({
+        issuer: baseUrl,
+        authorization_endpoint: `${baseUrl}/authorize`,
+        token_endpoint: `${baseUrl}/token`,
+        response_types_supported: ['code'],
+        grant_types_supported: ['authorization_code', 'refresh_token'],
+        code_challenge_methods_supported: ['S256'],
+        token_endpoint_auth_methods_supported: ['client_secret_post', 'none']
+    });
+});
+// VS Code starts auth by opening this URL in the browser
+app.get(['/authorize', '/oauth2/v2.0/authorize'], (req, res) => {
+    try {
+        const tenantId = getTenantIdForVsCodeAuth();
+        const clientId = requiredValue('client_id', normalizeString(req.query.client_id));
+        const redirectUri = requiredValue('redirect_uri', normalizeString(req.query.redirect_uri));
+        const state = requiredValue('state', normalizeString(req.query.state));
+        const codeChallenge = requiredValue('code_challenge', normalizeString(req.query.code_challenge));
+        const codeChallengeMethod = normalizeString(req.query.code_challenge_method) ?? 'S256';
+        validateClientAndRedirect(clientId, redirectUri);
+        const scope = normalizeString(req.query.scope) ?? process.env.MCP_OAUTH_SCOPES ?? getDefaultScope(clientId);
+        const upstream = new URL(authorizeEndpoint(tenantId));
+        upstream.searchParams.set('client_id', clientId);
+        upstream.searchParams.set('response_type', 'code');
+        upstream.searchParams.set('redirect_uri', redirectUri);
+        upstream.searchParams.set('response_mode', 'query');
+        upstream.searchParams.set('scope', scope);
+        upstream.searchParams.set('state', state);
+        upstream.searchParams.set('code_challenge_method', codeChallengeMethod);
+        upstream.searchParams.set('code_challenge', codeChallenge);
+        // Optional passthroughs
+        const prompt = normalizeString(req.query.prompt);
+        if (prompt)
+            upstream.searchParams.set('prompt', prompt);
+        const loginHint = normalizeString(req.query.login_hint);
+        if (loginHint)
+            upstream.searchParams.set('login_hint', loginHint);
+        res.redirect(upstream.toString());
+    }
+    catch (e) {
+        res.status(400).send(String(e));
+    }
+});
+// VS Code exchanges the auth code for tokens here
+app.post(['/token', '/oauth2/v2.0/token'], async (req, res) => {
+    try {
+        const tenantId = getTenantIdForVsCodeAuth();
+        const clientId = requiredValue('client_id', normalizeString(req.body?.client_id));
+        const redirectUri = requiredValue('redirect_uri', normalizeString(req.body?.redirect_uri));
+        validateClientAndRedirect(clientId, redirectUri);
+        const grantType = requiredValue('grant_type', normalizeString(req.body?.grant_type));
+        const body = new URLSearchParams();
+        body.set('client_id', clientId);
+        body.set('grant_type', grantType);
+        body.set('redirect_uri', redirectUri);
+        const clientSecret = process.env.MCP_OAUTH_CLIENT_SECRET ?? process.env.GRAPH_CLIENT_SECRET;
+        if (clientSecret) {
+            body.set('client_secret', clientSecret);
+        }
+        const scope = normalizeString(req.body?.scope);
+        if (scope) {
+            body.set('scope', scope);
+        }
+        if (grantType === 'authorization_code') {
+            body.set('code', requiredValue('code', normalizeString(req.body?.code)));
+            const verifier = normalizeString(req.body?.code_verifier);
+            if (verifier)
+                body.set('code_verifier', verifier);
+        }
+        else if (grantType === 'refresh_token') {
+            body.set('refresh_token', requiredValue('refresh_token', normalizeString(req.body?.refresh_token)));
+        }
+        else {
+            res
+                .status(400)
+                .json({ error: 'unsupported_grant_type', error_description: `Unsupported grant_type: ${grantType}` });
+            return;
+        }
+        const upstream = await fetch(tokenEndpoint(tenantId), {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body
+        });
+        const text = await upstream.text();
+        res.setHeader('Cache-Control', 'no-store');
+        res.setHeader('Pragma', 'no-cache');
+        res.status(upstream.status);
+        try {
+            res.json(text ? JSON.parse(text) : {});
+        }
+        catch {
+            res.type('text/plain').send(text);
+        }
+    }
+    catch (e) {
+        res.status(400).json({ error: 'invalid_request', error_description: String(e) });
+    }
+});
 app.get('/auth/graph/login', (req, res) => {
     try {
         const sessionId = String(req.query.sessionId ?? '');
