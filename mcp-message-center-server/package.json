@@ -11,6 +11,7 @@
     "smoke": "tsx src/smoke.ts"
   },
   "dependencies": {
+    "@azure/msal-node": "^3.8.4",
     "@modelcontextprotocol/sdk": "^1.6.0",
     "dotenv": "^16.6.1",
     "express": "^4.21.2",

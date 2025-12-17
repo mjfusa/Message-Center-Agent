@@ -1,16 +1,16 @@
-import { Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
 import fs from 'node:fs';
 import path from 'node:path';
 import * as z from 'zod';
 
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { createMcpExpressApp } from '@modelcontextprotocol/sdk/server/express.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
-import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
+import type { CallToolResult, MessageExtraInfo } from '@modelcontextprotocol/sdk/types.js';
 
 import { getGraphEnvConfig } from './graph/config.js';
 import { buildLoginUrl, handleCallback, refreshAccessToken } from './graph/graphOAuth.js';
+import { acquireGraphAccessTokenOnBehalfOf } from './graph/graphObo.js';
 import { clearTokenForSession, getTokenForSession, setTokenForSession } from './graph/tokenStore.js';
 
 import { getMessagesInputSchemaBase } from './generated/messagesInputSchema.js';
@@ -66,6 +66,73 @@ function toTextResult(value: unknown): CallToolResult {
       }
     ]
   };
+}
+
+function normalizeHeaderValue(value: unknown): string | undefined {
+  if (typeof value === 'string') return value;
+  if (Array.isArray(value) && typeof value[0] === 'string') return value[0];
+  return undefined;
+}
+
+function getBearerTokenFromAuthHeader(headerValue: string | undefined): string | undefined {
+  if (!headerValue) return undefined;
+  const match = headerValue.match(/^\s*Bearer\s+(.+)\s*$/i);
+  return match?.[1];
+}
+
+function decodeJwtPayload(token: string): Record<string, unknown> | undefined {
+  // Best-effort decoding for routing decisions only. This does NOT validate signatures.
+  const parts = token.split('.');
+  if (parts.length < 2) return undefined;
+
+  try {
+    const base64Url = parts[1];
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    const padded = base64.padEnd(base64.length + ((4 - (base64.length % 4)) % 4), '=');
+    const json = Buffer.from(padded, 'base64').toString('utf8');
+    const parsed = JSON.parse(json);
+    if (parsed && typeof parsed === 'object') {
+      return parsed as Record<string, unknown>;
+    }
+  } catch {
+    // ignore
+  }
+  return undefined;
+}
+
+function isGraphAudience(aud: unknown): boolean {
+  // Graph resource appId
+  if (aud === '00000003-0000-0000-c000-000000000000') return true;
+  // Some tokens may carry a URL audience
+  if (aud === 'https://graph.microsoft.com') return true;
+  return false;
+}
+
+async function resolveGraphTokenForRequest(extra?: (MessageExtraInfo & { sessionId?: string }) | undefined): Promise<
+  | { accessToken: string; source: 'authorization-header-graph' | 'obo' }
+  | { accessToken?: undefined; source: 'none' }
+  | { accessToken?: undefined; source: 'obo-error'; error: string }
+> {
+  const authHeader =
+    normalizeHeaderValue(extra?.requestInfo?.headers?.authorization) ??
+    normalizeHeaderValue((extra?.requestInfo?.headers as any)?.Authorization);
+
+  const bearer = getBearerTokenFromAuthHeader(authHeader);
+  if (!bearer) {
+    return { source: 'none' };
+  }
+
+  const payload = decodeJwtPayload(bearer);
+  if (payload && isGraphAudience(payload.aud)) {
+    return { accessToken: bearer, source: 'authorization-header-graph' };
+  }
+
+  try {
+    const result = await acquireGraphAccessTokenOnBehalfOf(bearer);
+    return { accessToken: result.accessToken, source: 'obo' };
+  } catch (e) {
+    return { source: 'obo-error', error: String(e) };
+  }
 }
 
 async function fetchJson(url: string, init?: RequestInit) {
@@ -133,14 +200,30 @@ function getServer() {
       inputSchema: getMessagesInputSchema
     },
     async (args, extra): Promise<CallToolResult> => {
-      const sessionId = extra?.sessionId ?? 'unknown-session';
+      const sessionId = (extra as any)?.sessionId ?? 'unknown-session';
       const publicBaseUrl =
         process.env.PUBLIC_BASE_URL ?? `http://localhost:${process.env.PORT ?? 8080}`;
+
+      // Preferred for declarative agent callers:
+      // - Client sends Authorization: Bearer <user token for this MCP API>
+      // - Server uses OBO to acquire a Graph token on behalf of the user
+      const requestToken = await resolveGraphTokenForRequest(extra as any);
+      if (requestToken.source === 'obo-error') {
+        return toTextResult({
+          note:
+            'OBO token exchange failed. Ensure the caller sends a valid Entra user access token for this MCP API (not a random token), and that this server app registration has delegated Microsoft Graph permissions with admin consent.',
+          error: requestToken.error,
+          sessionId
+        });
+      }
 
       const argToken = (args as { accessToken?: string }).accessToken;
       const envToken = process.env.GRAPH_ACCESS_TOKEN;
 
-      let accessToken = argToken ?? envToken;
+      let accessToken =
+        requestToken.source === 'obo' || requestToken.source === 'authorization-header-graph'
+          ? requestToken.accessToken
+          : argToken ?? envToken;
 
       if (!accessToken) {
         const cached = getTokenForSession(sessionId);
@@ -191,7 +274,7 @@ function getServer() {
       if (!accessToken && result.status === 401) {
         return toTextResult({
           note:
-            'Graph returned 401. Set GRAPH_ACCESS_TOKEN, or call getGraphLoginUrl then complete browser sign-in so this session can call Graph without passing a token.',
+            'Graph returned 401. For declarative agents, call /mcp with Authorization: Bearer <user token for this MCP API> so the server can use OBO. For local testing, set GRAPH_ACCESS_TOKEN, or call getGraphLoginUrl then complete browser sign-in so this session can call Graph without passing a token.',
           request: { url, headers: { ...headers, Authorization: undefined } },
           response: result
         });
@@ -203,7 +286,8 @@ function getServer() {
   return server;
 }
 
-const app = createMcpExpressApp();
+const app = express();
+app.use(express.json({ limit: '1mb' }));
 
 app.get('/auth/graph/login', (req: Request, res: Response) => {
   try {
@@ -264,6 +348,18 @@ app.post('/mcp', async (req: Request, res: Response) => {
   const server = getServer();
 
   try {
+    if (process.env.MCP_REQUIRE_AUTH === 'true') {
+      const bearer = getBearerTokenFromAuthHeader(req.header('authorization'));
+      if (!bearer) {
+        res.status(401).json({
+          jsonrpc: '2.0',
+          error: { code: -32001, message: 'Unauthorized: missing Authorization bearer token' },
+          id: null
+        });
+        return;
+      }
+    }
+
     const transport = new StreamableHTTPServerTransport({
       sessionIdGenerator: undefined
     });

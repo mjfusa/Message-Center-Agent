@@ -1,15 +1,18 @@
 FROM node:20-alpine
 
-WORKDIR /app
+WORKDIR /repo/mcp-message-center-server
 
-COPY package.json ./
+COPY mcp-message-center-server/package.json mcp-message-center-server/package-lock.json ./
+RUN npm ci --include=dev
 
-RUN npm install --omit=dev
+COPY mcp-message-center-server/tsconfig.json ./
+COPY mcp-message-center-server/src ./src
+COPY mcp-message-center-server/scripts ./scripts
 
-COPY src ./src
-COPY tsconfig.json ./
+# Schema generation reads OpenAPI specs from appPackage/
+COPY appPackage /repo/appPackage
 
-RUN npm install --include=dev && npm run build && npm prune --omit=dev
+RUN npm run build && npm prune --omit=dev
 
 ENV PORT=8080
 EXPOSE 8080

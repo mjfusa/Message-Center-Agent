@@ -1,0 +1,42 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "westus"
+    },
+    "namePrefix": {
+      "value": "mcagent"
+    },
+    "messageCenterImage": {
+      "value": "acrmcpmessagesroadmap.azurecr.io/mcp-message-center-server:0.1.1"
+    },
+    "roadmapImage": {
+      "value": "acrmcpmessagesroadmap.azurecr.io/mcp-roadmap-server:0.1.1"
+    },
+    "minReplicas": {
+      "value": 0
+    },
+    "maxReplicas": {
+      "value": 5
+    },
+    "graphTenantId": {
+      "value": "d3d6872a-0e81-480f-88e4-8e625ee447ba"
+    },
+    "graphClientId": {
+      "value": "b73cc57e-4850-4ed1-8d74-0eaca83e8a31"
+    },
+    "graphClientSecret": {
+      "value": "REDACTED"
+    },
+    "publicBaseUrl": {
+      "value": "https://mcagent-mcp-mc.nicewave-deeed178.westus.azurecontainerapps.io"
+    },
+    "graphRedirectUri": {
+      "value": "https://mcagent-mcp-mc.nicewave-deeed178.westus.azurecontainerapps.io/auth/graph/callback"
+    },
+    "graphScopes": {
+      "value": "openid profile offline_access ServiceMessage.Read.All"
+    }
+  }
+}

@@ -55,6 +55,29 @@ Notes:
 - The server auto-loads `.env.local` at startup (via `dotenv`).
 - Tokens are cached **in-memory**, so restarting the server requires signing in again.
 
+## Configuration (OBO for declarative agents)
+
+For **Microsoft declarative agent clients** (non-interactive callers), the recommended pattern is:
+
+- The client calls `POST /mcp` with `Authorization: Bearer <user token for this MCP API>`.
+- This server uses **On-Behalf-Of (OBO)** to exchange that token for a **Microsoft Graph delegated** access token.
+- Microsoft Graph enforces the user role requirement (e.g., Message Center Reader).
+
+Required variables (same app registration as above):
+- `GRAPH_TENANT_ID=...`
+- `GRAPH_CLIENT_ID=...`
+- `GRAPH_CLIENT_SECRET=...`
+
+Optional variables:
+- `GRAPH_OBO_SCOPES=https://graph.microsoft.com/.default`
+  - Default is `https://graph.microsoft.com/.default` (recommended when Graph delegated permissions are pre-consented).
+- `MCP_REQUIRE_AUTH=true`
+  - When set, `POST /mcp` returns `401` if the `Authorization` header is missing.
+
+Notes:
+- If a caller sends a **Graph** token directly in `Authorization`, the server will use it as-is.
+- The legacy dev/test paths still work (tool arg `accessToken`, `GRAPH_ACCESS_TOKEN`, or the interactive PKCE flow).
+
 ## Smoke tests
 
 PowerShell scripts are in `mcp-message-center-server/scripts/`.
@@ -65,6 +88,22 @@ PowerShell scripts are in `mcp-message-center-server/scripts/`.
 
 - Fetch messages:
   - `pwsh -File mcp-message-center-server/scripts/GetMessages.ps1 -Top 5 -Count:$true`
+
+### Smoke test using OBO (non-interactive)
+
+If you want to test the OBO path end-to-end (send a user token for this MCP API to `/mcp`):
+
+1) Get an MCP API user token via Azure CLI (first time may require consent):
+
+- First-time interactive consent/login:
+  - `pwsh -File mcp-message-center-server/scripts/GetMcpAccessToken.ps1 -Login -TenantId <tenantGuidOrDomain>`
+
+- Subsequent token fetch (prints the token):
+  - `pwsh -File mcp-message-center-server/scripts/GetMcpAccessToken.ps1`
+
+2) Call `getMessages` with the MCP token:
+
+- `pwsh -File mcp-message-center-server/scripts/GetMessages.ps1 -McpAccessToken (pwsh -File mcp-message-center-server/scripts/GetMcpAccessToken.ps1) -Top 5 -Count:$true`
 
 If you see `401 InvalidAuthenticationToken` with `Access token is empty`, you have not completed sign-in for the currently running server process.
 

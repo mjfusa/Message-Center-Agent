@@ -1,8 +1,7 @@
-import { Request, Response } from 'express';
+import express, { Request, Response } from 'express';
 import * as z from 'zod';
 
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { createMcpExpressApp } from '@modelcontextprotocol/sdk/server/express.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import type { CallToolResult } from '@modelcontextprotocol/sdk/types.js';
 
@@ -89,7 +88,8 @@ function getServer() {
   return server;
 }
 
-const app = createMcpExpressApp();
+const app = express();
+app.use(express.json({ limit: '1mb' }));
 
 app.post('/mcp', async (req: Request, res: Response) => {
   const server = getServer();
