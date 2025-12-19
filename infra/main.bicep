@@ -42,14 +42,8 @@ param graphClientId string
 @description('Graph client secret')
 param graphClientSecret string
 
-@description('Optional override for redirect URI. If empty, uses https://<messageCenterFqdn>/auth/graph/callback')
-param graphRedirectUri string = ''
-
 @description('Optional override for PUBLIC_BASE_URL. If empty, uses https://<messageCenterFqdn>')
 param publicBaseUrl string = ''
-
-@description('Optional graph scopes override')
-param graphScopes string = 'openid profile offline_access ServiceMessage.Read.All'
 
 @description('Optional override for the Azure Container Registry login server. If empty, derived from messageCenterImage.')
 param acrLoginServer string = ''
@@ -102,7 +96,6 @@ var messageCenterFqdnComputed = '${messageCenterAppName}.${managedEnv.outputs.de
 var roadmapFqdnComputed = '${roadmapAppName}.${managedEnv.outputs.defaultDomain}'
 
 var effectivePublicBaseUrl = empty(publicBaseUrl) ? 'https://${messageCenterFqdnComputed}' : publicBaseUrl
-var effectiveGraphRedirectUri = empty(graphRedirectUri) ? '${effectivePublicBaseUrl}/auth/graph/callback' : graphRedirectUri
 
 // AVM modules
 // Note: versions are pinned. Update as needed.
@@ -210,16 +203,8 @@ module messageCenterApp 'br/public:avm/res/app/container-app:0.19.0' = {
             secretRef: 'graph-client-secret'
           }
           {
-            name: 'GRAPH_SCOPES'
-            value: graphScopes
-          }
-          {
             name: 'PUBLIC_BASE_URL'
             value: effectivePublicBaseUrl
-          }
-          {
-            name: 'GRAPH_REDIRECT_URI'
-            value: effectiveGraphRedirectUri
           }
         ]
       }

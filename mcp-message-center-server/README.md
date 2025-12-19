@@ -35,26 +35,6 @@ Health check:
 MCP endpoint:
 - `http://localhost:8080/mcp`
 
-## Configuration (Graph OAuth)
-
-This server supports Authorization Code + PKCE for Microsoft Graph.
-
-Create and fill:
-- `mcp-message-center-server/.env.local` (gitignored)
-
-Typical variables:
-- `PORT=8080`
-- `PUBLIC_BASE_URL=http://localhost:8080`
-- `GRAPH_TENANT_ID=...`
-- `GRAPH_CLIENT_ID=...`
-- `GRAPH_CLIENT_SECRET=...`
-- `GRAPH_REDIRECT_URI=http://localhost:8080/auth/graph/callback`
-- `GRAPH_SCOPES=https://graph.microsoft.com/ServiceMessage.Read.All offline_access openid profile`
-
-Notes:
-- The server auto-loads `.env.local` at startup (via `dotenv`).
-- Tokens are cached **in-memory**, so restarting the server requires signing in again.
-
 ## Configuration (OBO for declarative agents)
 
 For **Microsoft declarative agent clients** (non-interactive callers), the recommended pattern is:
@@ -76,7 +56,7 @@ Optional variables:
 
 Notes:
 - If a caller sends a **Graph** token directly in `Authorization`, the server will use it as-is.
-- The legacy dev/test paths still work (tool arg `accessToken`, `GRAPH_ACCESS_TOKEN`, or the interactive PKCE flow).
+- The legacy dev/test paths still work (tool arg `accessToken` or `GRAPH_ACCESS_TOKEN`).
 
 ## OAuth redirect allowlist (VS Code + Teams)
 
@@ -95,10 +75,6 @@ Example:
 ## Smoke tests
 
 PowerShell scripts are in `mcp-message-center-server/scripts/`.
-
-- Get Graph login URL (interactive sign-in):
-  - `pwsh -File mcp-message-center-server/scripts/GetGraphLoginUrl.ps1`
-  - Open the returned `loginUrl` in a browser and complete sign-in.
 
 - Fetch messages:
   - `pwsh -File mcp-message-center-server/scripts/GetMessages.ps1 -Top 5 -Count:$true`

@@ -31,12 +31,6 @@
     },
     "publicBaseUrl": {
       "value": "https://mcagent-mcp-mc.nicewave-deeed178.westus.azurecontainerapps.io"
-    },
-    "graphRedirectUri": {
-      "value": "https://mcagent-mcp-mc.nicewave-deeed178.westus.azurecontainerapps.io/auth/graph/callback"
-    },
-    "graphScopes": {
-      "value": "openid profile offline_access ServiceMessage.Read.All"
     }
   }
 }

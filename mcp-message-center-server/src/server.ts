@@ -8,10 +8,7 @@ import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import type { CallToolResult, MessageExtraInfo } from '@modelcontextprotocol/sdk/types.js';
 
-import { getGraphEnvConfig } from './graph/config.js';
-import { buildLoginUrl, handleCallback, refreshAccessToken } from './graph/graphOAuth.js';
 import { acquireGraphAccessTokenOnBehalfOf } from './graph/graphObo.js';
-import { clearTokenForSession, getTokenForSession, setTokenForSession } from './graph/tokenStore.js';
 
 import { getMessagesInputSchemaBase } from './generated/messagesInputSchema.js';
 
@@ -36,25 +33,14 @@ loadEnvLocalIfPresent();
 
 const GRAPH_BASE_URL = 'https://graph.microsoft.com/v1.0';
 
-const TOKEN_REFRESH_SKEW_MS = 60_000;
-
 const getMessagesInputSchema = {
   ...getMessagesInputSchemaBase,
   accessToken: z
     .string()
     .optional()
     .describe(
-      'Optional: Graph access token for proxying requests. Use only for local testing; OAuth flow will replace this after browser sign-in.'
+      'Optional: Graph access token for proxying requests. Use only for local testing.'
     )
-};
-
-const getGraphLoginUrlSchema = {
-  // Optional hint for deployments behind a proxy where PUBLIC_BASE_URL can't be inferred.
-  publicBaseUrl: z
-    .string()
-    .url()
-    .optional()
-    .describe('Optional override for public base URL used to compute redirectUri.')
 };
 
 function toTextResult(value: unknown): CallToolResult {
@@ -213,26 +199,6 @@ function getServer() {
   );
 
   server.registerTool(
-    'getGraphLoginUrl',
-    {
-      description:
-        'Returns an Azure AD login URL to authorize Microsoft Graph ServiceMessage.Read.All for this MCP session. Open the URL in a browser to complete sign-in.',
-      inputSchema: getGraphLoginUrlSchema
-    },
-    async (args, extra): Promise<CallToolResult> => {
-      const sessionId = extra?.sessionId ?? 'unknown-session';
-      const publicBaseUrl =
-        (args as any).publicBaseUrl ??
-        process.env.PUBLIC_BASE_URL ??
-        `http://localhost:${process.env.PORT ?? 8080}`;
-
-      const config = getGraphEnvConfig(publicBaseUrl);
-      const { loginUrl } = buildLoginUrl(config, sessionId);
-      return toTextResult({ sessionId, loginUrl, redirectUri: config.redirectUri, scopes: config.scopes });
-    }
-  );
-
-  server.registerTool(
     'getMessages',
     {
       description:
@@ -265,29 +231,6 @@ function getServer() {
           ? requestToken.accessToken
           : argToken ?? envToken;
 
-      if (!accessToken) {
-        const cached = getTokenForSession(sessionId);
-        if (cached) {
-          const shouldRefresh = cached.expiresAtEpochMs - Date.now() <= TOKEN_REFRESH_SKEW_MS;
-          if (shouldRefresh && cached.refreshToken) {
-            try {
-              const config = getGraphEnvConfig(publicBaseUrl);
-              const refreshed = await refreshAccessToken(config, cached.refreshToken);
-              setTokenForSession(sessionId, refreshed);
-              accessToken = refreshed.accessToken;
-            } catch (e) {
-              return toTextResult({
-                note: 'Failed to refresh token; please re-authenticate.',
-                error: String(e),
-                sessionId
-              });
-            }
-          } else {
-            accessToken = cached.accessToken;
-          }
-        }
-      }
-
       const url = buildUrl(GRAPH_BASE_URL, '/admin/serviceAnnouncement/messages', {
         $orderby: (args as any).orderby,
         $count: String((args as any).count),
@@ -314,7 +257,7 @@ function getServer() {
       if (!accessToken && result.status === 401) {
         return toTextResult({
           note:
-            'Graph returned 401. For declarative agents, call /mcp with Authorization: Bearer <user token for this MCP API> so the server can use OBO. For local testing, set GRAPH_ACCESS_TOKEN, or call getGraphLoginUrl then complete browser sign-in so this session can call Graph without passing a token.',
+            'Graph returned 401. For declarative agents, call /mcp with Authorization: Bearer <user token for this MCP API> so the server can use OBO. For local testing, set GRAPH_ACCESS_TOKEN or pass accessToken to the tool call.',
           request: { url, headers: { ...headers, Authorization: undefined } },
           response: result
         });
@@ -542,60 +485,6 @@ app.post(['/token', '/oauth2/v2.0/token'], async (req: Request, res: Response) =
   }
 });
 
-app.get('/auth/graph/login', (req: Request, res: Response) => {
-  try {
-    const sessionId = String(req.query.sessionId ?? '');
-    if (!sessionId) {
-      res.status(400).send('Missing required query param: sessionId');
-      return;
-    }
-
-    const publicBaseUrl =
-      String(req.query.publicBaseUrl ?? '') ||
-      process.env.PUBLIC_BASE_URL ||
-      `http://localhost:${process.env.PORT ?? 8080}`;
-
-    const config = getGraphEnvConfig(publicBaseUrl);
-    const { loginUrl } = buildLoginUrl(config, sessionId);
-    res.redirect(loginUrl);
-  } catch (e) {
-    res.status(500).send(String(e));
-  }
-});
-
-app.get('/auth/graph/callback', async (req: Request, res: Response) => {
-  try {
-    const code = String(req.query.code ?? '');
-    const state = String(req.query.state ?? '');
-    if (!code || !state) {
-      res.status(400).send('Missing required query params: code, state');
-      return;
-    }
-
-    const publicBaseUrl =
-      process.env.PUBLIC_BASE_URL ?? `http://localhost:${process.env.PORT ?? 8080}`;
-    const config = getGraphEnvConfig(publicBaseUrl);
-    const { sessionId } = await handleCallback(config, code, state);
-
-    res
-      .status(200)
-      .send(
-        `<html><body><h3>Graph authorization complete</h3><p>You can close this window.</p><p>Session: ${sessionId}</p></body></html>`
-      );
-  } catch (e) {
-    res.status(500).send(String(e));
-  }
-});
-
-app.get('/auth/graph/logout', (req: Request, res: Response) => {
-  const sessionId = String(req.query.sessionId ?? '');
-  if (!sessionId) {
-    res.status(400).send('Missing required query param: sessionId');
-    return;
-  }
-  clearTokenForSession(sessionId);
-  res.status(200).send('Logged out');
-});
 
 app.post('/mcp', async (req: Request, res: Response) => {
   const server = getServer();

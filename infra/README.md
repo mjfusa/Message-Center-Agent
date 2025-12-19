@@ -7,7 +7,7 @@ This folder provisions:
   - Message Center MCP server (port 8080)
   - Roadmap MCP server (port 8081)
 
-It also outputs both app FQDNs, which you need for OAuth redirect configuration.
+It also outputs both app FQDNs.
 
 ## Prereqs
 
@@ -55,13 +55,6 @@ az deployment group create \
 az deployment group show -g <rg> -n <deploymentName> --query properties.outputs -o json
 ```
 
-## OAuth redirect URI setup
-
-In your Entra app registration, add a Web redirect URI:
-- `https://<messageCenterFqdn>/auth/graph/callback`
-
-If you deploy multiple environments, add each environment's callback URL.
-
 ## Verify
 
 - Health endpoints:
@@ -74,7 +67,7 @@ If you deploy multiple environments, add each environment's callback URL.
 ## Notes
 
 - Scale-to-zero is controlled by `minReplicas` (default `0`) and HTTP scaling rules.
-- `PUBLIC_BASE_URL` and `GRAPH_REDIRECT_URI` are computed from the deployed Container Apps environment default domain unless you override them via the `publicBaseUrl` / `graphRedirectUri` parameters.
+- `PUBLIC_BASE_URL` is computed from the deployed Container Apps environment default domain unless you override it via the `publicBaseUrl` parameter.
 - `APPLICATIONINSIGHTS_CONNECTION_STRING` is injected into both apps (you still need to add app-level telemetry SDKs if you want custom traces/metrics).
 
 ### ACR auth migration (admin creds -> managed identity)

@@ -96,25 +96,11 @@
         "description": "Graph client secret"
       }
     },
-    "graphRedirectUri": {
-      "type": "string",
-      "defaultValue": "",
-      "metadata": {
-        "description": "Optional override for redirect URI. If empty, uses https://<messageCenterFqdn>/auth/graph/callback"
-      }
-    },
     "publicBaseUrl": {
       "type": "string",
       "defaultValue": "",
       "metadata": {
         "description": "Optional override for PUBLIC_BASE_URL. If empty, uses https://<messageCenterFqdn>"
-      }
-    },
-    "graphScopes": {
-      "type": "string",
-      "defaultValue": "openid profile offline_access ServiceMessage.Read.All",
-      "metadata": {
-        "description": "Optional graph scopes override"
       }
     },
     "acrLoginServer": {
@@ -5016,16 +5002,8 @@
                     "secretRef": "graph-client-secret"
                   },
                   {
-                    "name": "GRAPH_SCOPES",
-                    "value": "[parameters('graphScopes')]"
-                  },
-                  {
                     "name": "PUBLIC_BASE_URL",
                     "value": "[if(empty(parameters('publicBaseUrl')), format('https://{0}', format('{0}.{1}', variables('messageCenterAppName'), reference(resourceId('Microsoft.Resources/deployments', 'managedEnv'), '2022-09-01').outputs.defaultDomain.value)), parameters('publicBaseUrl'))]"
-                  },
-                  {
-                    "name": "GRAPH_REDIRECT_URI",
-                    "value": "[if(empty(parameters('graphRedirectUri')), format('{0}/auth/graph/callback', if(empty(parameters('publicBaseUrl')), format('https://{0}', format('{0}.{1}', variables('messageCenterAppName'), reference(resourceId('Microsoft.Resources/deployments', 'managedEnv'), '2022-09-01').outputs.defaultDomain.value)), parameters('publicBaseUrl'))), parameters('graphRedirectUri'))]"
                   }
                 ]
               }
