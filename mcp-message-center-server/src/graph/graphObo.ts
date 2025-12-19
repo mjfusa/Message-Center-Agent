@@ -1,5 +1,7 @@
 import { ConfidentialClientApplication } from '@azure/msal-node';
 
+import { getClientCertificateFromEnvOrKeyVault } from '../entra/clientCertificate.js';
+
 function required(name: string, value: string | undefined) {
   if (!value) {
     throw new Error(`Missing required env var: ${name}`);
@@ -20,24 +22,46 @@ function getOboScopes(): string[] {
   return raw.split(/\s+/).filter(Boolean);
 }
 
-let cachedClient: ConfidentialClientApplication | undefined;
+let cachedClientPromise: Promise<ConfidentialClientApplication> | undefined;
 
-function getMsalClient(): ConfidentialClientApplication {
-  if (cachedClient) return cachedClient;
+async function getMsalClient(): Promise<ConfidentialClientApplication> {
+  if (cachedClientPromise) return cachedClientPromise;
 
-  const tenantId = required('GRAPH_TENANT_ID (or TEAMS_APP_TENANT_ID)', getTenantId());
-  const clientId = required('GRAPH_CLIENT_ID', process.env.GRAPH_CLIENT_ID);
-  const clientSecret = required('GRAPH_CLIENT_SECRET', process.env.GRAPH_CLIENT_SECRET);
+  cachedClientPromise = (async () => {
+    const tenantId = required('GRAPH_TENANT_ID (or TEAMS_APP_TENANT_ID)', getTenantId());
+    const clientId = required('GRAPH_CLIENT_ID', process.env.GRAPH_CLIENT_ID);
 
-  cachedClient = new ConfidentialClientApplication({
-    auth: {
-      clientId,
-      authority: `https://login.microsoftonline.com/${tenantId}`,
-      clientSecret
+    const clientSecret = process.env.GRAPH_CLIENT_SECRET;
+    if (clientSecret) {
+      return new ConfidentialClientApplication({
+        auth: {
+          clientId,
+          authority: `https://login.microsoftonline.com/${tenantId}`,
+          clientSecret
+        }
+      });
     }
-  });
 
-  return cachedClient;
+    const { thumbprint, privateKey } = await getClientCertificateFromEnvOrKeyVault();
+
+    return new ConfidentialClientApplication({
+      auth: {
+        clientId,
+        authority: `https://login.microsoftonline.com/${tenantId}`,
+        clientCertificate: {
+          thumbprint,
+          privateKey
+        }
+      }
+    });
+  })();
+
+  try {
+    return await cachedClientPromise;
+  } catch (e) {
+    cachedClientPromise = undefined;
+    throw e;
+  }
 }
 
 export type GraphOboResult = {
@@ -47,7 +71,7 @@ export type GraphOboResult = {
 };
 
 export async function acquireGraphAccessTokenOnBehalfOf(userAssertion: string): Promise<GraphOboResult> {
-  const client = getMsalClient();
+  const client = await getMsalClient();
   const scopes = getOboScopes();
 
   const result = await client.acquireTokenOnBehalfOf({

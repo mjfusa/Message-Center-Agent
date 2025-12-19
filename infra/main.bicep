@@ -38,9 +38,14 @@ param graphTenantId string
 @description('Graph client id (GUID)')
 param graphClientId string
 
-@secure()
-@description('Graph client secret')
-param graphClientSecret string
+@description('Key Vault name (globally unique) that stores the Graph client certificate private key as a secret')
+param keyVaultName string
+
+@description('Key Vault secret name that contains the Graph client certificate private key (PEM)')
+param graphClientCertSecretName string = 'graph-client-cert'
+
+@description('Thumbprint (hex) of the certificate uploaded to the app registration for Graph OBO')
+param graphClientCertThumbprint string
 
 @description('Optional override for PUBLIC_BASE_URL. If empty, uses https://<messageCenterFqdn>')
 param publicBaseUrl string = ''
@@ -96,6 +101,25 @@ var messageCenterFqdnComputed = '${messageCenterAppName}.${managedEnv.outputs.de
 var roadmapFqdnComputed = '${roadmapAppName}.${managedEnv.outputs.defaultDomain}'
 
 var effectivePublicBaseUrl = empty(publicBaseUrl) ? 'https://${messageCenterFqdnComputed}' : publicBaseUrl
+
+var keyVaultSecretsUserRoleDefinitionId = subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')
+
+resource keyVault 'Microsoft.KeyVault/vaults@2024-11-01' = {
+  name: keyVaultName
+  location: location
+  properties: {
+    tenantId: graphTenantId
+    sku: {
+      family: 'A'
+      name: 'standard'
+    }
+    enableRbacAuthorization: true
+    enableSoftDelete: true
+    enablePurgeProtection: true
+    softDeleteRetentionInDays: 90
+    publicNetworkAccess: 'Enabled'
+  }
+}
 
 // AVM modules
 // Note: versions are pinned. Update as needed.
@@ -160,12 +184,7 @@ module messageCenterApp 'br/public:avm/res/app/container-app:0.19.0' = {
     ingressTargetPort: messageCenterTargetPort
     ingressTransport: 'auto'
 
-    secrets: concat(acrRegistrySecrets, [
-      {
-        name: 'graph-client-secret'
-        value: graphClientSecret
-      }
-    ])
+    secrets: acrRegistrySecrets
 
     registries: acrRegistries
 
@@ -199,8 +218,16 @@ module messageCenterApp 'br/public:avm/res/app/container-app:0.19.0' = {
             value: graphClientId
           }
           {
-            name: 'GRAPH_CLIENT_SECRET'
-            secretRef: 'graph-client-secret'
+            name: 'GRAPH_CLIENT_CERT_KEYVAULT_URL'
+            value: keyVault.properties.vaultUri
+          }
+          {
+            name: 'GRAPH_CLIENT_CERT_SECRET_NAME'
+            value: graphClientCertSecretName
+          }
+          {
+            name: 'GRAPH_CLIENT_CERT_THUMBPRINT'
+            value: graphClientCertThumbprint
           }
           {
             name: 'PUBLIC_BASE_URL'
@@ -225,6 +252,20 @@ module messageCenterApp 'br/public:avm/res/app/container-app:0.19.0' = {
       ]
     }
   }
+}
+
+resource messageCenterKeyVaultSecretsUserRoleAssignment 'Microsoft.Authorization/roleAssignments@2022-04-01' = {
+  name: guid(keyVault.id, messageCenterAppName, keyVaultSecretsUserRoleDefinitionId)
+  scope: keyVault
+  properties: {
+    roleDefinitionId: keyVaultSecretsUserRoleDefinitionId
+    principalId: reference(resourceId('Microsoft.App/containerApps', messageCenterAppName), '2025-02-02-preview', 'full').identity.principalId
+    principalType: 'ServicePrincipal'
+  }
+  dependsOn: [
+    keyVault
+    messageCenterApp
+  ]
 }
 
 module roadmapApp 'br/public:avm/res/app/container-app:0.19.0' = {

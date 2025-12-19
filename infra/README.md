@@ -38,9 +38,15 @@ After it runs, your `infra/main.parameters.json` will have `messageCenterImage` 
 1) Copy/modify [infra/main.parameters.json](main.parameters.json):
 - `namePrefix`
 - `messageCenterImage`, `roadmapImage`
-- `graphTenantId`, `graphClientId`, `graphClientSecret`
+- `graphTenantId`, `graphClientId`
+- `keyVaultName`, `graphClientCertThumbprint`, `graphClientCertSecretName`
 
-2) Deploy the Bicep:
+2) Ensure the Key Vault secret exists:
+
+- Store the **PEM private key** for the app registration certificate in Key Vault as a **secret** named `graphClientCertSecretName`.
+- The Message Center Container App system-assigned managed identity is granted **Key Vault Secrets User** by this template.
+
+3) Deploy the Bicep:
 
 ```bash
 az deployment group create \
@@ -49,7 +55,7 @@ az deployment group create \
   -p infra/main.parameters.json
 ```
 
-3) Get outputs (FQDNs):
+4) Get outputs (FQDNs):
 
 ```bash
 az deployment group show -g <rg> -n <deploymentName> --query properties.outputs -o json

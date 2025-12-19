@@ -5,7 +5,7 @@
     "_generator": {
       "name": "bicep",
       "version": "0.32.4.45862",
-      "templateHash": "123582047347279282"
+      "templateHash": "2944617953302553700"
     }
   },
   "parameters": {
@@ -90,10 +90,23 @@
         "description": "Graph client id (GUID)"
       }
     },
-    "graphClientSecret": {
-      "type": "securestring",
+    "keyVaultName": {
+      "type": "string",
       "metadata": {
-        "description": "Graph client secret"
+        "description": "Key Vault name (globally unique) that stores the Graph client certificate private key as a secret"
+      }
+    },
+    "graphClientCertSecretName": {
+      "type": "string",
+      "defaultValue": "graph-client-cert",
+      "metadata": {
+        "description": "Key Vault secret name that contains the Graph client certificate private key (PEM)"
+      }
+    },
+    "graphClientCertThumbprint": {
+      "type": "string",
+      "metadata": {
+        "description": "Thumbprint (hex) of the certificate uploaded to the app registration for Graph OBO"
       }
     },
     "publicBaseUrl": {
@@ -126,9 +139,43 @@
     "roadmapAppName": "[format('{0}-mcp-roadmap', parameters('namePrefix'))]",
     "effectiveAcrLoginServer": "[if(empty(parameters('acrLoginServer')), split(parameters('messageCenterImage'), '/')[0], parameters('acrLoginServer'))]",
     "acrName": "[split(variables('effectiveAcrLoginServer'), '.')[0]]",
-    "acrPullRoleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')]"
+    "acrPullRoleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '7f951dda-4ed3-4680-a7ca-43fe172d538d')]",
+    "keyVaultSecretsUserRoleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '4633458b-17de-408a-b874-0445c86b69e6')]"
   },
   "resources": [
+    {
+      "type": "Microsoft.KeyVault/vaults",
+      "apiVersion": "2024-11-01",
+      "name": "[parameters('keyVaultName')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "tenantId": "[parameters('graphTenantId')]",
+        "sku": {
+          "family": "A",
+          "name": "standard"
+        },
+        "enableRbacAuthorization": true,
+        "enableSoftDelete": true,
+        "enablePurgeProtection": true,
+        "softDeleteRetentionInDays": 90,
+        "publicNetworkAccess": "Enabled"
+      }
+    },
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "scope": "[format('Microsoft.KeyVault/vaults/{0}', parameters('keyVaultName'))]",
+      "name": "[guid(resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName')), variables('messageCenterAppName'), variables('keyVaultSecretsUserRoleDefinitionId'))]",
+      "properties": {
+        "roleDefinitionId": "[variables('keyVaultSecretsUserRoleDefinitionId')]",
+        "principalId": "[reference(resourceId('Microsoft.App/containerApps', variables('messageCenterAppName')), '2025-02-02-preview', 'full').identity.principalId]",
+        "principalType": "ServicePrincipal"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
+        "[resourceId('Microsoft.Resources/deployments', 'messageCenterApp')]"
+      ]
+    },
     {
       "type": "Microsoft.Authorization/roleAssignments",
       "apiVersion": "2022-04-01",
@@ -4963,9 +5010,7 @@
           "ingressTransport": {
             "value": "auto"
           },
-          "secrets": {
-            "value": "[concat(if(parameters('acrUseManagedIdentity'), createArray(), createArray(createObject('name', 'acr-password', 'value', listCredentials(resourceId('Microsoft.ContainerRegistry/registries', variables('acrName')), '2023-07-01').passwords[0].value))), createArray(createObject('name', 'graph-client-secret', 'value', parameters('graphClientSecret'))))]"
-          },
+          "secrets": "[if(parameters('acrUseManagedIdentity'), createObject('value', createArray()), createObject('value', createArray(createObject('name', 'acr-password', 'value', listCredentials(resourceId('Microsoft.ContainerRegistry/registries', variables('acrName')), '2023-07-01').passwords[0].value))))]",
           "registries": "[if(parameters('acrUseManagedIdentity'), createObject('value', createArray(createObject('server', variables('effectiveAcrLoginServer'), 'identity', 'System'))), createObject('value', createArray(createObject('server', variables('effectiveAcrLoginServer'), 'username', listCredentials(resourceId('Microsoft.ContainerRegistry/registries', variables('acrName')), '2023-07-01').username, 'passwordSecretRef', 'acr-password'))))]",
           "containers": {
             "value": [
@@ -4998,8 +5043,16 @@
                     "value": "[parameters('graphClientId')]"
                   },
                   {
-                    "name": "GRAPH_CLIENT_SECRET",
-                    "secretRef": "graph-client-secret"
+                    "name": "GRAPH_CLIENT_CERT_KEYVAULT_URL",
+                    "value": "[reference(resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName')), '2024-11-01').vaultUri]"
+                  },
+                  {
+                    "name": "GRAPH_CLIENT_CERT_SECRET_NAME",
+                    "value": "[parameters('graphClientCertSecretName')]"
+                  },
+                  {
+                    "name": "GRAPH_CLIENT_CERT_THUMBPRINT",
+                    "value": "[parameters('graphClientCertThumbprint')]"
                   },
                   {
                     "name": "PUBLIC_BASE_URL",
@@ -6543,6 +6596,7 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.Resources/deployments', 'appInsights')]",
+        "[resourceId('Microsoft.KeyVault/vaults', parameters('keyVaultName'))]",
         "[resourceId('Microsoft.Resources/deployments', 'managedEnv')]"
       ]
     },

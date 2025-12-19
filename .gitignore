@@ -12,6 +12,9 @@ node_modules/
 
 # external MCP server local env (do not commit secrets)
 mcp-message-center-server/.env.local
+
+# locally generated certificate artifacts (may include private keys)
+mcp-message-center-server/certs/
 .deployment
 .DS_Store
 env/.env.prod

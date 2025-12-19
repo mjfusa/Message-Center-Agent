@@ -46,7 +46,19 @@ For **Microsoft declarative agent clients** (non-interactive callers), the recom
 Required variables (same app registration as above):
 - `GRAPH_TENANT_ID=...`
 - `GRAPH_CLIENT_ID=...`
-- `GRAPH_CLIENT_SECRET=...`
+
+Credential options (choose one):
+
+- **Preferred (Azure-hosted)**: certificate private key loaded from **Azure Key Vault** using managed identity
+  - `GRAPH_CLIENT_CERT_KEYVAULT_URL=https://<vault>.vault.azure.net/`
+  - `GRAPH_CLIENT_CERT_SECRET_NAME=<secretName>`
+  - `GRAPH_CLIENT_CERT_THUMBPRINT=<hexThumbprint>`
+  - Optional: `GRAPH_CLIENT_CERT_SECRET_VERSION=<version>`
+
+- **Local/dev fallback**: client secret
+  - `GRAPH_CLIENT_SECRET=...`
+
+Note: the `/token` OAuth proxy endpoint also uses these credentials. If no client secret is configured (`MCP_OAUTH_CLIENT_SECRET`/`GRAPH_CLIENT_SECRET`), it will authenticate to Entra using `private_key_jwt` with the Key Vault certificate settings.
 
 Optional variables:
 - `GRAPH_OBO_SCOPES=https://graph.microsoft.com/.default`
@@ -78,6 +90,9 @@ PowerShell scripts are in `mcp-message-center-server/scripts/`.
 
 - Fetch messages:
   - `pwsh -File mcp-message-center-server/scripts/GetMessages.ps1 -Top 5 -Count:$true`
+
+- Smoke test `/authorize` + `/token` proxy using PKCE (manual paste of the redirect URL):
+  - `pwsh -File mcp-message-center-server/scripts/SmokeTokenProxyPkce.ps1`
 
 ### Smoke test using OBO (non-interactive)
 

@@ -9,10 +9,10 @@
       "value": "mcagent"
     },
     "messageCenterImage": {
-      "value": "acrmcpmessagesroadmap.azurecr.io/mcp-message-center-server:0.1.1"
+      "value": "acrmcpmessagesroadmap.azurecr.io/mcp-message-center-server:0.1.2"
     },
     "roadmapImage": {
-      "value": "acrmcpmessagesroadmap.azurecr.io/mcp-roadmap-server:0.1.1"
+      "value": "acrmcpmessagesroadmap.azurecr.io/mcp-roadmap-server:0.1.2"
     },
     "minReplicas": {
       "value": 0
@@ -26,11 +26,20 @@
     "graphClientId": {
       "value": "b73cc57e-4850-4ed1-8d74-0eaca83e8a31"
     },
-    "graphClientSecret": {
-      "value": "REDACTED"
+    "keyVaultName": {
+      "value": "kvmessagecentermcpserver"
+    },
+    "graphClientCertSecretName": {
+      "value": "sec-message-center-mcp"
+    },
+    "graphClientCertThumbprint": {
+      "value": "C0A7ACC30D6262CC51DCF5E1166BD1F77C060A1D"
     },
     "publicBaseUrl": {
       "value": "https://mcagent-mcp-mc.nicewave-deeed178.westus.azurecontainerapps.io"
+    },
+    "acrUseManagedIdentity": {
+      "value": true
     }
   }
 }

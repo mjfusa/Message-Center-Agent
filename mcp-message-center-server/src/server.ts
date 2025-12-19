@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express';
 import dotenv from 'dotenv';
+import crypto from 'node:crypto';
 import fs from 'node:fs';
 import path from 'node:path';
 import * as z from 'zod';
@@ -9,6 +10,7 @@ import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/
 import type { CallToolResult, MessageExtraInfo } from '@modelcontextprotocol/sdk/types.js';
 
 import { acquireGraphAccessTokenOnBehalfOf } from './graph/graphObo.js';
+import { getClientCertificateFromEnvOrKeyVault } from './entra/clientCertificate.js';
 
 import { getMessagesInputSchemaBase } from './generated/messagesInputSchema.js';
 
@@ -284,6 +286,54 @@ function normalizeString(value: unknown): string | undefined {
   return undefined;
 }
 
+function base64UrlEncode(input: Buffer | string): string {
+  const buf = typeof input === 'string' ? Buffer.from(input, 'utf8') : input;
+  return buf
+    .toString('base64')
+    .replace(/=/g, '')
+    .replace(/\+/g, '-')
+    .replace(/\//g, '_');
+}
+
+function thumbprintHexToX5t(thumbprintHex: string): string {
+  const normalized = thumbprintHex.replace(/[^a-fA-F0-9]/g, '');
+  if (!normalized || normalized.length % 2 !== 0) {
+    throw new Error(
+      'Invalid GRAPH_CLIENT_CERT_THUMBPRINT. Expected an even-length hex string.'
+    );
+  }
+  return base64UrlEncode(Buffer.from(normalized, 'hex'));
+}
+
+function createClientAssertion(params: {
+  clientId: string;
+  audience: string;
+  thumbprintHex: string;
+  privateKeyPem: string;
+}): string {
+  const nowSeconds = Math.floor(Date.now() / 1000);
+  const expSeconds = nowSeconds + 10 * 60;
+
+  const header = {
+    alg: 'RS256',
+    typ: 'JWT',
+    x5t: thumbprintHexToX5t(params.thumbprintHex)
+  };
+
+  const payload = {
+    aud: params.audience,
+    iss: params.clientId,
+    sub: params.clientId,
+    jti: crypto.randomUUID(),
+    nbf: nowSeconds,
+    exp: expSeconds
+  };
+
+  const signingInput = `${base64UrlEncode(JSON.stringify(header))}.${base64UrlEncode(JSON.stringify(payload))}`;
+  const signature = crypto.sign('RSA-SHA256', Buffer.from(signingInput, 'utf8'), params.privateKeyPem);
+  return `${signingInput}.${base64UrlEncode(signature)}`;
+}
+
 function getTenantIdForVsCodeAuth(): string {
   return (
     process.env.MCP_OAUTH_TENANT_ID ??
@@ -359,7 +409,7 @@ app.get('/.well-known/openid-configuration', (req: Request, res: Response) => {
     response_types_supported: ['code'],
     grant_types_supported: ['authorization_code', 'refresh_token'],
     code_challenge_methods_supported: ['S256'],
-    token_endpoint_auth_methods_supported: ['client_secret_post', 'none']
+    token_endpoint_auth_methods_supported: ['client_secret_post', 'private_key_jwt', 'none']
   });
 });
 
@@ -441,6 +491,18 @@ app.post(['/token', '/oauth2/v2.0/token'], async (req: Request, res: Response) =
     const clientSecret = process.env.MCP_OAUTH_CLIENT_SECRET ?? process.env.GRAPH_CLIENT_SECRET;
     if (clientSecret) {
       body.set('client_secret', clientSecret);
+    } else {
+      const { thumbprint, privateKey } = await getClientCertificateFromEnvOrKeyVault();
+      body.set('client_assertion_type', 'urn:ietf:params:oauth:client-assertion-type:jwt-bearer');
+      body.set(
+        'client_assertion',
+        createClientAssertion({
+          clientId,
+          audience: tokenEndpoint(tenantId),
+          thumbprintHex: thumbprint,
+          privateKeyPem: privateKey
+        })
+      );
     }
 
     const scope = normalizeString((req.body as any)?.scope);
