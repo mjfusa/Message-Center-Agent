@@ -43,6 +43,17 @@ function toTextResult(value) {
         ]
     };
 }
+function toStructuredResult(structuredContent) {
+    return {
+        content: [
+            {
+                type: 'text',
+                text: JSON.stringify(structuredContent, null, 2)
+            }
+        ],
+        structuredContent
+    };
+}
 function normalizeHeaderValue(value) {
     if (typeof value === 'string')
         return value;
@@ -213,14 +224,37 @@ function getServer() {
             headers.Authorization = `Bearer ${accessToken}`;
         }
         const result = await fetchJson(url, { headers });
+        // Provide structuredContent so Copilot can apply response_semantics (citations/adaptive card)
+        // against a real JSON payload, not a JSON string embedded in text.
+        let structuredContent = {
+            request: { url },
+            response: result
+        };
+        if (result.ok && result.data && typeof result.data === 'object') {
+            const data = result.data;
+            const value = data.value;
+            if (Array.isArray(value)) {
+                const withUrls = value.map((m) => {
+                    const id = typeof m?.id === 'string' ? m.id : undefined;
+                    const portalUrl = id
+                        ? `https://admin.microsoft.com/#/MessageCenter/:/messages/${id}`
+                        : undefined;
+                    return portalUrl ? { ...m, url: portalUrl } : m;
+                });
+                structuredContent = { ...data, value: withUrls };
+            }
+            else {
+                structuredContent = data;
+            }
+        }
         if (!accessToken && result.status === 401) {
-            return toTextResult({
+            return toStructuredResult({
                 note: 'Graph returned 401. For declarative agents, call /mcp with Authorization: Bearer <user token for this MCP API> so the server can use OBO. For local testing, set GRAPH_ACCESS_TOKEN or pass accessToken to the tool call.',
                 request: { url, headers: { ...headers, Authorization: undefined } },
                 response: result
             });
         }
-        return toTextResult({ request: { url }, response: result });
+        return toStructuredResult(structuredContent);
     });
     return server;
 }

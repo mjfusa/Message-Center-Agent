@@ -1,6 +1,5 @@
 {
-    "$schema": "https://developer.microsoft.com/json-schemas/copilot/plugin/v2.2/schema.json",
-    "schema_version": "v2.2",
+    "schema_version": "v2.4",
     "name_for_human": "Message Center Agent",
     "description_for_human": "API to obtain message center messages including OAuth authentication",
     "namespace": "messagecenteragent",
@@ -8,12 +7,50 @@
         {
             "name": "getMessages",
             "description": "Retrieve the message center messages",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "orderby": {
+                        "type": "string",
+                        "default": "lastModifiedDateTime desc",
+                        "description": "Order by clause for sorting results. Defaults to newest messages first (lastModifiedDateTime desc)"
+                    },
+                    "count": {
+                        "type": "boolean",
+                        "default": "true",
+                        "description": "Total number of records returned"
+                    },
+                    "prefer": {
+                        "type": "string",
+                        "default": "odata.maxpagesize=5",
+                        "description": "Specifies the maximum number of items to return in a result set"
+                    },
+                    "top": {
+                        "type": "integer",
+                        "description": "Number of records to return. Set to 0 to retrieve only the count (@odata.count) without any message data. Useful for count-only queries like 'How many messages are there?'"
+                    },
+                    "skip": {
+                        "type": "integer",
+                        "description": "Number of records to skip"
+                    },
+                    "filter": {
+                        "type": "string",
+                        "description": "Filter the results based on specific conditions. For count-only queries, combine with $top=0 to get just the total number of matching records. Use `contains(tolower(title),tolower('search term'))` to search within the title property for a specific term or phrase. For multi-word searches, include the entire phrase in quotes. For create time, use the 'startDateTime' property with a date format. For example, `startDateTime ge 2025-03-01T00:00:00Z` to filter messages created after March 1, 2025. For major change messages, use `isMajorChange eq true`. To combine filters, use `and` operator. For example, `contains(tolower(title),tolower('Copilot agent')) and startDateTime ge 2025-03-01T00:00:00Z`. For the 'Tags' field, here is an example of the a query segment for the tags field: tags/any(t: t eq 'New feature'). For the 'severity' field, you can filter by severity using `severity eq 'normal'` or `severity eq 'high'` or `severity eq 'critical'`. For the 'category' field, you can filter by category using `category eq 'stayInformed'` or `category eq 'planForChange'` or `category eq 'preventOrFixIssue'`. For the 'Services' field, here is an example of a query segment for the services field: services/any(s: contains(s, 'Copilot')). When searching an message center update for roadmap ids, these are found in the 'details' field. Here is an example of a query segment for the details field, when searching for RoadmapIds: details/any(d: d/name eq 'RoadmapIds' and contains(d/value, '501107')). Note the 'name' property is used to specify the type of detail being searched, in this case 'RoadmapIds'. The 'value' property is then used to search for the specific roadmap id. RoadmapIds is case sensitive and must be used exactly as shown. To filter by message body, use `contains(tolower(body/content),tolower('search term'))` to search within the body content."
+                    },
+                    "accessToken": {
+                        "type": "string",
+                        "description": "Optional: Graph access token for proxying requests. Use only for local testing."
+                    }
+                },
+                "required": []
+            },
             "capabilities": {
                 "response_semantics": {
                     "data_path": "$.value",
                     "properties": {
                         "title": "$.title",
-                        "subtitle": "$.id"
+                        "subtitle": "$.id",
+                        "url": "$.url"
                     },
                     "static_template": {
                         "file": "adaptiveCards/getMessages.json"
@@ -24,12 +61,40 @@
         {
             "name": "getM365RoadmapInfo",
             "description": "Retrieve Microsoft 365 roadmap information",
+            "parameters": {
+                "type": "object",
+                "properties": {
+                    "filter": {
+                        "type": "string",
+                        "description": "OData filter expression. IMPORTANT: Use 'created' field for date filtering (not 'createdDateTime'). Supports contains(), tolower(), and date comparisons."
+                    },
+                    "orderby": {
+                        "type": "string",
+                        "description": "Order results by specified field. Use 'created' for date ordering (not 'createdDateTime')."
+                    },
+                    "top": {
+                        "type": "integer",
+                        "description": "Number of items to return (default: 10, max: 100) Set to 0 for count-only."
+                    },
+                    "skip": {
+                        "type": "integer",
+                        "description": "Number of items to skip for pagination"
+                    },
+                    "count": {
+                        "type": "boolean",
+                        "default": "true",
+                        "description": "Include total count of items in response"
+                    }
+                },
+                "required": []
+            },
             "capabilities": {
                 "response_semantics": {
                     "data_path": "$.value",
                     "properties": {
                         "title": "$.title",
-                        "subtitle": "$.id"
+                        "subtitle": "$.id",
+                        "url": "$.url"
                     },
                     "static_template": {
                         "file": "adaptiveCards/displayRoadmapItem.json"
@@ -40,25 +105,31 @@
     ],
     "runtimes": [
         {
-            "type": "OpenApi",
+            "type": "RemoteMCPServer",
             "auth": {
                 "type": "OAuthPluginVault",
                 "reference_id": "${{OAUTH2_REGISTRATION_ID}}"
             },
             "spec": {
-                "url": "apiSpecificationFile/openapi.json"
+                "url": "https://mcagent-mcp-mc.nicewave-deeed178.westus.azurecontainerapps.io/mcp",
+                "mcp_tool_description": {
+                    "file": "mcpTools/messageCenter.tools.json"
+                }
             },
             "run_for_functions": [
                 "getMessages"
             ]
         },
         {
-            "type": "OpenApi",
+            "type": "RemoteMCPServer",
             "auth": {
                 "type": "None"
             },
             "spec": {
-                "url": "apiSpecificationFile/roadmap-openapi.json"
+                "url": "https://mcagent-mcp-roadmap.nicewave-deeed178.westus.azurecontainerapps.io/mcp",
+                "mcp_tool_description": {
+                    "file": "mcpTools/roadmap.tools.json"
+                }
             },
             "run_for_functions": [
                 "getM365RoadmapInfo"

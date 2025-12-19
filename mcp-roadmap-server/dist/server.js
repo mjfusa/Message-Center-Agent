@@ -1,5 +1,5 @@
+import express from 'express';
 import { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js';
-import { createMcpExpressApp } from '@modelcontextprotocol/sdk/server/express.js';
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js';
 import { getRoadmapInputSchema } from './generated/roadmapInputSchema.js';
 const ROADMAP_BASE_URL = 'https://www.microsoft.com/releasecommunications/api/v2';
@@ -11,6 +11,17 @@ function toTextResult(value) {
                 text: JSON.stringify(value, null, 2)
             }
         ]
+    };
+}
+function toStructuredResult(structuredContent) {
+    return {
+        content: [
+            {
+                type: 'text',
+                text: JSON.stringify(structuredContent, null, 2)
+            }
+        ],
+        structuredContent
     };
 }
 async function fetchJson(url, init) {
@@ -43,10 +54,7 @@ function buildUrl(baseUrl, requestPath, query) {
 }
 function getServer() {
     const server = new McpServer({ name: 'roadmap-mcp-server', version: '0.1.0' }, { capabilities: { logging: {} } });
-    server.registerTool('getRoadmapInfo', {
-        description: 'Retrieve Microsoft 365 Roadmap items from https://www.microsoft.com/releasecommunications/api/v2/m365 using OData query parameters.',
-        inputSchema: getRoadmapInputSchema
-    }, async (args) => {
+    const handler = async (args) => {
         const url = buildUrl(ROADMAP_BASE_URL, '/m365', {
             $filter: args.filter,
             $orderby: args.orderby,
@@ -59,11 +67,43 @@ function getServer() {
                 Accept: 'application/json'
             }
         });
-        return toTextResult({ request: { url }, response: result });
-    });
+        let structuredContent = {
+            request: { url },
+            response: result
+        };
+        if (result.ok && result.data && typeof result.data === 'object') {
+            const data = result.data;
+            const value = data.value;
+            if (Array.isArray(value)) {
+                const withUrls = value.map((item) => {
+                    const id = item?.id;
+                    const numericId = typeof id === 'number' ? id : Number(id);
+                    const roadmapUrl = Number.isFinite(numericId)
+                        ? `https://www.microsoft.com/microsoft-365/roadmap?filters=&searchterms=${numericId}`
+                        : undefined;
+                    return roadmapUrl ? { ...item, url: roadmapUrl } : item;
+                });
+                structuredContent = { ...data, value: withUrls };
+            }
+            else {
+                structuredContent = data;
+            }
+        }
+        return toStructuredResult(structuredContent);
+    };
+    server.registerTool('getRoadmapInfo', {
+        description: 'Retrieve Microsoft 365 Roadmap items from https://www.microsoft.com/releasecommunications/api/v2/m365 using OData query parameters.',
+        inputSchema: getRoadmapInputSchema
+    }, handler);
+    // Alias used by appPackage/ai-plugin.json
+    server.registerTool('getM365RoadmapInfo', {
+        description: 'Retrieve Microsoft 365 Roadmap items from https://www.microsoft.com/releasecommunications/api/v2/m365 using OData query parameters.',
+        inputSchema: getRoadmapInputSchema
+    }, handler);
     return server;
 }
-const app = createMcpExpressApp();
+const app = express();
+app.use(express.json({ limit: '1mb' }));
 app.post('/mcp', async (req, res) => {
     const server = getServer();
     try {

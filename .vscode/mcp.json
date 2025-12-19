@@ -1,6 +1,16 @@
 {
   "servers": {
-    "m365agentstoolkit": {
+    "mcagentmcp": {
+      "type": "remote",
+      "url": "https://mcagent-mcp-mc.nicewave-deeed178.westus.azurecontainerapps.io/mcp",
+      "dev": {}
+    },
+    "m365roadmapmcp": {
+      "type": "remote",
+      "url": "https://mcagent-mcp-roadmap.nicewave-deeed178.westus.azurecontainerapps.io/mcp",
+      "dev": {}
+    },
+    "M365AgentsToolkit MCP Server": {
       "command": "npx",
       "args": [
         "@microsoft/m365agentstoolkit-mcp@latest",

@@ -3,9 +3,20 @@ import { StreamableHTTPClientTransport } from '@modelcontextprotocol/sdk/client/
 
 async function main() {
   const baseUrl = process.env.MCP_URL ?? 'http://localhost:8080/mcp';
+  const accessToken = process.env.MCP_ACCESS_TOKEN;
 
   const client = new Client({ name: 'smoke-client', version: '0.1.0' });
-  const transport = new StreamableHTTPClientTransport(new URL(baseUrl));
+  const transport = new StreamableHTTPClientTransport(new URL(baseUrl),
+    accessToken
+      ? {
+          requestInit: {
+            headers: {
+              Authorization: `Bearer ${accessToken}`
+            }
+          }
+        }
+      : undefined
+  );
 
   await client.connect(transport);
 

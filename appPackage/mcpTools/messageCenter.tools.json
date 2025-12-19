@@ -1,0 +1,45 @@
+{
+  "tools": [
+    {
+      "name": "getMessages",
+      "description": "Retrieve Microsoft 365 Message Center messages from Microsoft Graph (admin/serviceAnnouncement/messages).",
+      "inputSchema": {
+        "type": "object",
+        "properties": {
+          "orderby": {
+            "type": "string",
+            "default": "lastModifiedDateTime desc",
+            "description": "Order by clause for sorting results. Defaults to newest messages first (lastModifiedDateTime desc)"
+          },
+          "count": {
+            "type": "boolean",
+            "default": true,
+            "description": "Include total count of items in response"
+          },
+          "prefer": {
+            "type": "string",
+            "default": "odata.maxpagesize=5",
+            "description": "Specifies the maximum number of items to return in a result set"
+          },
+          "top": {
+            "type": "integer",
+            "description": "Number of records to return. Set to 0 to retrieve only the count (@odata.count) without any message data."
+          },
+          "skip": {
+            "type": "integer",
+            "description": "Number of records to skip"
+          },
+          "filter": {
+            "type": "string",
+            "description": "OData filter expression"
+          },
+          "accessToken": {
+            "type": "string",
+            "description": "Optional: Graph access token for proxying requests. Use only for local testing."
+          }
+        },
+        "required": []
+      }
+    }
+  ]
+}

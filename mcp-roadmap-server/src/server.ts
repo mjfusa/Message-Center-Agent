@@ -20,6 +20,18 @@ function toTextResult(value: unknown): CallToolResult {
   };
 }
 
+function toStructuredResult(structuredContent: Record<string, unknown>): CallToolResult {
+  return {
+    content: [
+      {
+        type: 'text',
+        text: JSON.stringify(structuredContent, null, 2)
+      }
+    ],
+    structuredContent
+  };
+}
+
 async function fetchJson(url: string, init?: RequestInit) {
   const response = await fetch(url, init);
   const text = await response.text();
@@ -59,6 +71,47 @@ function getServer() {
     { capabilities: { logging: {} } }
   );
 
+  const handler = async (args: unknown): Promise<CallToolResult> => {
+    const url = buildUrl(ROADMAP_BASE_URL, '/m365', {
+      $filter: (args as any).filter,
+      $orderby: (args as any).orderby,
+      $top: (args as any).top !== undefined ? String((args as any).top) : undefined,
+      $skip: (args as any).skip !== undefined ? String((args as any).skip) : undefined,
+      $count: String((args as any).count)
+    });
+
+    const result = await fetchJson(url, {
+      headers: {
+        Accept: 'application/json'
+      }
+    });
+
+    let structuredContent: Record<string, unknown> = {
+      request: { url },
+      response: result
+    };
+
+    if (result.ok && result.data && typeof result.data === 'object') {
+      const data = result.data as Record<string, unknown>;
+      const value = (data as any).value;
+      if (Array.isArray(value)) {
+        const withUrls = value.map((item: any) => {
+          const id = item?.id;
+          const numericId = typeof id === 'number' ? id : Number(id);
+          const roadmapUrl = Number.isFinite(numericId)
+            ? `https://www.microsoft.com/microsoft-365/roadmap?filters=&searchterms=${numericId}`
+            : undefined;
+          return roadmapUrl ? { ...item, url: roadmapUrl } : item;
+        });
+        structuredContent = { ...data, value: withUrls };
+      } else {
+        structuredContent = data;
+      }
+    }
+
+    return toStructuredResult(structuredContent);
+  };
+
   server.registerTool(
     'getRoadmapInfo',
     {
@@ -66,23 +119,18 @@ function getServer() {
         'Retrieve Microsoft 365 Roadmap items from https://www.microsoft.com/releasecommunications/api/v2/m365 using OData query parameters.',
       inputSchema: getRoadmapInputSchema
     },
-    async (args): Promise<CallToolResult> => {
-      const url = buildUrl(ROADMAP_BASE_URL, '/m365', {
-        $filter: (args as any).filter,
-        $orderby: (args as any).orderby,
-        $top: (args as any).top !== undefined ? String((args as any).top) : undefined,
-        $skip: (args as any).skip !== undefined ? String((args as any).skip) : undefined,
-        $count: String((args as any).count)
-      });
+    handler
+  );
 
-      const result = await fetchJson(url, {
-        headers: {
-          Accept: 'application/json'
-        }
-      });
-
-      return toTextResult({ request: { url }, response: result });
-    }
+  // Alias used by appPackage/ai-plugin.json
+  server.registerTool(
+    'getM365RoadmapInfo',
+    {
+      description:
+        'Retrieve Microsoft 365 Roadmap items from https://www.microsoft.com/releasecommunications/api/v2/m365 using OData query parameters.',
+      inputSchema: getRoadmapInputSchema
+    },
+    handler
   );
 
   return server;
