@@ -78,6 +78,20 @@ Notes:
 - If a caller sends a **Graph** token directly in `Authorization`, the server will use it as-is.
 - The legacy dev/test paths still work (tool arg `accessToken`, `GRAPH_ACCESS_TOKEN`, or the interactive PKCE flow).
 
+## OAuth redirect allowlist (VS Code + Teams)
+
+This server intentionally enforces an allowlist for `redirect_uri` on the `/authorize` and `/token` endpoints to avoid becoming an open OAuth proxy.
+
+Defaults:
+- VS Code loopback (`http://127.0.0.1`, `http://localhost`)
+- Teams declarative agent redirect (`https://teams.microsoft.com/api/platform/v1.0/oAuthRedirect`)
+
+If you use a different redirect (e.g., a custom localhost hostname or a different Teams endpoint), set:
+- `MCP_OAUTH_REDIRECT_URI_PREFIXES=<comma-separated prefixes>`
+
+Example:
+- `MCP_OAUTH_REDIRECT_URI_PREFIXES=http://127.0.0.1,http://localhost,https://teams.microsoft.com/api/platform/v1.0/oAuthRedirect`
+
 ## Smoke tests
 
 PowerShell scripts are in `mcp-message-center-server/scripts/`.
@@ -123,3 +137,37 @@ When calling `/mcp` directly, include:
 - `Accept: application/json, text/event-stream`
 
 The provided scripts already set this header.
+
+## OAuth flow diagram
+
+Client (VS Code / Bruno)
+  |
+  | (1) GET http://localhost:8080/authorize?client_id=...&redirect_uri=http://127.0.0.1:<port>/&code_challenge=...
+  v
+MCP Server (/authorize)
+  |
+  | (2) 302 redirect to Entra authorize endpoint
+  v
+Entra ID (MCP API)
+  |
+  | (3) User signs in + consents
+  | (4) Redirects back to VS Code loopback redirect_uri with ?code=...&state=...
+  v
+Client (VS Code / Bruno)
+  |
+  | (5) POST http://localhost:8080/token (includes code + code_verifier)
+  v
+MCP Server (/token)
+  |
+  | (6) Proxies token exchange to Entra /token
+  v
+Entra ID (MCP API)
+  |
+  | (7) Returns MCP-API access_token (+ refresh_token if allowed)
+  v
+Client (VS Code / Bruno)
+  |
+  | (8) Now call POST /mcp with Authorization: Bearer <MCP-API token>
+  v
+MCP Server -> (OBO) -> Entra -> Graph
+

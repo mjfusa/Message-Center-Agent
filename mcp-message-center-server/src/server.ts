@@ -100,6 +100,46 @@ function decodeJwtPayload(token: string): Record<string, unknown> | undefined {
   return undefined;
 }
 
+function isExpectedMcpApiAudience(aud: unknown): boolean {
+  const clientId = process.env.GRAPH_CLIENT_ID;
+  if (!clientId) return false;
+  if (aud === clientId) return true;
+  if (aud === `api://${clientId}`) return true;
+  // Some tokens can use an App ID URI ending with the clientId.
+  if (typeof aud === 'string' && aud.endsWith(`/${clientId}`)) return true;
+  return false;
+}
+
+function isJwtExpired(payload: Record<string, unknown>): boolean {
+  const exp = payload.exp;
+  if (typeof exp !== 'number') return false;
+  const expMs = exp * 1000;
+  return Date.now() >= expMs;
+}
+
+function setWwwAuthenticate(res: Response, req: Request, details?: { error?: string; errorDescription?: string }) {
+  const baseUrl = getPublicBaseUrl(req);
+  const authorizeUri = `${baseUrl}/authorize`;
+  const tokenUri = `${baseUrl}/token`;
+
+  const parts: string[] = [
+    'Bearer realm="mcp-message-center-server"',
+    `authorization_uri="${authorizeUri}"`,
+    `token_uri="${tokenUri}"`
+  ];
+
+  if (details?.error) {
+    parts.push(`error="${details.error}"`);
+  }
+  if (details?.errorDescription) {
+    // Keep it short and safe for headers.
+    const sanitized = details.errorDescription.replace(/[\r\n"]/g, ' ').slice(0, 300);
+    parts.push(`error_description="${sanitized}"`);
+  }
+
+  res.setHeader('WWW-Authenticate', parts.join(', '));
+}
+
 function isGraphAudience(aud: unknown): boolean {
   // Graph resource appId
   if (aud === '00000003-0000-0000-c000-000000000000') return true;
@@ -342,8 +382,14 @@ function getAllowedRedirectUriPrefixes(): string[] {
       .filter(Boolean);
   }
 
-  // VS Code loopback redirect
-  return ['http://127.0.0.1', 'http://localhost'];
+  // Default allowlist:
+  // - VS Code loopback redirect
+  // - Teams OAuth redirect used by declarative agents
+  return [
+    'http://127.0.0.1',
+    'http://localhost',
+    'https://teams.microsoft.com/api/platform/v1.0/oAuthRedirect'
+  ];
 }
 
 function validateClientAndRedirect(clientId: string, redirectUri: string) {
@@ -371,6 +417,27 @@ app.get('/.well-known/openid-configuration', (req: Request, res: Response) => {
     grant_types_supported: ['authorization_code', 'refresh_token'],
     code_challenge_methods_supported: ['S256'],
     token_endpoint_auth_methods_supported: ['client_secret_post', 'none']
+  });
+});
+
+// Alternate (non-standard) discovery endpoint for clients that want a single place
+// to learn the auth requirements without parsing OIDC metadata.
+app.get('/discover', (req: Request, res: Response) => {
+  const baseUrl = getPublicBaseUrl(req);
+  const tenantId = getTenantIdForVsCodeAuth();
+  const clientId = process.env.MCP_OAUTH_EXPECTED_CLIENT_ID ?? process.env.GRAPH_CLIENT_ID ?? '';
+  const scopes =
+    process.env.MCP_OAUTH_SCOPES ?? (clientId ? getDefaultScope(clientId) : 'openid profile offline_access');
+
+  res.setHeader('Cache-Control', 'no-store');
+  res.json({
+    issuer: baseUrl,
+    tenantId,
+    authorizationUrl: `${baseUrl}/authorize`,
+    tokenUrl: `${baseUrl}/token`,
+    scopes,
+    pkceRequired: true,
+    grantTypesSupported: ['authorization_code', 'refresh_token']
   });
 });
 
@@ -537,12 +604,50 @@ app.post('/mcp', async (req: Request, res: Response) => {
     if (process.env.MCP_REQUIRE_AUTH === 'true') {
       const bearer = getBearerTokenFromAuthHeader(req.header('authorization'));
       if (!bearer) {
+        setWwwAuthenticate(res, req, {
+          error: 'invalid_request',
+          errorDescription: 'Missing Authorization bearer token'
+        });
         res.status(401).json({
           jsonrpc: '2.0',
           error: { code: -32001, message: 'Unauthorized: missing Authorization bearer token' },
           id: null
         });
         return;
+      }
+
+      // Best-effort guidance for clients: reject clearly unusable/expired tokens.
+      // This does NOT validate signatures.
+      const payload = decodeJwtPayload(bearer);
+      if (payload) {
+        if (isJwtExpired(payload)) {
+          setWwwAuthenticate(res, req, {
+            error: 'invalid_token',
+            errorDescription: 'Access token expired'
+          });
+          res.status(401).json({
+            jsonrpc: '2.0',
+            error: { code: -32001, message: 'Unauthorized: access token expired' },
+            id: null
+          });
+          return;
+        }
+
+        // Accept either:
+        // - A Graph token (aud=Graph) OR
+        // - A token for this MCP API (aud matches this app) so OBO can run
+        if (!isGraphAudience(payload.aud) && !isExpectedMcpApiAudience(payload.aud)) {
+          setWwwAuthenticate(res, req, {
+            error: 'invalid_token',
+            errorDescription: 'Token audience is not accepted for this service'
+          });
+          res.status(401).json({
+            jsonrpc: '2.0',
+            error: { code: -32001, message: 'Unauthorized: invalid token audience' },
+            id: null
+          });
+          return;
+        }
       }
     }
 
