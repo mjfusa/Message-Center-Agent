@@ -93,8 +93,7 @@
                     "data_path": "$.value",
                     "properties": {
                         "title": "$.title",
-                        "subtitle": "$.id",
-                        "url": "$.url"
+                        "subtitle": "$.id"
                     },
                     "static_template": {
                         "file": "adaptiveCards/displayRoadmapItem.json"
