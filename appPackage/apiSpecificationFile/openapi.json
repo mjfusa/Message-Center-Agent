@@ -36,7 +36,7 @@
             "required": true,
             "schema": {
               "type": "boolean",
-              "default": true
+              "default": "true"
             }
           },
           {
@@ -55,8 +55,7 @@
             "description": "Number of records to return. Set to 0 to retrieve only the count (@odata.count) without any message data. Useful for count-only queries like 'How many messages are there?'",
             "required": false,
             "schema": {
-              "type": "integer",
-              "minimum": 0
+              "type": "integer"
             },
             "examples": {
               "countOnly": {
@@ -75,8 +74,7 @@
             "description": "Number of records to skip",
             "required": false,
             "schema": {
-              "type": "integer",
-              "minimum": 0
+              "type": "integer"
             }
           },
           {

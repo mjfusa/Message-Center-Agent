@@ -230,8 +230,6 @@
         "required": false,
         "schema": {
           "type": "integer",
-          "minimum": 1,
-          "maximum": 100,
           "default": 5
         },
         "examples": {
@@ -256,7 +254,6 @@
         "required": false,
         "schema": {
           "type": "integer",
-          "minimum": 0,
           "default": 0
         }
       },

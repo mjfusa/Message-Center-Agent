@@ -113,17 +113,6 @@ function getServer() {
   };
 
   server.registerTool(
-    'getRoadmapInfo',
-    {
-      description:
-        'Retrieve Microsoft 365 Roadmap items from https://www.microsoft.com/releasecommunications/api/v2/m365 using OData query parameters.',
-      inputSchema: getRoadmapInputSchema
-    },
-    handler
-  );
-
-  // Alias used by appPackage/ai-plugin.json
-  server.registerTool(
     'getM365RoadmapInfo',
     {
       description:

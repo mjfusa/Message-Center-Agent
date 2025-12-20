@@ -52,6 +52,31 @@ function paramToZod(key: string, param: OpenApiParameter): string {
   const schema = param.schema ?? {};
   const desc = normalizeDescription(param.description);
 
+  const normalizedDefault = (() => {
+    const d = schema.default;
+    switch (schema.type) {
+      case 'boolean': {
+        if (typeof d === 'boolean') return d;
+        if (typeof d === 'string') {
+          const v = d.trim().toLowerCase();
+          if (v === 'true') return true;
+          if (v === 'false') return false;
+        }
+        return d;
+      }
+      case 'integer': {
+        if (typeof d === 'number') return d;
+        if (typeof d === 'string') {
+          const n = Number(d);
+          return Number.isFinite(n) ? n : d;
+        }
+        return d;
+      }
+      default:
+        return d;
+    }
+  })();
+
   const zBase = (() => {
     switch (schema.type) {
       case 'string':
@@ -76,8 +101,8 @@ function paramToZod(key: string, param: OpenApiParameter): string {
   })();
 
   // Keep parity with existing behavior: count defaults true; others optional.
-  const wantsDefault = key === 'count' && typeof schema.default === 'boolean';
-  const zWithDefault = wantsDefault ? `${zBase}.default(${schema.default})` : zBase;
+  const wantsDefault = key === 'count' && typeof normalizedDefault === 'boolean';
+  const zWithDefault = wantsDefault ? `${zBase}.default(${normalizedDefault})` : zBase;
   const zFinal = wantsDefault ? zWithDefault : `${zWithDefault}.optional()`;
 
   return desc ? `${zFinal}.describe(${JSON.stringify(desc)})` : zFinal;

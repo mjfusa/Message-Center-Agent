@@ -4,8 +4,8 @@ import * as z from 'zod';
 export const getRoadmapInputSchema = {
     filter: z.string().optional().describe("OData filter expression. IMPORTANT: Use 'created' field for date filtering (not 'createdDateTime'). Supports contains(), tolower(), and date comparisons."),
     orderby: z.string().optional().describe("Order results by specified field. Use 'created' for date ordering (not 'createdDateTime')."),
-    top: z.number().int().min(0).max(100).optional().describe("Number of items to return (default: 10, max: 100) Set to 0 for count-only."),
-    skip: z.number().int().min(0).optional().describe("Number of items to skip for pagination"),
+    top: z.number().int().min(0).optional().describe("Number of items to return (default: 10, max: 100) Set to 0 for count-only."),
+    skip: z.number().int().optional().describe("Number of items to skip for pagination"),
     count: z.boolean().default(true).describe("Include total count of items in response"),
 };
 //# sourceMappingURL=roadmapInputSchema.js.map

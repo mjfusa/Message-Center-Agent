@@ -52,6 +52,31 @@ function zodForParam(key: string, param: OpenApiParameter): string {
   const schema = param.schema ?? {};
   const desc = normalizeDescription(param.description);
 
+  const normalizedDefault = (() => {
+    const d = schema.default;
+    switch (schema.type) {
+      case 'boolean': {
+        if (typeof d === 'boolean') return d;
+        if (typeof d === 'string') {
+          const v = d.trim().toLowerCase();
+          if (v === 'true') return true;
+          if (v === 'false') return false;
+        }
+        return d;
+      }
+      case 'integer': {
+        if (typeof d === 'number') return d;
+        if (typeof d === 'string') {
+          const n = Number(d);
+          return Number.isFinite(n) ? n : d;
+        }
+        return d;
+      }
+      default:
+        return d;
+    }
+  })();
+
   const base = (() => {
     switch (schema.type) {
       case 'string':
@@ -72,11 +97,11 @@ function zodForParam(key: string, param: OpenApiParameter): string {
   })();
 
   const withDefault =
-    schema.default !== undefined ? `${base}.default(${JSON.stringify(schema.default)})` : base;
+    normalizedDefault !== undefined ? `${base}.default(${JSON.stringify(normalizedDefault)})` : base;
 
   // Prefer defaults when present; otherwise optional unless required.
   const withOptional =
-    schema.default !== undefined ? withDefault : param.required ? withDefault : `${withDefault}.optional()`;
+    normalizedDefault !== undefined ? withDefault : param.required ? withDefault : `${withDefault}.optional()`;
 
   return desc ? `${withOptional}.describe(${JSON.stringify(desc)})` : withOptional;
 }

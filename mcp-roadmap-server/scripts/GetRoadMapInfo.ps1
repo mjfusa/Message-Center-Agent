@@ -26,7 +26,7 @@ $body = @{
   id      = 2
   method  = "tools/call"
   params  = @{
-    name      = "getRoadmapInfo"
+    name      = "getM365RoadmapInfo"
     arguments = $arguments
   }
 } | ConvertTo-Json -Depth 10
