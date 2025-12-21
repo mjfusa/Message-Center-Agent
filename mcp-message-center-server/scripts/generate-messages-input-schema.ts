@@ -107,7 +107,7 @@ function zodForParam(key: string, param: OpenApiParameter): string {
 }
 
 function main() {
-  const openApiPath = path.resolve(__dirname, '../../appPackage/apiSpecificationFile/openapi.json');
+  const openApiPath = path.resolve(__dirname, '../openapi/openapi.json');
   const doc = readJson(openApiPath);
 
   const op = doc.paths?.['/admin/serviceAnnouncement/messages']?.get;

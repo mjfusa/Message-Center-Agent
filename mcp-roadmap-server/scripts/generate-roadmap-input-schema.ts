@@ -109,7 +109,7 @@ function paramToZod(key: string, param: OpenApiParameter): string {
 }
 
 function main() {
-  const openApiPath = path.resolve(__dirname, '../../appPackage/apiSpecificationFile/roadmap-openapi.json');
+  const openApiPath = path.resolve(__dirname, '../openapi/roadmap-openapi.json');
   const doc = readJson(openApiPath);
 
   const op = doc.paths?.['/m365']?.get;

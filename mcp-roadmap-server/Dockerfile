@@ -9,8 +9,8 @@ COPY mcp-roadmap-server/tsconfig.json ./
 COPY mcp-roadmap-server/src ./src
 COPY mcp-roadmap-server/scripts ./scripts
 
-# Schema generation reads OpenAPI specs from appPackage/
-COPY appPackage /repo/appPackage
+# Schema generation reads the vendored OpenAPI spec
+COPY mcp-roadmap-server/openapi ./openapi
 
 RUN npm run build && npm prune --omit=dev
 

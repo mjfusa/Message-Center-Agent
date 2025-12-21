@@ -45,6 +45,18 @@ const getMessagesInputSchema = {
     )
 };
 
+function isProduction(): boolean {
+  return (process.env.NODE_ENV ?? '').toLowerCase() === 'production';
+}
+
+function isMcpAccessTokenArgAllowed(): boolean {
+  // Default behavior:
+  // - Non-production: allow (dev convenience)
+  // - Production: deny unless explicitly enabled
+  if (!isProduction()) return true;
+  return (process.env.ALLOW_MCP_ACCESS_TOKEN_ARG ?? '').toLowerCase() === 'true';
+}
+
 function toTextResult(value: unknown): CallToolResult {
   return {
     content: [
@@ -239,6 +251,15 @@ function getServer() {
 
       const argToken = (args as { accessToken?: string }).accessToken;
       const envToken = process.env.GRAPH_ACCESS_TOKEN;
+
+      if ((argToken || envToken) && !isMcpAccessTokenArgAllowed()) {
+        return toTextResult({
+          error: 'accessToken_disabled',
+          message:
+            "The MCP-only 'accessToken' argument (and GRAPH_ACCESS_TOKEN fallback) is disabled in production. Use Authorization: Bearer <MCP API user token> so the server can use OBO, or set ALLOW_MCP_ACCESS_TOKEN_ARG=true to explicitly re-enable the testing bypass.",
+          sessionId
+        });
+      }
 
       let accessToken =
         requestToken.source === 'obo' || requestToken.source === 'authorization-header-graph'

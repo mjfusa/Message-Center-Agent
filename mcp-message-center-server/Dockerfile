@@ -9,8 +9,8 @@ COPY mcp-message-center-server/tsconfig.json ./
 COPY mcp-message-center-server/src ./src
 COPY mcp-message-center-server/scripts ./scripts
 
-# Schema generation reads OpenAPI specs from appPackage/
-COPY appPackage /repo/appPackage
+# Vendored OpenAPI spec used during build-time schema generation.
+COPY mcp-message-center-server/openapi ./openapi
 
 RUN npm run build && npm prune --omit=dev
 

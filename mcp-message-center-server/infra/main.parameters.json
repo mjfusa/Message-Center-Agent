@@ -1,0 +1,42 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "westus"
+    },
+    "namePrefix": {
+      "value": "mcagent"
+    },
+    "messageCenterImage": {
+      "value": "<acrLoginServer>/mcp-message-center-server:<tag>"
+    },
+    "minReplicas": {
+      "value": 0
+    },
+    "maxReplicas": {
+      "value": 5
+    },
+    "graphTenantId": {
+      "value": "<tenant-guid>"
+    },
+    "graphClientId": {
+      "value": "<client-guid>"
+    },
+    "keyVaultName": {
+      "value": "<globally-unique-kv-name>"
+    },
+    "graphClientCertSecretName": {
+      "value": "sec-message-center-mcp"
+    },
+    "graphClientCertThumbprint": {
+      "value": "<cert-thumbprint-hex>"
+    },
+    "publicBaseUrl": {
+      "value": ""
+    },
+    "acrUseManagedIdentity": {
+      "value": true
+    }
+  }
+}

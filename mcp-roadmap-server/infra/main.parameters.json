@@ -1,0 +1,24 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "location": {
+      "value": "westus"
+    },
+    "namePrefix": {
+      "value": "mcagent"
+    },
+    "roadmapImage": {
+      "value": "<acrLoginServer>/mcp-roadmap-server:<tag>"
+    },
+    "minReplicas": {
+      "value": 0
+    },
+    "maxReplicas": {
+      "value": 5
+    },
+    "acrUseManagedIdentity": {
+      "value": true
+    }
+  }
+}
