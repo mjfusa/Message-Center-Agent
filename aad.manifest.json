@@ -1,0 +1,40 @@
+{
+  "id": "${{AAD_APP_OBJECT_ID}}",
+  "appId": "${{AAD_APP_CLIENT_ID}}",
+  "displayName": "MessageCenterAgent-reg",
+  "identifierUris": [
+    "api://${{AAD_APP_CLIENT_ID}}"
+  ],
+  "signInAudience": "AzureADMyOrg",
+  "api": {
+    "requestedAccessTokenVersion": 2,
+    "oauth2PermissionScopes": [
+      {
+        "adminConsentDescription": "Allows Teams to access Message Center Agent API as the current user.",
+        "adminConsentDisplayName": "Access Message Center Agent API",
+        "id": "${{AAD_APP_ACCESS_AS_USER_PERMISSION_ID}}",
+        "isEnabled": true,
+        "type": "User",
+        "userConsentDescription": "Allows Teams to access Message Center Agent API as you.",
+        "userConsentDisplayName": "Access Message Center Agent API",
+        "value": "access_as_user"
+      }
+    ]
+  },
+  "web": {
+    "redirectUris": [
+      "https://teams.microsoft.com/api/platform/v1.0/oAuthRedirect"
+    ]
+  },
+  "requiredResourceAccess": [
+    {
+      "resourceAppId": "00000003-0000-0000-c000-000000000000",
+      "resourceAccess": [
+        {
+          "id": "f28b68df-6165-41f5-a6c1-213b2a43fc61",
+          "type": "Scope"
+        }
+      ]
+    }
+  ]
+}

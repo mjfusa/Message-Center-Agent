@@ -1,6 +1,26 @@
 version: 1.0.0
 projectId: 1bdc0422-b7fe-40b4-abf5-cfed3fb395ed
 provision:
+  # Creates a Microsoft Entra app registration for SSO
+  - uses: aadApp/create
+    with:
+      name: MessageCenterAgent-reg
+      generateClientSecret: true
+      signInAudience: AzureADMyOrg
+    writeToEnvironmentFile:
+      clientId: AAD_APP_CLIENT_ID
+      clientSecret: SECRET_AAD_APP_CLIENT_SECRET
+      objectId: AAD_APP_OBJECT_ID
+      tenantId: AAD_APP_TENANT_ID
+      authority: AAD_APP_OAUTH_AUTHORITY
+      authorityHost: AAD_APP_OAUTH_AUTHORITY_HOST
+
+  # Updates the Microsoft Entra app registration with required permissions
+  - uses: aadApp/update
+    with:
+      manifestPath: ./aad.manifest.json
+      outputFilePath: ./build/aad.manifest.${{TEAMSFX_ENV}}.json
+
   - uses: agent/register
     with:
       name: Message Center Agent${{APP_NAME_SUFFIX}}
@@ -16,7 +36,8 @@ provision:
   - uses: oauth/register
     with:
       name: Message Center Agent OAuth
-      appId: ${{TEAMS_APP_ID}}
+      appId: ${{AAD_APP_CLIENT_ID}}
+      clientSecret: ${{SECRET_AAD_APP_CLIENT_SECRET}}
       apiSpecPath: ./appPackage/apiSpecificationFile/openapi.json
     writeToEnvironmentFile:
       configurationId: OAUTH2_REGISTRATION_ID
