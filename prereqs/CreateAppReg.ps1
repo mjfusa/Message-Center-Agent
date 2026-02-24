@@ -26,6 +26,18 @@ catch {
     Write-Host "Make sure you have the Microsoft.Graph.Applications module and you are authorized to create app registrations." -ForegroundColor Yellow
     Exit 1
 }
+
+#ensure az cli tenant and Entra tenant are the same, if not, prompt user to switch tenant in az cli
+$azTenantId = (az account show --query tenantId -o tsv) -replace '"', ''
+$entraTenantId = (Get-EntraContext).TenantId
+
+if ($azTenantId -ne $entraTenantId) {
+    Write-Host "Tenant IDs do not match. Please switch tenants in Azure CLI." -ForegroundColor Yellow
+    Write-Host "Azure CLI Tenant ID: $azTenantId" -ForegroundColor Yellow
+    Write-Host "Entra Tenant ID: $entraTenantId" -ForegroundColor Yellow
+    Exit 1
+}
+
 # Define application name and redirect URI
 $appName = "MessageCenterAgent-reg"
 
@@ -85,7 +97,7 @@ $secret = New-EntraApplicationPasswordCredential -ApplicationId $app.Id -CustomK
 # Output app id, app secret, and tenant ID
 $appDetails = @{
     clientId = $app.AppId
-    tenantId = (Get-EntraTenantDetail).Id
+    tenantId = (Get-EntraContext).TenantId
     clientSecret = $secret.SecretText
     appName= $appName
 }
