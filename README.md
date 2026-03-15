@@ -18,12 +18,15 @@ Not only can admins and 'Message Center Readers' search for messages, but you ca
 - **Get suggested actions**: Get suggested actions for updates that require your attention.
 - **Roadmap Detail Included**: Results include related Microsoft 365 Roadmap details to provide additional context about upcoming features and changes.  
   
-| [Deployment Guide](#deployment-guide) | [Modification Guide](#modification-guide) | [Suggested Scenarios and Prompts](./suggested_prompts/suggested_prompts.md) |
-| ------------------------------------- | ----------------------------------------- |----------------------------------------- |
+| [Deployment Guide](#deployment-guide) | [GCC Deployment Guide](./GCC%20SUPPORT.MD) | [Modification Guide](#modification-guide) | [Suggested Scenarios and Prompts](./suggested_prompts/suggested_prompts.md) |
+| ------------------------------------- | ----------------------------------------- | ----------------------------------------- |----------------------------------------- |
 
 # [Deployment Guide](#deployment-guide)
 
 This guide provides step-by-step instructions to deploy the M365 Copilot Message Center Agent using the Microsoft 365 Agents Toolkit (ATK) CLI. In this guide you will create an Entra application registration, register it with the Teams Developer Portal (provision the agent), and upload it for private testing or submit it your Teams administrator for distribution to your entire organization. After provisioning, the agent will be available in the Copilot chat interface for you to use.
+
+> [!IMPORTANT]
+> If you are deploying this project to Microsoft 365 Government Community Cloud (GCC), do not follow the commercial tenant flow unchanged. Use the repo-specific GCC guide here: [GCC SUPPORT.MD](./GCC%20SUPPORT.MD). GCC deployment requires a GCC-scoped app registration, GCC tenant provisioning, and the Microsoft 365 Agents Toolkit sovereign cloud setting.
 
 ## Prerequisites
 
@@ -60,6 +63,9 @@ Steps to deploy the M365 Copilot Message Center Agent using the Microsoft 365 Ag
       This will create an Entra app registration with the name **MessageCenterAgent-reg**. It will also output the **Application (client) ID** and **Client Secret**. You will need these values later in the deployment process. 
       ![CreateAppReg.ps1](./Images/CreateAppReg.png)
 
+   > [!NOTE]
+   > For GCC deployments, the app registration must be created in the GCC tenant. Do not reuse a commercial tenant app registration or client secret in GCC.
+
 #### [Microsoft 365 Tenant Requirements](#microsoft-365-tenant-requirements)
 To deploy the M365 Copilot Message Center Agent, you need the following requirements in your Microsoft 365 tenant:
 
@@ -70,6 +76,8 @@ To deploy the M365 Copilot Message Center Agent, you need the following requirem
 ## Provisioning the Agent for testing and demos
 
 You're now ready to deploy the M365 Copilot Message Center Agent using the Microsoft 365 Agents Toolkit (ATK) CLI.
+
+If you are deploying to GCC, first complete the sovereign cloud configuration described in [GCC SUPPORT.MD](./GCC%20SUPPORT.MD), including updating the VS Code setting `"M365AgentsToolkit.sovereignCloudEnvironment": "GCC M"`.
 
 1. Start a new PowerShell terminal and change to the root folder of the cloned repository.
 1. In the root folder of the repository, run the following command to deploy the agent:
@@ -103,6 +111,9 @@ To **publish** the agent to your organization, you can submit it to your Teams a
 # [Modification Guide](#modification-guide)
 
 If you want to modify the M365 Copilot Message Center Agent, you can do so by following the steps in this section. 
+
+> [!IMPORTANT]
+> Existing agent projects do not need to be rebuilt to move to GCC, but they do need a new GCC deployment boundary. If you are modifying this project for GCC deployment, use [GCC SUPPORT.MD](./GCC%20SUPPORT.MD) for the required app registration, environment, and provisioning differences.
 
 ## Prerequisites
 
