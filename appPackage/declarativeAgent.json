@@ -13,7 +13,7 @@
   "conversation_starters": [
     {
       "title": "What changed recently?",
-      "text": "What changed for Copilot since yesterday? Look for new and modified messages."
+      "text": "List updates regarding 'Copilot' with a created date or last modified date since yesterday."
     },
     {
       "title": "Get Critical Updates",

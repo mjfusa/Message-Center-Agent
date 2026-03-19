@@ -374,7 +374,10 @@
             "tokenUrl": "https://login.microsoftonline.com/${{TEAMS_APP_TENANT_ID}}/oauth2/v2.0/token",
             "refreshUrl": "https://login.microsoftonline.com/${{TEAMS_APP_TENANT_ID}}/oauth2/v2.0/token",
             "scopes": {
-              "https://graph.microsoft.com/ServiceMessage.Read.All": "Access Microsoft Graph API"
+              "ServiceMessage.Read.All": "Access to Service Announcement Messages via the Microsoft Graph API",
+              "openid": "Authenticate using OpenID Connect",
+              "profile": "Access your profile information",
+              "offline_access": "Maintain access to data you have given it access to"
             }
           }
         }

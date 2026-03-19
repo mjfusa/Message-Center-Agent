@@ -88,8 +88,15 @@ Set-EntraApplication -ApplicationId $app.Id -RequiredResourceAccess $requiredRes
 # Set service principal parameters
 Set-EntraServicePrincipal -ServicePrincipalId $servicePrincipal.Id -AppRoleAssignmentRequired $false
 
-# # Grant OAuth2 permission
-# $permissionGrant = New-EntraOauth2PermissionGrant -ClientId $servicePrincipal.Id -ConsentType 'AllPrincipals' -ResourceId $graphServicePrincipal.Id -Scope $delegatedPermission
+# Grant tenant-wide admin consent for the existing delegated permission
+try {
+    $permissionGrant = New-EntraOauth2PermissionGrant -ClientId $servicePrincipal.Id -ConsentType 'AllPrincipals' -ResourceId $graphServicePrincipal.Id -Scope $delegatedPermission -ErrorAction Stop
+    Write-Host "Admin consent granted for delegated permission: $delegatedPermission" -ForegroundColor Green
+}
+catch {
+    Write-Error "Failed to grant tenant-wide admin consent. Ensure the signed-in account has a role such as Application Administrator, Cloud Application Administrator, or Global Administrator, and that tenant consent policies allow this operation. $_"
+    Exit 1
+}
 
 # Create secret for the application
 $secret = New-EntraApplicationPasswordCredential -ApplicationId $app.Id -CustomKeyIdentifier  "MessageCenterAgentSecret" -EndDate (Get-Date).AddYears(1)
