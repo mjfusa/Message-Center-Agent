@@ -61,10 +61,10 @@ Steps to deploy the M365 Copilot Message Center Agent using the Microsoft 365 Ag
       ```
       
       This will create an Entra app registration with the name **MessageCenterAgent-reg**. It will also output the **Application (client) ID** and **Client Secret**. You will need these values later in the deployment process. 
-      ![CreateAppReg.ps1](./Images/CreateAppReg.png)
+      ![CreateAppReg.ps1](./Images/CreateAppReg.png)  
 
-   > [!NOTE]
-   > For GCC deployments, the app registration must be created in the GCC tenant. Do not reuse a commercial tenant app registration or client secret in GCC.
+>[!IMPORTANT]
+>For GCC deployments, the app registration must be created in the GCC tenant. Do not reuse a commercial tenant app registration or client secret in GCC.
 
 #### [Microsoft 365 Tenant Requirements](#microsoft-365-tenant-requirements)
 To deploy the M365 Copilot Message Center Agent, you need the following requirements in your Microsoft 365 tenant:
