@@ -82,7 +82,7 @@ If you are deploying to GCC, first complete the sovereign cloud configuration de
    ![Provision Agent](./Images/ProvisionAgent.png)
 
 > [!IMPORTANT]
-> **Admin Consent Required**: After provisioning, an admin must grant tenant-wide admin consent for the `ServiceMessage.Read.All` Microsoft Graph permission. Navigate to **Microsoft Entra admin center** → **App registrations** → **MessageCenterAgent-reg** → **API permissions**, then click **Grant admin consent for \<your tenant\>**. Users will not be able to use the agent until admin consent is granted.
+> **Admin Consent Required**: After provisioning, an admin must grant tenant-wide admin consent for the `ServiceMessage.Read.All` Microsoft Graph permission. See the [Microsoft Entra App Registration](#microsoft-entra-app-registration) section below for full details and steps.
 
 ## Test the Agent
 Test the agent by starting Copilot in the web or app and selecting the Message Center agent. Note that the agent is private to you for testing purposes. See the **Publish** step below to submit the agent to the Teams admin for distribution to the organization.
@@ -124,7 +124,7 @@ The M365 Agents Toolkit for Visual Studio Code streamlines app registration and 
    The toolkit will automatically create the **MessageCenterAgent-reg** Entra app registration (if it does not already exist), configure its permissions, generate a client secret, and register the OAuth provider in the Teams Developer Portal.
 
 > [!IMPORTANT]
-> **Admin Consent Required**: After provisioning, an admin must grant tenant-wide admin consent for the `ServiceMessage.Read.All` Microsoft Graph permission. Navigate to **Microsoft Entra admin center** → **App registrations** → **MessageCenterAgent-reg** → **API permissions**, then click **Grant admin consent for \<your tenant\>**. Users will not be able to use the agent until admin consent is granted.
+> **Admin Consent Required**: After provisioning, an admin must grant tenant-wide admin consent. See the [Microsoft Entra App Registration](#microsoft-entra-app-registration) section below for details and steps.
 
 ## Use the Message Center Agent in Copilot
 
@@ -159,10 +159,15 @@ The Entra app registration (**MessageCenterAgent-reg**) is created automatically
 The app registration is configured with the following settings:
 - **Delegated permission**: `ServiceMessage.Read.All` (Microsoft Graph) — allows the agent to read Message Center messages on behalf of signed-in users.
 - **Redirect URI**: `https://teams.microsoft.com/api/platform/v1.0/oAuthRedirect` — required for the Teams OAuth flow.
+- **Client secret**: Valid for 365 days. When the secret expires, re-run `atk provision --env production` to rotate it automatically.
 
 > [!IMPORTANT]
-> **Admin Consent (Manual Step)**: The ATK provision step does **not** automatically grant tenant-wide admin consent for the `ServiceMessage.Read.All` permission. After provisioning, an admin must grant consent manually via the **Microsoft Entra admin center** → **App registrations** → **MessageCenterAgent-reg** → **API permissions** → **Grant admin consent for \<your tenant\>**. This is a known gap compared to the previous `CreateAppReg.ps1` script, which granted admin consent automatically.
-
+> **Admin Consent (Manual Step — Known Gap)**: The ATK provision step does **not** automatically grant tenant-wide admin consent for the `ServiceMessage.Read.All` permission. After every new provisioning, an admin must grant consent manually:
+> 1. Open the [Microsoft Entra admin center](https://entra.microsoft.com)
+> 2. Navigate to **App registrations** → **MessageCenterAgent-reg** → **API permissions**
+> 3. Click **Grant admin consent for \<your tenant\>** and confirm
+>
+> Users will not be able to use the agent until admin consent is granted. This is a known gap compared to the previous `CreateAppReg.ps1` script, which granted admin consent automatically.
 
 ### Starter Prompts
 
