@@ -1,0 +1,32 @@
+{
+    "id": "${{AAD_APP_OBJECT_ID}}",
+    "appId": "${{AAD_APP_CLIENT_ID}}",
+    "displayName": "MessageCenterAgent-reg",
+    "signInAudience": "AzureADMyOrg",
+    "requiredResourceAccess": [
+        {
+            "resourceAppId": "00000003-0000-0000-c000-000000000000",
+            "resourceAccess": [
+                {
+                    "id": "eda39fa6-f8cf-4c3c-a909-432c683e4c9b",
+                    "type": "Scope"
+                }
+            ]
+        }
+    ],
+    "web": {
+        "redirectUris": [
+            "https://teams.microsoft.com/api/platform/v1.0/oAuthRedirect"
+        ],
+        "implicitGrantSettings": {
+            "enableIdTokenIssuance": false,
+            "enableAccessTokenIssuance": false
+        }
+    },
+    "optionalClaims": {
+        "accessToken": [],
+        "idToken": [],
+        "saml2Token": []
+    },
+    "oauth2Permissions": []
+}

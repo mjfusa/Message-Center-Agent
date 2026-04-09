@@ -23,7 +23,7 @@ Not only can admins and 'Message Center Readers' search for messages, but you ca
 
 # [Deployment Guide](#deployment-guide)
 
-This guide provides step-by-step instructions to deploy the M365 Copilot Message Center Agent using the Microsoft 365 Agents Toolkit (ATK) CLI. In this guide you will create an Entra application registration, register it with the Teams Developer Portal (provision the agent), and upload it for private testing or submit it your Teams administrator for distribution to your entire organization. After provisioning, the agent will be available in the Copilot chat interface for you to use.
+This guide provides step-by-step instructions to deploy the M365 Copilot Message Center Agent using the Microsoft 365 Agents Toolkit (ATK) CLI. The ATK provision step now automatically creates the Entra app registration, registers it with the Teams Developer Portal, and wires up OAuth2.0 authentication — no separate app registration script is required. After provisioning, the agent will be available in the Copilot chat interface for you to use.
 
 > [!IMPORTANT]
 > If you are deploying this project to Microsoft 365 Government Community Cloud (GCC), do not follow the commercial tenant flow unchanged. Use the repo-specific GCC guide here: [GCC SUPPORT.MD](./GCC%20SUPPORT.MD). GCC deployment requires a GCC-scoped app registration, GCC tenant provisioning, and the Microsoft 365 Agents Toolkit sovereign cloud setting.
@@ -52,19 +52,8 @@ Steps to deploy the M365 Copilot Message Center Agent using the Microsoft 365 Ag
 >[!WARNING]
 >Note: The ATK works with any [LTS version of Node](https://nodejs.org/en/about/previous-releases) >= v20. It does not work and generates errors with non-LTS version 25.2.1.
 
-3. Register an application with Entra (Azure AD) to enable OAuth2.0 authentication and API access.
-   
-   1. In the `prereqs` folder, run the following command to register the application:
-      
-      ```bash
-      .\CreateAppReg.ps1 
-      ```
-      
-      This will create an Entra app registration with the name **MessageCenterAgent-reg**. It will also output the **Application (client) ID** and **Client Secret**. You will need these values later in the deployment process. 
-      ![CreateAppReg.ps1](./Images/CreateAppReg.png)  
-
 >[!IMPORTANT]
->For GCC deployments, the app registration must be created in the GCC tenant. Do not reuse a commercial tenant app registration or client secret in GCC.
+>For GCC deployments, the app registration must be created in the GCC tenant. See [GCC SUPPORT.MD](./GCC%20SUPPORT.MD) for details.
 
 #### [Microsoft 365 Tenant Requirements](#microsoft-365-tenant-requirements)
 To deploy the M365 Copilot Message Center Agent, you need the following requirements in your Microsoft 365 tenant:
@@ -80,17 +69,20 @@ You're now ready to deploy the M365 Copilot Message Center Agent using the Micro
 If you are deploying to GCC, first complete the sovereign cloud configuration described in [GCC SUPPORT.MD](./GCC%20SUPPORT.MD), including updating the VS Code setting `"M365AgentsToolkit.sovereignCloudEnvironment": "GCC M"`.
 
 1. Start a new PowerShell terminal and change to the root folder of the cloned repository.
-1. In the root folder of the repository, run the following command to deploy the agent:
+1. In the root folder of the repository, run the following command to provision the agent:
    
    ```bash
    atk provision --env production
    ```
    
-   Input the **Client Id** and **Client Secret** obtained from the previous step when prompted. The `--env production` flag indicates that you are deploying the agent to production.
+   The ATK will automatically create the **MessageCenterAgent-reg** Entra app registration (if it does not already exist), configure its permissions, generate a client secret, and register the OAuth provider in the Teams Developer Portal. The `--env production` flag indicates that you are deploying to production.
 
    Type 'Y' when the script pauses to inform you: 'Microsoft 365 Agents Toolkit uploads the client id/secret for OAuth Registration to Developer Portal'.
    This will provision the agent in your Microsoft 365 tenant and register it with the Teams Developer Portal. The output should be similar to this:
    ![Provision Agent](./Images/ProvisionAgent.png)
+
+> [!IMPORTANT]
+> **Admin Consent Required**: After provisioning, an admin must grant tenant-wide admin consent for the `ServiceMessage.Read.All` Microsoft Graph permission. Navigate to **Microsoft Entra admin center** → **App registrations** → **MessageCenterAgent-reg** → **API permissions**, then click **Grant admin consent for \<your tenant\>**. Users will not be able to use the agent until admin consent is granted.
 
 ## Test the Agent
 Test the agent by starting Copilot in the web or app and selecting the Message Center agent. Note that the agent is private to you for testing purposes. See the **Publish** step below to submit the agent to the Teams admin for distribution to the organization.
@@ -123,23 +115,16 @@ If you want to modify the M365 Copilot Message Center Agent, you can do so by fo
 
 3. Install the [Microsoft 365 Agents Toolkit ](https://marketplace.visualstudio.com/items?itemName=TeamsDevApp.ms-teams-vscode-extension) extension for Visual Studio Code.
 
-4. Register an application with Entra (Azure AD) to enable OAuth2.0 authentication and API access.
-   
-   1. In the `prereqs` folder, run the following command to register the application:
-      
-      ```bash
-      .\CreateAppReg.ps1 
-      ```
-      This will create an Entra app registration with the name **MessageCenterAgent-reg**. It will also output the **Application (client) ID** and **Client Secret**. You will need these values later in the deployment process. 
-      ![CreateAppReg.ps1](./Images/CreateAppReg.png)
-
 ### Provision the Agent using the Microsoft 365 Agents Toolkit
 
 The M365 Agents Toolkit for Visual Studio Code streamlines app registration and deployment to Microsoft Teams. It automates OAuth2.0 setup, securely manages client credentials, and eliminates the need to handle infrastructure, letting you focus on app development.
 
 1. Rename the file `.env.production.sample` to `.env.production` in the `env` folder of the project. This file will be populated with environment variables for the project for production release, including the client ID and OAuth2 authentication id.
 1. Using the M365 Agents Toolkit, in the LIFECYCLE section, select 'Provision'.
-3. Provide the client id, and client secret obtained when running the app registration script. Note that the M365 Agents Toolkit will register the app in the Teams Developer Portal and update the OAUTH2_REGISTRATION_ID variable in your .env file with the value received from the Teams Developer Portal.
+   The toolkit will automatically create the **MessageCenterAgent-reg** Entra app registration (if it does not already exist), configure its permissions, generate a client secret, and register the OAuth provider in the Teams Developer Portal.
+
+> [!IMPORTANT]
+> **Admin Consent Required**: After provisioning, an admin must grant tenant-wide admin consent for the `ServiceMessage.Read.All` Microsoft Graph permission. Navigate to **Microsoft Entra admin center** → **App registrations** → **MessageCenterAgent-reg** → **API permissions**, then click **Grant admin consent for \<your tenant\>**. Users will not be able to use the agent until admin consent is granted.
 
 ## Use the Message Center Agent in Copilot
 
@@ -169,7 +154,14 @@ Details of these steps are provided below.
 
 ### Microsoft Entra App Registration
 
-To use the declarative agent, you need to register your app in the Entra portal and configure the necessary permissions. This app registration will be registered on the Teams Developer Portal. The app registration is required to authenticate users and authorize access to the Microsoft Graph API and Microsoft 365 Admin Center. The Teams developer portal provides a secure environment for managing your app's authentication settings and permissions. 
+The Entra app registration (**MessageCenterAgent-reg**) is created automatically during the `atk provision` step using the ATK `aadApp/create` action. If the app registration already exists (i.e., `AAD_APP_CLIENT_ID` is already set in the environment file), the provision step will skip creation and reuse the existing registration.
+
+The app registration is configured with the following settings:
+- **Delegated permission**: `ServiceMessage.Read.All` (Microsoft Graph) — allows the agent to read Message Center messages on behalf of signed-in users.
+- **Redirect URI**: `https://teams.microsoft.com/api/platform/v1.0/oAuthRedirect` — required for the Teams OAuth flow.
+
+> [!IMPORTANT]
+> **Admin Consent (Manual Step)**: The ATK provision step does **not** automatically grant tenant-wide admin consent for the `ServiceMessage.Read.All` permission. After provisioning, an admin must grant consent manually via the **Microsoft Entra admin center** → **App registrations** → **MessageCenterAgent-reg** → **API permissions** → **Grant admin consent for \<your tenant\>**. This is a known gap compared to the previous `CreateAppReg.ps1` script, which granted admin consent automatically.
 
 
 ### Starter Prompts
@@ -219,36 +211,25 @@ The following files are key to the implementation of the declarative agent:
 
 ## [Required Roles](#required-roles)
 
-## Required Roles - App Registration
+## Required Roles - ATK Provision (App Registration + Agent)
 
-To create an app registration in Microsoft Entra (Azure AD), you must have one of the following roles:
+The `atk provision` step (or the VS Code Toolkit 'Provision' action) now handles both the Entra app registration and the Teams Developer Portal registration in a single step. The user running the provision must have sufficient roles for both:
 
+**Entra App Registration** — to create and configure the app registration:
 * Global Administrator
 * Application Administrator
 * Cloud Application Administrator
 
 The recommended least-privileged role specifically for creating and managing app registrations is **Application Administrator**.
 
-- **Global Administrator**: Required to grant admin consent for the app registration and API permissions.
+**Admin Consent** — a separate manual step required after provisioning:
+- **Global Administrator** (or Application Administrator / Cloud Application Administrator): Required to grant tenant-wide admin consent for the `ServiceMessage.Read.All` API permission in the Entra admin center.
 
-## Required Roles - Agent Provisioning
+**Teams Developer Portal** — to register the agent:
+* Teams Administrator
+* Global Administrator
 
-The roles required to manage the Teams app (Agent) in Microsoft 365 and deploy it to the organization are:
-
-* Teams Administrator: Required to manage and deploy Teams apps within the organization via the Teams Admin Center.
-* Global Administrator: Can also manage and deploy Teams apps, but has broader permissions beyond Teams management.
-
-The recommended least-privileged role specifically for managing and deploying Teams apps is **Teams Administrator**.
-
-## Required Roles - Teams Developer Portal
-
-Note that this step is done via the M365 Agents Toolkit's 'Provision' feature. To register your app in the Teams Developer Portal, you must have one of the following roles:
-
-* **Teams Administrator**: Required to manage and deploy Teams apps within the organization via the Teams Admin Center.
-* **Global Administrator**: Can also manage and deploy Teams apps, but has broader permissions beyond Teams management.
-
-The recommended least-privileged role specifically for managing and deploying Teams apps is **Teams Administrator**.
-Note: This role is required when using the M365 Agents Toolkit to provision the app registration and deploy the app.
+The recommended least-privileged combination for provisioning is **Application Administrator** + **Teams Administrator** (or a single account with **Global Administrator** if least-privilege is not a concern).
 
 ## Required Roles - Agent Usage  
 
