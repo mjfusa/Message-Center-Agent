@@ -136,7 +136,7 @@ The M365 Agents Toolkit for Visual Studio Code streamlines app registration and 
    .\CreateAppReg.ps1
    ```
 
-1. Rename the file `.env.production.sample` to `.env.production` in the `env` folder **if it does not already exist**. (The script creates it automatically if absent; this step is only needed if you are starting without running the script first.)
+1. If `env/.env.production` does not already exist (i.e., you are not running `CreateAppReg.ps1`), copy `.env.production.sample` to `.env.production` in the `env` folder. When you run `CreateAppReg.ps1`, it creates the file automatically from the sample — no manual copy is needed.
 1. Using the M365 Agents Toolkit, in the LIFECYCLE section, select 'Provision'.
    The toolkit registers the OAuth provider in the Teams Developer Portal and deploys the agent using the credentials written by `CreateAppReg.ps1`.
 

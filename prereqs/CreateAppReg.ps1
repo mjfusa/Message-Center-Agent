@@ -1,6 +1,23 @@
 # Path to the environment file that ATK reads during 'atk provision'
 $envFilePath = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".." "env" ".env.production"))
 
+# Helper: write or update a single KEY=VALUE line in an array of lines
+function Update-EnvLines {
+    param(
+        [string[]]$Lines,
+        [string]$Key,
+        [string]$Value,
+        [ref]$Found
+    )
+    $Found.Value = $false
+    $result = $Lines | ForEach-Object {
+        if ($_ -match "^$Key=") { "$Key=$Value"; $Found.Value = $true }
+        else { $_ }
+    }
+    if (-not $Found.Value) { $result += "$Key=$Value" }
+    return $result
+}
+
 # Helper: write or update a single KEY=VALUE line in the env file
 function Set-EnvValue {
     param(
@@ -8,34 +25,20 @@ function Set-EnvValue {
         [string]$Key,
         [string]$Value
     )
-    if (Test-Path $FilePath) {
-        $lines = Get-Content $FilePath
-        $found = $false
-        $updated = $lines | ForEach-Object {
-            if ($_ -match "^$Key=") { "$Key=$Value"; $found = $true }
-            else { $_ }
-        }
-        if (-not $found) { $updated += "$Key=$Value" }
-        $updated | Set-Content -Encoding UTF8 $FilePath
-    }
-    else {
-        # Seed from the sample file if present, then add the value
+    if (-not (Test-Path $FilePath)) {
+        # Seed from the sample file if present; otherwise create empty
         $samplePath = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".." "env" ".env.production.sample"))
         if (Test-Path $samplePath) {
             Copy-Item $samplePath $FilePath
-            $lines = Get-Content $FilePath
-            $found = $false
-            $updated = $lines | ForEach-Object {
-                if ($_ -match "^$Key=") { "$Key=$Value"; $found = $true }
-                else { $_ }
-            }
-            if (-not $found) { $updated += "$Key=$Value" }
-            $updated | Set-Content -Encoding UTF8 $FilePath
         }
         else {
-            Add-Content -Encoding UTF8 -Path $FilePath -Value "$Key=$Value"
+            New-Item -ItemType File -Path $FilePath -Force | Out-Null
         }
     }
+    $lines = Get-Content $FilePath
+    $found = $false
+    $updated = Update-EnvLines -Lines $lines -Key $Key -Value $Value -Found ([ref]$found)
+    $updated | Set-Content -Encoding UTF8 $FilePath
 }
 
 # Check if Microsoft.Entra module is installed
