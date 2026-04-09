@@ -1,3 +1,43 @@
+# Path to the environment file that ATK reads during 'atk provision'
+$envFilePath = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".." "env" ".env.production"))
+
+# Helper: write or update a single KEY=VALUE line in the env file
+function Set-EnvValue {
+    param(
+        [string]$FilePath,
+        [string]$Key,
+        [string]$Value
+    )
+    if (Test-Path $FilePath) {
+        $lines = Get-Content $FilePath
+        $found = $false
+        $updated = $lines | ForEach-Object {
+            if ($_ -match "^$Key=") { "$Key=$Value"; $found = $true }
+            else { $_ }
+        }
+        if (-not $found) { $updated += "$Key=$Value" }
+        $updated | Set-Content -Encoding UTF8 $FilePath
+    }
+    else {
+        # Seed from the sample file if present, then add the value
+        $samplePath = [System.IO.Path]::GetFullPath((Join-Path $PSScriptRoot ".." "env" ".env.production.sample"))
+        if (Test-Path $samplePath) {
+            Copy-Item $samplePath $FilePath
+            $lines = Get-Content $FilePath
+            $found = $false
+            $updated = $lines | ForEach-Object {
+                if ($_ -match "^$Key=") { "$Key=$Value"; $found = $true }
+                else { $_ }
+            }
+            if (-not $found) { $updated += "$Key=$Value" }
+            $updated | Set-Content -Encoding UTF8 $FilePath
+        }
+        else {
+            Add-Content -Encoding UTF8 -Path $FilePath -Value "$Key=$Value"
+        }
+    }
+}
+
 # Check if Microsoft.Entra module is installed
 $moduleName = "Microsoft.Entra"
 $module = Get-Module -ListAvailable -Name $moduleName -ErrorAction SilentlyContinue
@@ -44,8 +84,20 @@ $appName = "MessageCenterAgent-reg"
 # check if the application already exists
 $existingApp = Get-EntraApplication -Filter "DisplayName eq '$appName'" -ErrorAction SilentlyContinue   
 if ($existingApp) {
-    Write-Host "Application $appName already exists with ID: "  -NoNewline
+    Write-Host "Application '$appName' already exists with App ID: " -NoNewline
     Write-Host "$($existingApp.AppId)" -ForegroundColor Yellow
+
+    # Write the IDs we can read from the existing registration
+    $existingSP = Get-EntraServicePrincipal -Filter "AppId eq '$($existingApp.AppId)'" -ErrorAction SilentlyContinue
+    Set-EnvValue -FilePath $envFilePath -Key "AAD_APP_CLIENT_ID"  -Value $existingApp.AppId
+    Set-EnvValue -FilePath $envFilePath -Key "AAD_APP_OBJECT_ID"  -Value $existingApp.Id
+    Set-EnvValue -FilePath $envFilePath -Key "AAD_APP_TENANT_ID"  -Value (Get-EntraContext).TenantId
+
+    Write-Host ""
+    Write-Host "IDs written to: $envFilePath" -ForegroundColor Green
+    Write-Host "ACTION REQUIRED: Set SECRET_AAD_APP_CLIENT_SECRET in that file to a valid client secret." -ForegroundColor Yellow
+    Write-Host "  To create a new secret, run:" -ForegroundColor Yellow
+    Write-Host "    New-EntraApplicationPasswordCredential -ApplicationId '$($existingApp.Id)' -CustomKeyIdentifier 'MessageCenterAgentSecret' -EndDate (Get-Date).AddYears(1)" -ForegroundColor Yellow
     Exit 0
 } else {
     Write-Host "Creating new application registration..."
@@ -101,15 +153,14 @@ catch {
 # Create secret for the application
 $secret = New-EntraApplicationPasswordCredential -ApplicationId $app.Id -CustomKeyIdentifier  "MessageCenterAgentSecret" -EndDate (Get-Date).AddYears(1)
 
-# Output app id, app secret, and tenant ID
-$appDetails = @{
-    clientId = $app.AppId
-    tenantId = (Get-EntraContext).TenantId
-    clientSecret = $secret.SecretText
-    appName= $appName
-}
+# Write all values to the environment file for 'atk provision'
+Set-EnvValue -FilePath $envFilePath -Key "AAD_APP_CLIENT_ID"              -Value $app.AppId
+Set-EnvValue -FilePath $envFilePath -Key "SECRET_AAD_APP_CLIENT_SECRET"   -Value $secret.SecretText
+Set-EnvValue -FilePath $envFilePath -Key "AAD_APP_OBJECT_ID"              -Value $app.Id
+Set-EnvValue -FilePath $envFilePath -Key "AAD_APP_TENANT_ID"              -Value (Get-EntraContext).TenantId
 
-# Output the application and service principal details
-Write-Host "Application created successfully"
-$appDetailsJson= $appDetails | ConvertTo-Json 
-Write-Host $appDetailsJson
+Write-Host ""
+Write-Host "Application created and environment file updated successfully." -ForegroundColor Green
+Write-Host "  File: $envFilePath" -ForegroundColor Green
+Write-Host ""
+Write-Host "Next step: run 'atk provision --env production' from the repository root." -ForegroundColor Cyan

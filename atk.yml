@@ -1,24 +1,6 @@
 version: 1.0.0
 projectId: 1bdc0422-b7fe-40b4-abf5-cfed3fb395ed
 provision:
-  - uses: aadApp/create
-    with:
-      name: "MessageCenterAgent-reg"
-      generateClientSecret: true
-      signInAudience: "AzureADMyOrg"
-      clientSecretExpireDays: 365
-      clientSecretDescription: "MessageCenterAgentSecret"
-    writeToEnvironmentFile:
-      clientId: AAD_APP_CLIENT_ID
-      clientSecret: SECRET_AAD_APP_CLIENT_SECRET
-      objectId: AAD_APP_OBJECT_ID
-      tenantId: AAD_APP_TENANT_ID
-
-  - uses: aadApp/update
-    with:
-      manifestPath: ./aad.manifest.json
-      outputFilePath: ./build/aad.manifest.json
-
   - uses: agent/register
     with:
       name: Message Center Agent${{APP_NAME_SUFFIX}}
