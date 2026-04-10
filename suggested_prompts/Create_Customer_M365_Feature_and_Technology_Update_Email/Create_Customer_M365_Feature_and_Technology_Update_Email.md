@@ -1,6 +1,6 @@
 # Create customer facing M365 Technology and Feature Update Emails 
 
-## Scenario
+## Use Case
 
 An IT Admin, Customer Support Professional or Relationship Manager would like to create an email that would outline any urgent message center posts that call out actions that need to be performed by a certain deadline. This would help customers stay aware of such actions and not miss important deadlines which may include config changes that might impact their user community.
 
