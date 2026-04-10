@@ -13,19 +13,19 @@
   "conversation_starters": [
     {
       "title": "What changed recently?",
-      "text": "List updates regarding 'Copilot' with a created date or last modified date since yesterday."
+      "text": "List messages regarding 'Copilot' with a created date or last modified date since yesterday."
     },
     {
       "title": "Get Critical Updates",
-      "text": "Show all critical messages."
+      "text": "Show all critical or high severity messages."
     },
     {
       "title": "Access messages by service and tags",
       "text": "Find messages tagged as User impact. Filter on services containing 'Copilot'. Show messages published in the last 30 days."
     },
     {
-      "title": "Inform the team regarding upcoming major changes in Microsoft 365 Copilot",
-      "text": "Show message regarding updates from the last month that are related to Copilot and marked as major changes."
+      "title": "What are the major changes in Copilot?",
+      "text": "Show messages regarding updates from the last month that are related to Copilot and marked as major changes."
     },
     {
       "title": "Search by Message body",
@@ -33,7 +33,7 @@
     },
     {
       "title": "Search for Microsoft 365 Copilot Updates",
-      "text": "Find messages related to Microsoft 365 Copilot published in the last 30 days."
+      "text": "Find messages related to Copilot published in the last 30 days."
     }
   ]
 }
