@@ -18,7 +18,7 @@ Not only can admins and 'Message Center Readers' search for messages, but you ca
 - **Get suggested actions**: Get suggested actions for updates that require your attention.
 - **Roadmap Detail Included**: Results include related Microsoft 365 Roadmap details to provide additional context about upcoming features and changes.  
   
-| [Deployment Guide](#deployment-guide) | [GCC Deployment Guide](./GCC%20SUPPORT.MD) | [Modification Guide](#modification-guide) | [Suggested Scenarios and Prompts](./suggested_prompts/suggested_prompts.md) |
+| [Deployment Guide](#deployment-guide) | [GCC Deployment Guide](./GCC%20SUPPORT.MD) | [Modification Guide](#modification-guide) | [Suggested Use Cases and Prompts](./suggested_prompts/suggested_prompts.md) |
 | ------------------------------------- | ----------------------------------------- | ----------------------------------------- |----------------------------------------- |
 
 # [Deployment Guide](#deployment-guide)

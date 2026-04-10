@@ -1,6 +1,6 @@
 # Preparing for Changes to Copilot Reporting Dashboards and Admin Center Views
 
-## Scenario
+## Use Case
 An IT administrator needs to update their team on upcoming changes to Copilot Reporting Dashboards and Admin Center Views. The admin will leverage the Message Center Agent in combination with Copilot Chat to draft an email to their team, along with an admin roll-out checklist based on the features published to the Microsoft Message Center. 
 
 ## Methodology

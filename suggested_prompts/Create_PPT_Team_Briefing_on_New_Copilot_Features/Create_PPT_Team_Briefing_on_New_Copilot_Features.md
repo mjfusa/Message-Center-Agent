@@ -1,6 +1,6 @@
 # Create a PowerPoint for a Team Briefing on Upcoming Changes to M365 Copilot
 
-## Scenario
+## Use Case
 An IT lead needs to update their team on upcoming planned changes for Microsoft 365. The lead will leverage the Message Center Agent in combination with Copilot Chat to produce a briefing based on new features published to the Microsoft Message Center.
 
 ## Methodology
