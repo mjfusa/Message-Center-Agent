@@ -1,21 +1,73 @@
-# Check if Microsoft.Entra module is installed
-$moduleName = "Microsoft.Entra"
-$module = Get-Module -ListAvailable -Name $moduleName -ErrorAction SilentlyContinue
+# Relaunch in a clean PowerShell process to avoid module/assembly conflicts
+if (-not $env:CREATE_APPREG_CLEAN_SESSION) {
+    if (Get-Command -Name "pwsh" -ErrorAction SilentlyContinue) {
+        $scriptPath = $PSCommandPath
+        if (-not $scriptPath) {
+            $scriptPath = $MyInvocation.MyCommand.Path
+        }
 
-if (-not $module) {
-    Write-Host "Required module '$moduleName' is not installed. Installing now..." -ForegroundColor Yellow
+        if ($scriptPath) {
+            Write-Host "Restarting script in a clean PowerShell session..." -ForegroundColor Yellow
+            $env:CREATE_APPREG_CLEAN_SESSION = "1"
+            & pwsh -NoProfile -ExecutionPolicy Bypass -File $scriptPath
+            $exitCode = $LASTEXITCODE
+            Remove-Item Env:\CREATE_APPREG_CLEAN_SESSION -ErrorAction SilentlyContinue
+            exit $exitCode
+        }
+    }
+}
+
+# Ensure required Entra modules are installed and loadable
+function Ensure-EntraModule {
+    param (
+        [Parameter(Mandatory = $true)]
+        [string]$ModuleName
+    )
+
+    $available = Get-Module -ListAvailable -Name $ModuleName -ErrorAction SilentlyContinue
+    if (-not $available) {
+        Write-Host "Required module '$ModuleName' is not installed. Installing now..." -ForegroundColor Yellow
+        try {
+            Install-Module -Name $ModuleName -Scope CurrentUser -Force -AllowClobber -ErrorAction Stop
+        }
+        catch {
+            Write-Error "Failed to install module '$ModuleName': $_"
+            Exit 1
+        }
+    }
+    else {
+        Write-Host "Module '$ModuleName' is already installed." -ForegroundColor Green
+    }
+
+    # Try to clear potentially conflicting in-memory modules before import
+    Get-Module -Name "Microsoft.Entra*", "Microsoft.Graph*" -All -ErrorAction SilentlyContinue |
+        ForEach-Object {
+            try {
+                Remove-Module -Name $_.Name -Force -ErrorAction SilentlyContinue
+            }
+            catch {
+                # Ignore and continue; a clean process relaunch is handled above.
+            }
+        }
+
     try {
-        Install-Module -Name $moduleName -Scope CurrentUser -Force -AllowClobber -ErrorAction Stop
-        Write-Host "Successfully installed module '$moduleName'." -ForegroundColor Green
+        Import-Module -Name $ModuleName -Force -ErrorAction Stop
     }
     catch {
-        Write-Error "Failed to install module '$moduleName': $_"
-        Exit 1
+        Write-Host "Module '$ModuleName' is installed but failed to load. Reinstalling..." -ForegroundColor Yellow
+        try {
+            Install-Module -Name $ModuleName -Scope CurrentUser -Force -AllowClobber -ErrorAction Stop
+            Import-Module -Name $ModuleName -Force -ErrorAction Stop
+        }
+        catch {
+            Write-Error "Failed to load module '$ModuleName' after reinstall: $_"
+            Exit 1
+        }
     }
 }
-else {
-    Write-Host "Module '$moduleName' is already installed." -ForegroundColor Green
-}
+
+Ensure-EntraModule -ModuleName "Microsoft.Entra.Authentication"
+Ensure-EntraModule -ModuleName "Microsoft.Entra.Applications"
 
 # Connect to Entra with required scopes
 try {

@@ -1,6 +1,6 @@
-# InstallNodeAtk.ps1 - Install Node.js and Microsoft 365 Agents Toolkit CLI
+# InstallNodeAtk.ps1 - Install Node.js, Azure CLI, and Microsoft 365 Agents Toolkit CLI
 # This script checks if Node.js is installed with at least version 20, installs it if needed,
-# and then installs the Microsoft 365 Agents Toolkit CLI
+# installs Azure CLI if needed, and then installs the Microsoft 365 Agents Toolkit CLI
 
 # Function to check if a command exists
 function Test-CommandExists {
@@ -62,12 +62,12 @@ else {
         $versionParts = $nodeVersion.Split('.')
         $majorVersion = [int]$versionParts[0]
         
-        if ($majorVersion -lt 20) {
-            Write-Host "Node.js version $nodeVersion is installed, but version 20 or higher is required." -ForegroundColor Yellow
+        if ($majorVersion -lt 24) {
+            Write-Host "Node.js version $nodeVersion is installed, but version 24 or higher is required." -ForegroundColor Yellow
             Write-Host "Updating Node.js using winget..." -ForegroundColor Cyan
             
             # Install/update Node.js using winget
-            winget install OpenJS.NodeJS -v "~20" --accept-source-agreements --accept-package-agreements
+            winget install OpenJS.NodeJS -v "~24" --accept-source-agreements --accept-package-agreements
             
             if ($LASTEXITCODE -ne 0) {
                 Exit-WithError "Failed to update Node.js. winget returned error code: $LASTEXITCODE"
@@ -114,6 +114,44 @@ try {
 }
 catch {
     Exit-WithError "Failed to install Microsoft 365 Agents Toolkit CLI: $_"
+}
+
+# Install Azure CLI
+Write-Host "`nChecking if Azure CLI is installed..." -ForegroundColor Cyan
+$azInstalled = Test-CommandExists "az"
+
+if (-not $azInstalled) {
+    Write-Host "Azure CLI is not installed. Installing using winget..." -ForegroundColor Yellow
+
+    # Check if winget is available
+    if (-not (Test-CommandExists "winget")) {
+        Exit-WithError "winget is not available. Please install App Installer from the Microsoft Store."
+    }
+
+    try {
+        Write-Host "Installing Azure CLI..." -ForegroundColor Cyan
+        winget install Microsoft.AzureCLI --accept-source-agreements --accept-package-agreements
+
+        if ($LASTEXITCODE -ne 0) {
+            Exit-WithError "Failed to install Azure CLI. winget returned error code: $LASTEXITCODE"
+        }
+
+        # Refresh environment variables
+        $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+    }
+    catch {
+        Exit-WithError "Failed to install Azure CLI: $_"
+    }
+
+    # Verify installation succeeded
+    if (-not (Test-CommandExists "az")) {
+        Exit-WithError "Azure CLI installation verification failed. Please try installing manually."
+    }
+
+    Write-Host "Azure CLI installed successfully!" -ForegroundColor Green
+}
+else {
+    Write-Host "Azure CLI is already installed." -ForegroundColor Green
 }
 
 # Final success message
